@@ -3,6 +3,8 @@
     {
       "id": "neon-dodge",
       "title": "NEON DODGE",
+      "menu_title": "ブロックよけ",
+      "cover": "/showcase/assets/neon-dodge-cover.png",
       "description": "光のブロックをよけて、30秒を生き残れ。",
       "author": "動作確認用サンプル",
       "kind": "static",
@@ -15,6 +17,8 @@
     {
       "id": "reaction-lab",
       "title": "REACTION LAB",
+      "menu_title": "反応チャレンジ",
+      "cover": "/showcase/assets/reaction-lab-cover.png",
       "description": "緑になったらクリック。きみの反応速度は？",
       "author": "動作確認用サンプル",
       "kind": "service",

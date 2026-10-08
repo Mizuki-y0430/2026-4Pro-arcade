@@ -49,6 +49,16 @@ def load_games(root: Path, config: Path) -> list[dict]:
             raise ValueError(f"{gid}: titleが必要です。")
         if not isinstance(game.get("enabled", True), bool):
             raise ValueError(f"{gid}: enabledはtrueかfalseにしてください。")
+        if "menu_title" in game and (not isinstance(game["menu_title"], str) or
+                                      not 1 <= len(game["menu_title"].strip()) <= 24):
+            raise ValueError(f"{gid}: menu_titleは1〜24文字にしてください。")
+        if "cover" in game:
+            cover = game["cover"]
+            if not isinstance(cover, str) or not re.fullmatch(r"/showcase/assets/[a-z0-9-]+\.(png|jpg|webp)", cover):
+                raise ValueError(f"{gid}: coverは/showcase/assets/内の画像にしてください。")
+            image = inside(root / "showcase/assets", cover.rsplit("/", 1)[1])
+            if not image.is_file() or image.stat().st_size > 5_000_000:
+                raise ValueError(f"{gid}: cover画像が見つからないか、5MBを超えています。")
         if "profile" in game:
             load_profile(root, game)
         if not game.get("enabled", True):
@@ -158,7 +168,7 @@ class GameManager:
         if runtime:
             self._refresh(runtime)
             status, message = runtime["status"], runtime["message"]
-        result = {key: game.get(key, "") for key in ("id", "title", "description", "author", "kind", "language", "controls", "color")}
+        result = {key: game.get(key, "") for key in ("id", "title", "menu_title", "cover", "description", "author", "kind", "language", "controls", "color")}
         result.update(status=status, message=message)
         result["profile_status"] = "ready" if game.get("profile") else "draft"
         if runtime:
@@ -368,7 +378,7 @@ class LauncherHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(content)
             return
-        allowed = {"/": "index.html", "/app.js": "app.js", "/style.css": "style.css", "/learn": "learn.html", "/learning.js": "learning.js", "/showcase.js": "showcase.js", "/content.css": "content.css", "/assets/pop-blue-background.png": "assets/pop-blue-background.png"}
+        allowed = {"/": "index.html", "/app.js": "app.js", "/style.css": "style.css", "/menu.css": "menu.css", "/learn": "learn.html", "/learning.js": "learning.js", "/showcase.js": "showcase.js", "/content.css": "content.css", "/assets/pop-blue-background.png": "assets/pop-blue-background.png"}
         if re.fullmatch(r"/games/[a-z0-9-]+(?:/slides)?", path):
             allowed[path] = "showcase.html"
         if path not in allowed:

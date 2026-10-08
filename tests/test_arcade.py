@@ -196,6 +196,22 @@ class ArcadeTests(unittest.TestCase):
         for path in ["private.png", "../style.css", "%2e%2e/style.css"]:
             self.assert_http(404, base + "/assets/" + path)
 
+    def test_menu_covers_and_titles_are_validated_and_exposed(self):
+        assets = self.root / "showcase/assets"
+        assets.mkdir(parents=True)
+        (assets / "test.png").write_bytes(b"IMAGE")
+        game = {**self.game, "cover": "/showcase/assets/test.png", "menu_title": "あそぼう"}
+        self.configure([game])
+        manager = GameManager(self.root, [game])
+        self.assertEqual(manager.list_games()[0]["cover"], game["cover"])
+        self.assertEqual(manager.list_games()[0]["menu_title"], game["menu_title"])
+        for value in ["https://other.invalid/image.png", "/.git/config", "/showcase/assets/../private.png", "/showcase/assets/missing.png"]:
+            with self.subTest(cover=value), self.assertRaises(ValueError):
+                self.configure([{**game, "cover": value}])
+        for value in [None, "", "長" * 25]:
+            with self.subTest(menu_title=value), self.assertRaises(ValueError):
+                self.configure([{**game, "menu_title": value}])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -3,9 +3,8 @@ const $ = (id) => document.getElementById(id);
 let token = "", games = [], filter = "all", selectedGame = null, pendingGame = null;
 let signature = "", ended = false, busy = false, toastTimer;
 let requestedGame = new URLSearchParams(location.search).get("play");
-const dodgeIcon = '<svg class="game-icon" viewBox="0 0 72 72" aria-hidden="true"><path d="M9 14h10v10H9zM49 5h14v14H49zM32 28h10v10H32z" fill="currentColor" opacity=".35"/><path d="m36 45 16 17H20Z" fill="currentColor"/><path d="M7 65h58" stroke="currentColor" opacity=".3"/></svg>';
-const reactionIcon = '<svg class="game-icon" viewBox="0 0 72 72" aria-hidden="true"><circle cx="36" cy="36" r="27" fill="none" stroke="currentColor" opacity=".25"/><path d="m40 9-21 31h16l-3 24 22-33H38Z" fill="currentColor"/></svg>';
-const webIcon = '<svg class="game-icon" viewBox="0 0 72 72" aria-hidden="true"><rect x="8" y="13" width="56" height="44" rx="5" fill="none" stroke="currentColor" stroke-width="3"/><path d="M9 24h54m-38 8-9 8 9 8m22-16 9 8-9 8" fill="none" stroke="currentColor" stroke-width="3"/></svg>';
+const genericCover = '<svg class="tile-fallback" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" fill="#fff2a6" stroke="#17345c" stroke-width="5"/><path d="M34 37h52c9 0 15 8 18 17l5 26c3 13-8 19-17 10L77 76H43L28 90c-9 9-20 3-17-10l5-26c3-9 9-17 18-17Z" fill="#fff" stroke="#17345c" stroke-width="5"/><path d="M27 51h10V41h10v10h10v10H47v10H37V61H27Z" fill="#24b8db" stroke="#17345c" stroke-width="2"/><circle cx="80" cy="51" r="8" fill="#b582ec" stroke="#17345c" stroke-width="2"/><circle cx="92" cy="65" r="8" fill="#ffbb60" stroke="#17345c" stroke-width="2"/></svg>';
+const lockedCover = '<svg class="locked-mark" viewBox="0 0 100 100" aria-hidden="true"><path d="M32 38V25a18 18 0 0 1 36 0v13" fill="none" stroke="#3675ab" stroke-width="8" stroke-linecap="round"/><rect x="19" y="36" width="62" height="50" rx="15" fill="currentColor" stroke="#3675ab" stroke-width="5"/><circle cx="50" cy="56" r="7" fill="#3675ab"/><path d="M50 60v10" stroke="#3675ab" stroke-width="7" stroke-linecap="round"/></svg>';
 
 function toast(message) {
   clearTimeout(toastTimer);
@@ -27,70 +26,95 @@ function render() {
   const currentSignature = JSON.stringify([games, filter]);
   if (signature === currentSignature) return;
   signature = currentSignature;
-  const focus = document.activeElement?.dataset?.game;
-  $("count").textContent = `${games.filter(g => !["unregistered", "missing"].includes(g.status)).length} / ${games.length} ゲーム`;
-  const fragment = document.createDocumentFragment();
+  const focused = document.activeElement;
+  const focusGame = focused?.dataset?.game;
+  const focusAction = focused?.dataset?.action;
+  const ready = games.filter(g => !["unregistered", "missing"].includes(g.status)).length;
+  $("count").textContent = `${ready} / ${games.length} あそべる`;
   const visible = games.filter(g => filter === "all" || (filter === "web" ? ["static", "service"].includes(g.kind) : g.kind === "python" || g.language === "python"));
   $("empty-filter").hidden = visible.length > 0;
+  const fragment = document.createDocumentFragment();
+
   for (const game of visible) {
     const available = !["unregistered", "missing"].includes(game.status);
+    const stop = game.status === "starting" || (game.kind === "python" && game.status === "running");
     const card = document.createElement("article");
     card.className = `card ${available ? "available" : "unavailable"}`;
     card.dataset.color = game.color || "mint";
-    const art = document.createElement("div");
-    art.className = "card-art";
-    const number = document.createElement("span");
-    number.className = "number";
-    number.textContent = String(games.indexOf(game) + 1).padStart(2, "0");
-    art.append(number);
-    if (game.kind) {
-      const tag = document.createElement("span");
-      tag.className = "tag";
-      tag.textContent = game.kind === "python" ? "PYTHON ↗" : game.language === "python" ? "PYTHON / WEB" : "WEB";
-      art.append(tag);
-    }
-    const icon = document.createElement("div");
-    if (available) icon.innerHTML = game.kind === "python" || game.language === "python" ? reactionIcon : game.id === "neon-dodge" ? dodgeIcon : webIcon;
-    else { icon.className = "coming-icon"; icon.textContent = "+"; }
-    art.append(icon);
-    const body = document.createElement("div");
-    body.className = "card-body";
-    const title = document.createElement("h3");
-    title.textContent = game.title;
-    title.title = game.title;
-    const description = document.createElement("p");
-    description.textContent = game.description;
-    const author = document.createElement("span");
-    author.className = "author";
-    author.textContent = game.status === "error" ? `${game.message} ${game.log || ""}` : game.author || "メンバーのゲームを追加予定";
-    author.title = game.status === "error" ? author.textContent : game.message;
+
+    // The whole illustrated tile is a button; the help button is a separate sibling.
     const button = document.createElement("button");
-    button.className = "play";
+    button.className = "play game-launch";
     button.dataset.game = game.id;
+    button.dataset.action = "play";
     button.disabled = !available;
     button.title = game.message;
-    const label = document.createElement("span");
-    const stop = game.status === "starting" || (game.kind === "python" && game.status === "running");
-    label.textContent = !available ? game.status === "missing" ? "ファイル未検出" : "準備中" : stop ? "停止する" : game.status === "error" ? "もう一度起動" : game.kind === "python" ? "ウィンドウで起動" : "プレイする";
-    const arrow = document.createElement("span");
-    arrow.textContent = !available ? "—" : stop ? "■" : "▶";
-    button.append(label, arrow);
-    button.addEventListener("click", () => play(game));
-    body.append(title, description, author, button);
-    const more = document.createElement("div");
-    more.className = "card-more";
-    for (const [label, suffix] of [["紹介・技術", ""], ["発表3ページ", "/slides"]]) {
-      const link = document.createElement("a");
-      link.textContent = label;
-      link.href = `/games/${encodeURIComponent(game.id)}${suffix}`;
-      more.append(link);
+    button.setAttribute("aria-label", `${game.title}を${!available ? "準備中" : stop ? "停止する" : "プレイする"}`);
+    const art = document.createElement("span");
+    art.className = "tile-art";
+    art.setAttribute("aria-hidden", "true");
+    art.innerHTML = available ? genericCover : lockedCover;
+    // Only curated, local cover URLs are used. Missing images retain the vector fallback.
+    if (available && /^\/showcase\/assets\/[a-z0-9-]+\.(png|jpg|webp)$/.test(game.cover)) {
+      const image = document.createElement("img");
+      image.className = "tile-illustration";
+      image.src = game.cover;
+      image.alt = "";
+      image.decoding = "async";
+      image.addEventListener("error", () => image.remove());
+      art.append(image);
     }
-    body.append(more);
-    card.append(art, body);
+    const title = document.createElement("span");
+    title.className = "tile-title";
+    title.textContent = available ? game.menu_title || game.title : "準備中";
+    button.append(art, title);
+    if (available) {
+      const badge = document.createElement("span");
+      badge.className = "tile-badge";
+      badge.textContent = stop ? "停止" : game.status === "error" ? "再挑戦" : "あそぶ";
+      badge.setAttribute("aria-hidden", "true");
+      button.append(badge);
+    } else {
+      const number = document.createElement("span");
+      number.className = "slot-number";
+      number.textContent = String(games.indexOf(game) + 1).padStart(2, "0");
+      number.setAttribute("aria-hidden", "true");
+      button.append(number);
+    }
+    button.addEventListener("click", () => play(game));
+
+    const info = document.createElement("button");
+    info.className = "tile-info";
+    info.dataset.game = game.id;
+    info.dataset.action = "info";
+    info.textContent = "？";
+    info.setAttribute("aria-label", `${game.title}の遊び方・発表`);
+    info.title = "遊び方・紹介・発表";
+    info.addEventListener("click", () => openInfo(game));
+    card.append(button, info);
     fragment.append(card);
   }
   $("games").replaceChildren(fragment);
-  if (focus) [...document.querySelectorAll("[data-game]")].find(el => el.dataset.game === focus)?.focus();
+  if (focusGame) [...document.querySelectorAll("[data-game]")].find(el => el.dataset.game === focusGame && el.dataset.action === focusAction)?.focus();
+}
+
+function openInfo(game) {
+  $("info-title").textContent = game.menu_title || game.title;
+  $("info-description").textContent = game.description;
+  $("info-controls").textContent = game.controls || "ゲームを登録すると、ここに遊び方が表示されます。";
+  $("info-type").textContent = game.language === "python" ? "Python × Web" : game.kind === "static" ? "Webゲーム" : game.kind === "python" ? "Pythonゲーム" : "これから登場";
+  $("info-author").textContent = [game.title, game.author].filter(Boolean).join(" / ");
+  $("info-status").textContent = game.status === "error" ? `${game.message} ${game.log || ""}` : game.message;
+  $("info-detail").href = `/games/${encodeURIComponent(game.id)}`;
+  $("info-slides").href = `/games/${encodeURIComponent(game.id)}/slides`;
+  $("info-play").disabled = ["unregistered", "missing"].includes(game.status);
+  const stop = game.status === "starting" || (game.kind === "python" && game.status === "running");
+  $("info-play").textContent = stop ? "停止する ■" : game.status === "error" ? "もう一度起動 ▶" : "プレイする ▶";
+  $("info-play").onclick = () => {
+    $("game-info").close();
+    play(games.find(current => current.id === game.id) || game);
+  };
+  $("game-info").showModal();
 }
 
 async function refresh() {
@@ -165,6 +189,7 @@ async function back() {
     catch (error) { toast(error.message); }
   }
 }
+$("info-close").addEventListener("click", () => $("game-info").close());
 $("back").addEventListener("click", back);
 $("player").addEventListener("cancel", event => { event.preventDefault(); back(); });
 $("fullscreen").addEventListener("click", async () => {
