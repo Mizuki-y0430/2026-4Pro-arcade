@@ -18,6 +18,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import unquote, urlsplit
 from urllib.request import ProxyHandler, build_opener
 import webbrowser
+from learning_content import learning_file, load_curriculum, load_profile, resolve_inside
 
 ROOT = Path(__file__).resolve().parent
 KINDS = {"static", "python", "service"}
@@ -48,6 +49,8 @@ def load_games(root: Path, config: Path) -> list[dict]:
             raise ValueError(f"{gid}: titleが必要です。")
         if not isinstance(game.get("enabled", True), bool):
             raise ValueError(f"{gid}: enabledはtrueかfalseにしてください。")
+        if "profile" in game:
+            load_profile(root, game)
         if not game.get("enabled", True):
             continue
         kind = game.get("kind")
@@ -157,6 +160,7 @@ class GameManager:
             status, message = runtime["status"], runtime["message"]
         result = {key: game.get(key, "") for key in ("id", "title", "description", "author", "kind", "language", "controls", "color")}
         result.update(status=status, message=message)
+        result["profile_status"] = "ready" if game.get("profile") else "draft"
         if runtime:
             result.update({key: runtime[key] for key in ("url", "log") if key in runtime})
         return result
@@ -304,7 +308,69 @@ class LauncherHandler(BaseHTTPRequestHandler):
         if path == "/api/games":
             self.json_response({"games": self.server.manager.list_games(), "token": self.server.token})
             return
-        allowed = {"/": "index.html", "/app.js": "app.js", "/style.css": "style.css"}
+        if path == "/api/learning":
+            try:
+                self.json_response(load_curriculum(self.server.root))
+            except (ValueError, OSError) as exc:
+                self.json_response({"error": f"学習資料を読み込めません: {exc}"}, 400)
+            return
+        profile_match = re.fullmatch(r"/api/games/([a-z0-9-]+)/profile", path)
+        if profile_match:
+            gid = profile_match[1]
+            if gid not in self.server.manager.games:
+                self.json_response({"error": "ゲームが見つかりません。"}, 404)
+                return
+            try:
+                game = self.server.manager.games[gid]
+                with self.server.manager.lock:
+                    snapshot = self.server.manager.snapshot(gid)
+                self.json_response({"game": snapshot, "profile": load_profile(self.server.root, game)})
+            except (ValueError, OSError) as exc:
+                self.json_response({"error": f"紹介資料を読み込めません: {exc}"}, 400)
+            return
+        if path.startswith("/learning/files/"):
+            try:
+                file = learning_file(self.server.root, unquote(path.removeprefix("/learning/files/")))
+                content = file.read_bytes()
+            except (ValueError, OSError):
+                self.send_error(404)
+                return
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.send_header("Content-Length", str(len(content)))
+            if urlsplit(self.path).query == "download":
+                self.send_header("Content-Disposition", f'attachment; filename="{file.name}"')
+            self.end_headers()
+            self.wfile.write(content)
+            return
+        if path == "/showcase/template.json":
+            content = (self.server.root / "showcase/template.json").read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Disposition", 'attachment; filename="profile.json"')
+            self.send_header("Content-Length", str(len(content)))
+            self.end_headers()
+            self.wfile.write(content)
+            return
+        if re.fullmatch(r"/showcase/assets/[a-z0-9-]+\.(png|jpg|webp)", path):
+            try:
+                file = resolve_inside(self.server.root / "showcase/assets", path.rsplit("/", 1)[1])
+                if file.stat().st_size > 5_000_000:
+                    raise ValueError("画像が大きすぎます。")
+                content = file.read_bytes()
+            except (ValueError, OSError):
+                self.send_error(404)
+                return
+            self.send_response(200)
+            self.send_header("Content-Type", mimetypes.guess_type(file.name)[0])
+            self.send_header("Content-Length", str(len(content)))
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.end_headers()
+            self.wfile.write(content)
+            return
+        allowed = {"/": "index.html", "/app.js": "app.js", "/style.css": "style.css", "/learn": "learn.html", "/learning.js": "learning.js", "/showcase.js": "showcase.js", "/content.css": "content.css"}
+        if re.fullmatch(r"/games/[a-z0-9-]+(?:/slides)?", path):
+            allowed[path] = "showcase.html"
         if path not in allowed:
             self.send_error(404)
             return
@@ -370,6 +436,10 @@ def main():
             items = manager.list_games()
             for item in items:
                 print(f"{item['id']}: {item['status']} — {item['title']} / {item['message']}")
+            for game in games:
+                if game.get("profile"):
+                    profile = load_profile(ROOT, game)
+                    print(f"  資料: {game['id']} / {profile['status']} / スライド {len(profile['slides'])}ページ")
             return int(any(item["status"] == "missing" for item in items))
         server = make_server(ROOT, games, args.port)
     except (OSError, ValueError) as exc:

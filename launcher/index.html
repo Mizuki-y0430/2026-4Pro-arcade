@@ -6,19 +6,21 @@
   <title>4Pro Arcade</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/content.css">
   <script src="/app.js" defer></script>
 </head>
 <body>
   <div class="shell">
     <header>
       <a class="brand" href="/" aria-label="4Pro Arcade ホーム"><span class="brand-mark">4</span><span>4PRO<span class="brand-sub">ARCADE</span></span></a>
-      <div class="header-right"><span class="local"><i></i> LOCAL PLAY</span><button class="quiet" id="exit">終了 ↗</button></div>
+      <div class="header-right"><a class="quiet" href="/learn">学習コース</a><span class="local"><i></i> LOCAL PLAY</span><button class="quiet" id="exit">終了 ↗</button></div>
     </header>
     <main>
       <section class="hero">
         <div><p class="eyebrow">MADE BY US. PLAYED BY EVERYONE.</p><h1>みんなのゲームが、<br>ひとつの<span>遊び場</span>に。</h1><p class="hero-copy">気になるゲームを選んで、さあプレイ。<br>8つの個性が集まる、4Proのミニゲームアーケード。</p></div>
         <div class="hero-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="coin coin-one">✦</div><div class="coin coin-two">+</div><svg class="controller" viewBox="0 0 260 160"><path d="M73 36h114c19 0 31 12 36 31l15 56c5 24-17 36-35 18l-31-29H88l-31 29c-18 18-40 6-35-18l15-56c5-19 17-31 36-31Z" fill="#242c36" stroke="#86f7bd" stroke-width="3"/><path d="M58 72h17V55h17v17h17v17H92v17H75V89H58Z" fill="#86f7bd"/><circle cx="175" cy="71" r="11" fill="#bc9aff"/><circle cx="198" cy="93" r="11" fill="#fbb976"/><rect x="118" y="84" width="24" height="7" rx="3" fill="#647284"/></svg><span class="art-label">INSERT CURIOSITY →</span></div>
       </section>
+      <section class="learning-banner"><div><h2>ゲームの仕組みを、自分の言葉で。</h2><p>コードの整理、理解確認、変更実験。学んだことを3ページで発表しよう。</p></div><a href="/learn">学習の進め方とAIプロンプト ↗</a></section>
       <section class="library" aria-labelledby="library-title">
         <div class="library-top"><div class="library-heading"><h2 id="library-title">ゲームを選ぶ</h2><span id="count">…</span></div><div class="filters" aria-label="ゲームの種類"><button class="selected" data-filter="all" aria-pressed="true">すべて</button><button data-filter="web" aria-pressed="false">Web</button><button data-filter="python" aria-pressed="false">Python</button></div></div>
         <div class="grid" id="games" aria-live="polite"></div>

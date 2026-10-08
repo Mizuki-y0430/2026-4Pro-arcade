@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "status": "sample",
+  "screenshot": "/showcase/assets/reaction-lab.png",
+  "audience": "Pythonを使う高専3年生。画面と処理の分担を学ぶ人",
+  "summary": "緑に変わった瞬間にクリックし、反応時間を測るゲームです。Pythonがルールと記録を管理し、ブラウザーが画面と入力を担当します。",
+  "how_to_play": ["クリックかスペースで開始します。", "赤い待機画面が緑に変わったら、すぐにクリックまたはスペース。", "早すぎる入力はフライング。正しい入力では反応時間とベストを表示します。", "繰り返し挑戦できます。記録はゲーム画面を閉じるまで保持します。"],
+  "technologies": [
+    {"name": "Python", "role": "待ち時間の生成、フライングの判定、ベストの更新を担当する。"},
+    {"name": "HTML / CSS", "role": "ボタン、記録、色の変化を表示する。"},
+    {"name": "JavaScript", "role": "入力と表示、反応時間の測定を担当する。"},
+    {"name": "HTTP / JSON", "role": "ブラウザーとPythonの間で開始・結果のデータをやり取りする。"}
+  ],
+  "flow": ["ブラウザーが/api/startへ開始を送る。", "Pythonがラウンドと待ち時間を返す。", "ブラウザーが緑へ切り替え、入力までの時間を測る。", "Pythonが/api/finishで判定・記録更新し、結果を画面へ返す。"],
+  "code_refs": [
+    {"file": "web.py", "start_line": 26, "end_line": 30, "label": "ReactionRound.start：ラウンドの開始", "explanation": "待ち時間を選び、ラウンドIDを作る。msを1000で割って秒へ変換し、入力できる時刻を求める。"},
+    {"file": "web.py", "start_line": 32, "end_line": 49, "label": "ReactionRound.finish：判定とベスト", "explanation": "同じラウンドか、早すぎないか、測定値が有効かを確認する。成功した反応時間を丸め、最小値をベストとして保存する。"},
+    {"file": "web/game.js", "start_line": 7, "end_line": 16, "label": "request：ブラウザーからPythonへの通信", "explanation": "fetchで操作データをJSONにして送る。Pythonが返したJSONを読み、失敗ならエラーメッセージを出す。"}
+  ],
+  "learning_goals": ["Pythonとブラウザーが担当する処理を区別する。", "状態・時刻・条件判定から、フライングの扱いを説明する。", "待ち時間や条件を1項目変え、結果を予測して確かめる。"],
+  "questions": [
+    {"question": "Pythonが処理することと、JavaScriptが処理することは何？", "hint": "web.pyのReactionRoundと、web/game.jsのclickを比べる。", "answer": "Pythonは待ち時間、判定、ベスト記録を管理する。JavaScriptは画面表示、入力、反応時間の測定、HTTP通信を担当する。"},
+    {"question": "delay_msを1000で割るのはなぜ？", "hint": "msと秒の単位を比べる。", "answer": "待ち時間はミリ秒、clockの値は秒なので、単位を合わせるため。1000ミリ秒は1秒。"},
+    {"question": "ベストをminで更新するのはなぜ？", "hint": "反応時間が短い方と長い方のどちらが良い記録か考える。", "answer": "反応時間が短い方をベストにするため、以前の記録と今回の値の小さい方を残す。"}
+  ],
+  "creation": {"goal": "PythonゲームをWebゲームと同じ画面内で遊べる方式を示す。", "ai_role": "このプロジェクト内でCodexがPythonサーバーとWeb画面を実装した。", "human_role": "学生の制作記録はまだ提出されていない。", "evidence": "起動、入力、フライング、記録更新、停止を検証済み。学生本人の理解・変更実験は未実施。"},
+  "slides": [
+    {"title": "REACTION LABの遊び方", "message": "緑になったらクリックし、反応時間を測る", "points": ["クリックかスペースで繰り返し挑戦。", "早すぎる入力はフライング。短い時間がベスト。", "Pythonを使うWebゲームのサンプル作品。"], "notes": "実際の画面を見せ、待機と緑の変化、反応時間の記録を説明する。学生の制作実績として発表しない。"},
+    {"title": "Pythonとブラウザーの分担", "message": "画面はブラウザー、判定と記録はPython", "points": ["JavaScriptが入力と反応時間を測定。", "HTTPで操作を送り、JSONで結果を受け取る。", "Pythonがラウンドを作り、結果を判定。"], "notes": "通信にかかる時間が反応時間に混ざらないよう、画面と入力の時間はブラウザーで測る。Pythonは届いた値とラウンドを検証する。"},
+    {"title": "学習で確かめること", "message": "状態と時間を追い、判定の理由を説明する", "points": ["待機中と緑になった後の入力を比べる。", "待ち時間の変更を予測して試す。", "本人の回答・実験記録は、これから収集する。"], "notes": "このスライドは学習課題の見本。学生の発表では実際に行った変更、予測、結果、残った疑問を記入する。"}
+  ],
+  "limitations": ["このページは教材の見本です。学生の学習成果はまだありません。", "反応時間の値はブラウザーから送るので、正式なランキング用の不正対策はありません。", "この方式はローカルPC上で動かします。インターネットへ公開するサーバーの構成とは別です。"],
+  "sources": [
+    {"label": "Python：http.server", "url": "https://docs.python.org/3.11/library/http.server.html"},
+    {"label": "MDN：fetch API", "url": "https://developer.mozilla.org/ja/docs/Web/API/Fetch_API/Using_Fetch"}
+  ]
+}

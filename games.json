@@ -8,6 +8,7 @@
       "kind": "static",
       "path": "games/samples/neon-dodge",
       "entry": "index.html",
+      "profile": "showcase/neon-dodge.json",
       "controls": "← → / A D キーで移動・スペースで開始",
       "color": "mint"
     },
@@ -18,6 +19,7 @@
       "author": "動作確認用サンプル",
       "kind": "service",
       "language": "python",
+      "profile": "showcase/reaction-lab.json",
       "path": "games/samples/reaction-lab",
       "command": ["{python}", "web.py", "--port", "{port}"],
       "controls": "クリック / スペースでプレイ",

@@ -2,6 +2,7 @@
 const $ = (id) => document.getElementById(id);
 let token = "", games = [], filter = "all", selectedGame = null, pendingGame = null;
 let signature = "", ended = false, busy = false, toastTimer;
+let requestedGame = new URLSearchParams(location.search).get("play");
 const dodgeIcon = '<svg class="game-icon" viewBox="0 0 72 72" aria-hidden="true"><path d="M9 14h10v10H9zM49 5h14v14H49zM32 28h10v10H32z" fill="currentColor" opacity=".35"/><path d="m36 45 16 17H20Z" fill="currentColor"/><path d="M7 65h58" stroke="currentColor" opacity=".3"/></svg>';
 const reactionIcon = '<svg class="game-icon" viewBox="0 0 72 72" aria-hidden="true"><circle cx="36" cy="36" r="27" fill="none" stroke="currentColor" opacity=".25"/><path d="m40 9-21 31h16l-3 24 22-33H38Z" fill="currentColor"/></svg>';
 const webIcon = '<svg class="game-icon" viewBox="0 0 72 72" aria-hidden="true"><rect x="8" y="13" width="56" height="44" rx="5" fill="none" stroke="currentColor" stroke-width="3"/><path d="M9 24h54m-38 8-9 8 9 8m22-16 9 8-9 8" fill="none" stroke="currentColor" stroke-width="3"/></svg>';
@@ -76,6 +77,15 @@ function render() {
     button.append(label, arrow);
     button.addEventListener("click", () => play(game));
     body.append(title, description, author, button);
+    const more = document.createElement("div");
+    more.className = "card-more";
+    for (const [label, suffix] of [["紹介・技術", ""], ["発表3ページ", "/slides"]]) {
+      const link = document.createElement("a");
+      link.textContent = label;
+      link.href = `/games/${encodeURIComponent(game.id)}${suffix}`;
+      more.append(link);
+    }
+    body.append(more);
     card.append(art, body);
     fragment.append(card);
   }
@@ -91,6 +101,14 @@ async function refresh() {
   token = data.token;
   games = data.games;
   render();
+  if (requestedGame) {
+    const id = requestedGame;
+    requestedGame = null;
+    const game = games.find(g => g.id === id);
+    if (game && !["unregistered", "missing"].includes(game.status)) play(game);
+    else toast("このゲームはまだ起動できません。");
+    history.replaceState(null, "", "/");
+  }
   if (pendingGame) {
     const game = games.find(g => g.id === pendingGame);
     if (game?.status === "running" && game.url) { pendingGame = null; openPlayer(game); }

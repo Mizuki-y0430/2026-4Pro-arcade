@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ja">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ゲーム紹介 — 4Pro Arcade</title><link rel="icon" href="data:,"><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/content.css"><script src="/showcase.js" defer></script></head>
+<body>
+  <div class="shell content-shell">
+    <header><a class="brand" href="/"><span class="brand-mark">4</span><span>4PRO<span class="brand-sub">ARCADE</span></span></a><div class="header-right"><a class="quiet" href="/learn">学習コース</a><a class="quiet" href="/">← ゲーム一覧</a></div></header>
+    <main id="showcase-main">
+      <nav class="breadcrumbs" aria-label="現在のページ"><a href="/">ゲーム一覧</a><span>/</span><a id="game-link"></a><span id="slide-crumb" hidden>/ 発表3ページ</span></nav>
+      <p class="publication-status" id="publication-status"></p>
+      <article id="game-detail" hidden></article>
+      <section id="presentation" hidden aria-label="3ページの発表資料">
+        <div class="presentation-toolbar"><div><a id="detail-link" class="text-link">紹介・技術へ</a><span id="page-count" aria-live="polite"></span></div><div><button id="notes-toggle" class="quiet" aria-expanded="false">発表メモ</button><button id="print" class="quiet">印刷 / PDF保存</button><button id="slide-fullscreen" class="quiet">全画面 ⛶</button></div></div>
+        <div id="slide-stage" class="slide-stage"><div id="slides"></div><div class="slide-controls"><button id="previous" class="small-primary">← 前へ</button><span>← → キーでも移動できます</span><button id="next" class="small-primary">次へ →</button></div></div>
+        <aside id="speaker-notes" hidden><h2>発表メモ</h2><p id="notes-text"></p></aside>
+      </section>
+      <p id="page-error" role="alert" hidden></p>
+    </main>
+    <footer><span><b>4PRO</b> / CLASS OF 2026</span><a href="/learn">学習の進め方とAIプロンプト ↗</a></footer>
+  </div>
+</body>
+</html>
