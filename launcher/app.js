@@ -29,7 +29,7 @@ function render() {
   const focus = document.activeElement?.dataset?.game;
   $("count").textContent = `${games.filter(g => !["unregistered", "missing"].includes(g.status)).length} / ${games.length} READY`;
   const fragment = document.createDocumentFragment();
-  const visible = games.filter(g => filter === "all" || (filter === "web" ? ["static", "service"].includes(g.kind) : g.kind === "python"));
+  const visible = games.filter(g => filter === "all" || (filter === "web" ? ["static", "service"].includes(g.kind) : g.kind === "python" || g.language === "python"));
   $("empty-filter").hidden = visible.length > 0;
   for (const game of visible) {
     const available = !["unregistered", "missing"].includes(game.status);
@@ -45,11 +45,11 @@ function render() {
     if (game.kind) {
       const tag = document.createElement("span");
       tag.className = "tag";
-      tag.textContent = game.kind === "python" ? "PYTHON ↗" : "WEB";
+      tag.textContent = game.kind === "python" ? "PYTHON ↗" : game.language === "python" ? "PYTHON / WEB" : "WEB";
       art.append(tag);
     }
     const icon = document.createElement("div");
-    if (available) icon.innerHTML = game.kind === "python" ? reactionIcon : game.id === "neon-dodge" ? dodgeIcon : webIcon;
+    if (available) icon.innerHTML = game.kind === "python" || game.language === "python" ? reactionIcon : game.id === "neon-dodge" ? dodgeIcon : webIcon;
     else { icon.className = "coming-icon"; icon.textContent = "+"; }
     art.append(icon);
     const body = document.createElement("div");

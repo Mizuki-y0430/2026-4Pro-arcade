@@ -15,15 +15,33 @@ Windows + Python 3.11以上 + 現行のEdge / Chromeを想定しています。
 **ブラウザーのタブを閉じるだけではランチャーは終了しません。** メニューの「終了」、または起動したターミナルで `Ctrl+C` を使ってください。
 
 このフォルダには `.venv` を作成済みです。他のPCにクローンした際には `setup.bat` で作り直してください。
-Pythonゲームのサンプルは標準のTkinterを使用します。Pythonのインストール時に Tcl/Tk を有効にしてください。
+Pythonサンプルはブラウザー内で動きます。元のTkinter版も `games/samples/reaction-lab/main.py` に残しています。元の版を使う場合とテストには Tcl/Tk が必要です。
 
 ## 最初に入っているサンプル
 
 - **NEON DODGE**: Webゲーム。← → / A Dで光のブロックをよけて30秒生き残る。
-- **REACTION LAB**: Pythonゲーム。緑になったらクリック / スペースで反応速度を測る。
+- **REACTION LAB**: Python + Webゲーム。緑になったらクリック / スペースで反応速度を測る。Pythonが待ち時間・フライング判定・ベスト記録を管理し、ブラウザーが描画と入力を担当します。反応時間は通信の待ち時間が混ざらないようにブラウザーで測定します。
 - 残り6枠は未登録です。2つのサンプルも差し替えて、メンバーのゲーム8個にできます。
 
 ## メンバーのゲームを追加する
+
+### PythonのゲームもWeb画面で遊べる？
+
+できます。ゲームの作り方によって組み込み方が変わります。
+
+| Pythonゲームの種類 | メニュー内で遊ぶ方法 |
+| --- | --- |
+| Flask / FastAPIなど、すでにWeb画面がある | `service` で登録。Pythonサーバーを起動し、その画面をメニュー内に表示 |
+| Pythonでルールや計算、Tkinter等で画面を作っている | Pythonの処理をAPIにし、画面・入力をHTML / JavaScriptに変更。REACTION LABがこの例 |
+| pygameを使っている | [pygbag](https://pygame-web.github.io/wiki/pygbag/)等でWeb向けに移植・ビルドし、ビルド後の公開フォルダを `static` で登録。非同期のゲームループ、使うライブラリ、アセット等に調整が必要 |
+
+Pythonのデスクトップ用GUIを、設定変更だけで自動的にWeb画面へ変換する機能はありません。
+どの方式で移植できるかは、メンバーのゲームのコードと依存ライブラリを確認して判断します。
+Web画面のあるゲームを `service` に登録する場合、`"language": "python"` を付けるとPythonフィルターにも表示できます。
+
+REACTION LABは追加パッケージなしで起動します。現在の `games.json` では `web.py` を起動し、メニュー内でプレイします。
+Tkinter版を試す場合は、その枠を `"kind": "python"`, `"entry": "main.py"` に変更できます。
+ベスト記録はゲーム画面を閉じるまで保持します。正式なスコアランキング用の不正対策は実装していません。
 
 ランチャーを終了してから登録してください。変更は次の起動時に読み込まれます。
 
@@ -120,6 +138,7 @@ Flaskの例です。ゲームの依存パッケージはあらかじめインス
   "description": "PythonのバックエンドとWeb画面を使うゲーム",
   "author": "メンバー名",
   "kind": "service",
+  "language": "python",
   "path": "games/local/member-service",
   "command": ["{python}", "-m", "flask", "--app", "app", "run", "--host", "127.0.0.1", "--port", "{port}"],
   "url_path": "/",

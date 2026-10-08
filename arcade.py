@@ -155,7 +155,7 @@ class GameManager:
         if runtime:
             self._refresh(runtime)
             status, message = runtime["status"], runtime["message"]
-        result = {key: game.get(key, "") for key in ("id", "title", "description", "author", "kind", "controls", "color")}
+        result = {key: game.get(key, "") for key in ("id", "title", "description", "author", "kind", "language", "controls", "color")}
         result.update(status=status, message=message)
         if runtime:
             result.update({key: runtime[key] for key in ("url", "log") if key in runtime})

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>REACTION LAB</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+  <script src="game.js" defer></script>
+</head>
+<body>
+  <main>
+    <div class="heading"><div><p class="eyebrow">4PRO / PYTHON × WEB</p><h1>REACTION LAB</h1></div><span class="bolt" aria-hidden="true">ϟ</span></div>
+    <p class="intro">その一瞬を、つかまえよう。<br>緑になったらクリック。きみの反応速度は？</p>
+    <button id="target" data-state="idle" disabled>
+      <span class="cue" id="cue" aria-hidden="true">＋</span>
+      <strong id="message">準備しています…</strong>
+      <span id="hint">すぐにプレイできます</span>
+    </button>
+    <div class="records" aria-live="polite">
+      <div><span>BEST</span><strong id="best">—</strong><small>ms</small></div>
+      <div><span>LAST</span><strong id="last">—</strong><small>ms</small></div>
+      <div><span>ROUNDS</span><strong id="attempts">0</strong></div>
+    </div>
+    <div class="instructions"><span>CLICK / <kbd>SPACE</kbd> でプレイ</span><span>フライングに気をつけて。</span></div>
+    <p id="notice" role="status"></p>
+  </main>
+</body>
+</html>
