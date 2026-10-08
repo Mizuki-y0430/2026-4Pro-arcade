@@ -1,0 +1,32 @@
+{
+  "games": [
+    {
+      "id": "neon-dodge",
+      "title": "NEON DODGE",
+      "description": "光のブロックをよけて、30秒を生き残れ。",
+      "author": "動作確認用サンプル",
+      "kind": "static",
+      "path": "games/samples/neon-dodge",
+      "entry": "index.html",
+      "controls": "← → / A D キーで移動・スペースで開始",
+      "color": "mint"
+    },
+    {
+      "id": "reaction-lab",
+      "title": "REACTION LAB",
+      "description": "緑になったらクリック。きみの反応速度は？",
+      "author": "動作確認用サンプル",
+      "kind": "python",
+      "path": "games/samples/reaction-lab",
+      "entry": "main.py",
+      "controls": "別ウィンドウでプレイ・クリック / スペース",
+      "color": "violet"
+    },
+    { "id": "game-03", "title": "GAME 03", "description": "次の作品を、ここに。", "enabled": false, "color": "amber" },
+    { "id": "game-04", "title": "GAME 04", "description": "次の作品を、ここに。", "enabled": false, "color": "pink" },
+    { "id": "game-05", "title": "GAME 05", "description": "次の作品を、ここに。", "enabled": false, "color": "blue" },
+    { "id": "game-06", "title": "GAME 06", "description": "次の作品を、ここに。", "enabled": false, "color": "mint" },
+    { "id": "game-07", "title": "GAME 07", "description": "次の作品を、ここに。", "enabled": false, "color": "violet" },
+    { "id": "game-08", "title": "GAME 08", "description": "次の作品を、ここに。", "enabled": false, "color": "amber" }
+  ]
+}

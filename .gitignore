@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.logs/
+games/local/*
+!games/local/.gitkeep
+node_modules/
+.env
+.env.*
+!.env.example

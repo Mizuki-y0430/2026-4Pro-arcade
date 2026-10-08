@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>4Pro Arcade</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <a class="brand" href="/" aria-label="4Pro Arcade ホーム"><span class="brand-mark">4</span><span>4PRO<span class="brand-sub">ARCADE</span></span></a>
+      <div class="header-right"><span class="local"><i></i> LOCAL PLAY</span><button class="quiet" id="exit">終了 ↗</button></div>
+    </header>
+    <main>
+      <section class="hero">
+        <div><p class="eyebrow">MADE BY US. PLAYED BY EVERYONE.</p><h1>みんなのゲームが、<br>ひとつの<span>遊び場</span>に。</h1><p class="hero-copy">気になるゲームを選んで、さあプレイ。<br>8つの個性が集まる、4Proのミニゲームアーケード。</p></div>
+        <div class="hero-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="coin coin-one">✦</div><div class="coin coin-two">+</div><svg class="controller" viewBox="0 0 260 160"><path d="M73 36h114c19 0 31 12 36 31l15 56c5 24-17 36-35 18l-31-29H88l-31 29c-18 18-40 6-35-18l15-56c5-19 17-31 36-31Z" fill="#242c36" stroke="#86f7bd" stroke-width="3"/><path d="M58 72h17V55h17v17h17v17H92v17H75V89H58Z" fill="#86f7bd"/><circle cx="175" cy="71" r="11" fill="#bc9aff"/><circle cx="198" cy="93" r="11" fill="#fbb976"/><rect x="118" y="84" width="24" height="7" rx="3" fill="#647284"/></svg><span class="art-label">INSERT CURIOSITY →</span></div>
+      </section>
+      <section class="library" aria-labelledby="library-title">
+        <div class="library-top"><div class="library-heading"><h2 id="library-title">ゲームを選ぶ</h2><span id="count">…</span></div><div class="filters" aria-label="ゲームの種類"><button class="selected" data-filter="all" aria-pressed="true">すべて</button><button data-filter="web" aria-pressed="false">Web</button><button data-filter="python" aria-pressed="false">Python</button></div></div>
+        <div class="grid" id="games" aria-live="polite"></div>
+        <p class="empty-filter" id="empty-filter" hidden>この種類のゲームはまだありません。</p>
+      </section>
+    </main>
+    <footer><span><b>4PRO</b> / CLASS OF 2026</span><span>小さなゲーム。大きなアイデア。</span><button class="quiet" id="help">ゲームの追加方法 <span>↗</span></button></footer>
+  </div>
+  <dialog id="player" class="player"><div class="player-top"><button id="back" class="back">← ゲーム一覧</button><div><strong id="player-title"></strong><span id="player-controls"></span></div><button id="fullscreen" class="quiet">全画面 ⛶</button></div><div class="play-area" id="play-area"><iframe id="game-frame" title="ゲーム" sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-downloads" allow="fullscreen; autoplay; gamepad" allowfullscreen></iframe></div></dialog>
+  <dialog id="help-dialog" class="help-dialog"><p class="eyebrow">ADD YOUR GAME</p><h2>次のゲームを、ここに。</h2><ol><li>GitHubからゲームを <code>games/local/</code> にクローン。</li><li><code>games.json</code> のサンプルや空き枠を編集。</li><li>ランチャーを終了して、<code>start.bat</code> を再起動。</li></ol><p>Webは <code>static</code>、Pythonは <code>python</code>。<br>サーバーが必要なゲームは <code>service</code> で登録できます。</p><p class="help-note">詳しい設定例や依存パッケージの入れ方は、フォルダ内の README.md をご覧ください。</p><button id="help-close" class="primary">わかりました</button></dialog>
+  <dialog id="exit-dialog" class="help-dialog"><p class="eyebrow">SEE YOU NEXT TIME</p><h2>アーケードを終了しますか？</h2><p>起動中のゲームもすべて終了します。</p><div class="dialog-actions"><button id="exit-cancel" class="quiet">戻る</button><button id="exit-confirm" class="primary">終了する</button></div></dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>
