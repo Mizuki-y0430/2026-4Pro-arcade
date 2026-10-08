@@ -28,7 +28,7 @@ function render() {
   if (signature === currentSignature) return;
   signature = currentSignature;
   const focus = document.activeElement?.dataset?.game;
-  $("count").textContent = `${games.filter(g => !["unregistered", "missing"].includes(g.status)).length} / ${games.length} READY`;
+  $("count").textContent = `${games.filter(g => !["unregistered", "missing"].includes(g.status)).length} / ${games.length} ゲーム`;
   const fragment = document.createDocumentFragment();
   const visible = games.filter(g => filter === "all" || (filter === "web" ? ["static", "service"].includes(g.kind) : g.kind === "python" || g.language === "python"));
   $("empty-filter").hidden = visible.length > 0;
@@ -62,7 +62,7 @@ function render() {
     description.textContent = game.description;
     const author = document.createElement("span");
     author.className = "author";
-    author.textContent = game.status === "error" ? `${game.message} ${game.log || ""}` : game.author || "YOUR GAME GOES HERE";
+    author.textContent = game.status === "error" ? `${game.message} ${game.log || ""}` : game.author || "メンバーのゲームを追加予定";
     author.title = game.status === "error" ? author.textContent : game.message;
     const button = document.createElement("button");
     button.className = "play";
@@ -71,9 +71,9 @@ function render() {
     button.title = game.message;
     const label = document.createElement("span");
     const stop = game.status === "starting" || (game.kind === "python" && game.status === "running");
-    label.textContent = !available ? game.status === "missing" ? "ファイル未検出" : "COMING SOON" : stop ? "停止する" : game.status === "error" ? "もう一度起動" : game.kind === "python" ? "ウィンドウで起動" : "プレイする";
+    label.textContent = !available ? game.status === "missing" ? "ファイル未検出" : "準備中" : stop ? "停止する" : game.status === "error" ? "もう一度起動" : game.kind === "python" ? "ウィンドウで起動" : "プレイする";
     const arrow = document.createElement("span");
-    arrow.textContent = !available ? "—" : stop ? "■" : "↗";
+    arrow.textContent = !available ? "—" : stop ? "■" : "▶";
     button.append(label, arrow);
     button.addEventListener("click", () => play(game));
     body.append(title, description, author, button);

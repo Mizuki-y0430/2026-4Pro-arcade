@@ -368,7 +368,7 @@ class LauncherHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(content)
             return
-        allowed = {"/": "index.html", "/app.js": "app.js", "/style.css": "style.css", "/learn": "learn.html", "/learning.js": "learning.js", "/showcase.js": "showcase.js", "/content.css": "content.css"}
+        allowed = {"/": "index.html", "/app.js": "app.js", "/style.css": "style.css", "/learn": "learn.html", "/learning.js": "learning.js", "/showcase.js": "showcase.js", "/content.css": "content.css", "/assets/pop-blue-background.png": "assets/pop-blue-background.png"}
         if re.fullmatch(r"/games/[a-z0-9-]+(?:/slides)?", path):
             allowed[path] = "showcase.html"
         if path not in allowed:
@@ -377,7 +377,10 @@ class LauncherHandler(BaseHTTPRequestHandler):
         file = self.server.root / "launcher" / allowed[path]
         content = file.read_bytes()
         self.send_response(200)
-        self.send_header("Content-Type", (mimetypes.guess_type(file.name)[0] or "text/plain") + "; charset=utf-8")
+        content_type = mimetypes.guess_type(file.name)[0] or "text/plain"
+        if file.suffix != ".png":
+            content_type += "; charset=utf-8"
+        self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(content)))
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")

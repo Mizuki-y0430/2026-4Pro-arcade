@@ -195,14 +195,14 @@ Flaskの例です。ゲームの依存パッケージはあらかじめインス
 
 ## Gitと開発
 
-開発ブランチ: `codex/arcade-launcher`。初期状態のGitHubリポジトリは空でした。
+開発ブランチ: `codex/pop-blue-arcade`（`codex/arcade-launcher`から分岐）。初期状態のGitHubリポジトリは空でした。
 このブランチにランチャー本体、サンプル、設定、テストをコミットします。
 `.venv`、`.logs`、メンバーのクローンはGit管理対象外です。GitHubへのpushは別途行ってください。
 
 ```powershell
 git status
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
-git push -u origin codex/arcade-launcher
+git push -u origin codex/pop-blue-arcade
 ```
 
 GitHub ActionsでもWindows + Python 3.11でバックエンドのテストを実行する設定を入れています。
@@ -236,3 +236,9 @@ GitHub ActionsでもWindows + Python 3.11でバックエンドのテストを実
 ```
 
 表示された `http://127.0.0.1:8765/` を開いてください。
+
+## 画面デザイン
+
+青いPOPな背景は組み込み画像生成ツールで新しく生成しました。
+元の参考画像は配信していません。生成プロンプトとUI方針は [背景の記録](launcher/assets/README.md) に保存しています。
+主なボタンは大きくし、押下時の反応・キーボードのフォーカス・動きを減らす設定に対応しています。

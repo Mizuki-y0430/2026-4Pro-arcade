@@ -183,6 +183,19 @@ class ArcadeTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.manager.start("test")
 
+    def test_background_serves_only_the_allowed_binary_asset(self):
+        assets = self.root / "launcher/assets"
+        assets.mkdir(parents=True)
+        content = b"\x89PNG\r\n\x1a\n\x00\xff"
+        (assets / "pop-blue-background.png").write_bytes(content)
+        (assets / "private.png").write_bytes(b"PRIVATE")
+        base = self.api_server()
+        with self.opener.open(base + "/assets/pop-blue-background.png") as response:
+            self.assertEqual(response.headers["Content-Type"], "image/png")
+            self.assertEqual(response.read(), content)
+        for path in ["private.png", "../style.css", "%2e%2e/style.css"]:
+            self.assert_http(404, base + "/assets/" + path)
+
 
 if __name__ == "__main__":
     unittest.main()

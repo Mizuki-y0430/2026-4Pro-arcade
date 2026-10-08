@@ -30,15 +30,15 @@ function frame(now) {
     timeLabel.textContent = elapsed.toFixed(1);
     if (playing && elapsed >= 30) finish(true);
   }
-  ctx.fillStyle = "#0c131b"; ctx.fillRect(0, 0, 720, 400);
-  ctx.strokeStyle = "#172833"; ctx.lineWidth = 1;
+  ctx.fillStyle = "#e5f6ff"; ctx.fillRect(0, 0, 720, 400);
+  ctx.strokeStyle = "#c4e7fa"; ctx.lineWidth = 1;
   for (let x = 0; x < 720; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 400); ctx.stroke(); }
   for (let y = 0; y < 400; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(720, y); ctx.stroke(); }
-  ctx.fillStyle = "#bc9aff"; ctx.shadowColor = "#bc9aff"; ctx.shadowBlur = 12;
+  ctx.fillStyle = "#a671e1"; ctx.shadowColor = "#a671e1"; ctx.shadowBlur = 12;
   for (const block of blocks) ctx.fillRect(block.x, block.y, block.size, block.size);
-  ctx.fillStyle = "#86f7bd"; ctx.shadowColor = "#86f7bd";
+  ctx.fillStyle = "#07867c"; ctx.shadowColor = "#07867c";
   ctx.beginPath(); ctx.moveTo(playerX + 18, 340); ctx.lineTo(playerX + 36, 372); ctx.lineTo(playerX, 372); ctx.closePath(); ctx.fill();
-  ctx.shadowBlur = 0; ctx.fillStyle = "#86f7bd"; ctx.fillRect(0, 396, 720 * elapsed / 30, 4);
+  ctx.shadowBlur = 0; ctx.fillStyle = "#07867c"; ctx.fillRect(0, 396, 720 * elapsed / 30, 4);
   requestAnimationFrame(frame);
 }
 document.getElementById("start").addEventListener("click", begin);
