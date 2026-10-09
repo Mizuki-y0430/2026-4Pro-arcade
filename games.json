@@ -22,7 +22,18 @@
       "controls": "クリック / タップで風船を割る・スタートボタン / Enterで開始",
       "color": "violet"
     },
-    { "id": "game-03", "title": "GAME 03", "description": "釣りゲームは作者に確認中です。", "enabled": false, "color": "amber" },
+    {
+      "id": "yuugure-fishing",
+      "title": "ゆうぐれ釣り日和",
+      "menu_title": "ゆうぐれ釣り日和",
+      "description": "夕暮れの釣り場で60秒チャレンジ！HITに合わせて魚を釣り、匹数と得点を伸ばそう。5種類の魚が登場します。",
+      "author": "yuu-rgb000",
+      "kind": "static",
+      "path": "games/local/2026_4Pro_fishinggame",
+      "entry": "index.html",
+      "controls": "Spaceで開始・投げる / HITが出たらEnterで合わせる・画面のボタンでも操作可能・終了後はもう一度遊ぶで再挑戦",
+      "color": "amber"
+    },
     {
       "id": "realtime-chess",
       "title": "リアルタイムチェス",

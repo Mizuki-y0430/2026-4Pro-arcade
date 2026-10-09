@@ -104,6 +104,16 @@ git clone https://github.com/gkykw5cyzc-alt/2026-4Pro-ishida.git games/local/202
 git clone https://github.com/hi-1505/3hu.git games/local/3hu
 ```
 
+ゲーム3の「ゆうぐれ釣り日和」は、別のPCでは次のコマンドで用意します。クローン済みなら `git -C games/local/2026_4Pro_fishinggame pull --ff-only` で更新してください。
+
+```powershell
+git clone https://github.com/yuu-rgb000/2026_4Pro_fishinggame.git games/local/2026_4Pro_fishinggame
+```
+
+HTML / CSS / JavaScriptで動くため、追加パッケージやビルドは不要です。`index.html` が釣りゲームの起動ファイルです。同じリポジトリの `rooftop-run.html` は別のゲームで、今回のゲーム3には登録していません。
+
+60秒以内に魚を釣り、匹数と得点を伸ばします。Spaceまたは「投げる」で仕掛けを投げ、HITが表示されたらEnterまたは「合わせる」を押します。魚ごとに得点と合わせる猶予が異なります。終了後は「もう一度遊ぶ」で再挑戦できます。ゲーム一覧から起動すると、ブラウザー内のゲーム画面で遊べます。
+
 ゲーム4の「リアルタイムチェス」は次のコマンドで用意します。クローン済みなら再実行は不要です。
 
 ```powershell
