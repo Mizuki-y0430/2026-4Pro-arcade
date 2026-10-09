@@ -108,7 +108,7 @@ git clone https://github.com/hi-1505/3hu.git games/local/3hu
 git clone --branch yamamoto/web-chess https://github.com/k4m4b0k02009/chess.git games/local/chess
 ```
 
-Web対応ブランチは現在ローカルで開発しています。上のコマンドはそのブランチをGitHubへpushした後に使えます。別のPCで先に用意する場合は、ローカルのWeb対応ブランチを移す必要があります。
+Web対応はGitHubの `yamamoto/web-chess` ブランチで共有しています。別のPCでは上のコマンドでWeb版を取得できます。元のPython版は `main` に残しています。変更内容は[チェスのWeb対応Pull Request](https://github.com/k4m4b0k02009/chess/pull/1)で確認できます。
 
 ランチャーの `.venv` のPythonで `web.py` を起動し、ブラウザー内に表示します。追加パッケージ・ビルド・TkinterはWeb版には不要です。元のPython / Tkinter版は残してあり、`chess.py` または `python -m chess` で起動できます。両方の版で作者のルール・AIを共通利用します。詳細は `games/local/chess/README.md` を参照してください。
 
