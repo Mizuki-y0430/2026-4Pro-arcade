@@ -36,7 +36,19 @@
       "controls": "スタートを押して開始・駒と移動先をクリック・Q / EscでAI停止・リセットでやり直し",
       "color": "pink"
     },
-    { "id": "game-05", "title": "GAME 05", "description": "次の作品を、ここに。", "enabled": false, "color": "blue" },
+    {
+      "id": "brain-mole",
+      "title": "デス・モグラたたき",
+      "menu_title": "デス・モグラたたき",
+      "description": "クイズの正解を持ったモグラをクリック！10種類の分野に挑戦して高得点を目指そう。Pythonの全画面ゲームとして起動します。",
+      "author": "painaplle",
+      "kind": "python",
+      "path": "games/local/tesuto",
+      "entry": "brain_mole.py",
+      "python": ".game-venvs/tesuto/Scripts/python.exe",
+      "controls": "クリックで回答・1〜9 / 0で分野を選択・Spaceで開始・Sで設定・Rでランキング・Escで終了（設定画面ではメニューに戻る）",
+      "color": "blue"
+    },
     { "id": "game-06", "title": "GAME 06", "description": "次の作品を、ここに。", "enabled": false, "color": "mint" },
     { "id": "game-07", "title": "GAME 07", "description": "次の作品を、ここに。", "enabled": false, "color": "violet" },
     { "id": "game-08", "title": "GAME 08", "description": "次の作品を、ここに。", "enabled": false, "color": "amber" }

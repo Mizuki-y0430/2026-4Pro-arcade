@@ -114,6 +114,20 @@ Web対応はGitHubの `yamamoto/web-chess` ブランチで共有しています�
 
 ランチャーの `.venv` のPythonで `web.py` を起動し、ブラウザー内に表示します。追加パッケージ・ビルド・TkinterはWeb版には不要です。元のPython / Tkinter版は残してあり、`chess.py` または `python -m chess` で起動できます。両方の版で作者のルール・AIを共通利用します。詳細は `games/local/chess/README.md` を参照してください。
 
+ゲーム5の「デス・モグラたたき」（`tesuto`）は、作者のPython / Pygame版をそのまま全画面で起動します。別のPCでは、Python 3.12を用意してから次を実行してください。クローン済みなら `git clone` は不要です。
+
+```powershell
+git clone https://github.com/painaplle/tesuto.git games/local/tesuto
+py -3.12 -m venv .game-venvs/tesuto
+.\.game-venvs\tesuto\Scripts\python.exe -m pip install -r requirements/tesuto.txt
+```
+
+このゲーム専用の仮想環境を使うため、ランチャーやチェスの環境と混ざりません。`pygame-ce` は `import pygame` で利用できます。作者の `pyproject.toml` には `pygame` と `pygame-ce` の両方が指定されていますが、同じモジュールを提供するため、ここでは `pygame-ce` だけをインストールします。ゲームの実行ファイルは `brain_mole.py` です（パッケージの `tesuto-3` コマンドはゲームを起動しません）。
+
+一覧のゲーム5を押して起動し、正解のモグラをクリックします。1〜9 / 0で分野を選択、Spaceで開始、Sで設定、Rでランキング、Escで終了できます。設定画面のEscはメニューに戻ります。ランキングと設定はゲームのフォルダ内の `mole_rankings.json` / `mole_settings.json` に保存されます。起動中のゲーム5をもう一度押すと強制停止するため、普段はゲーム内のEscで終了してください。
+
+`uv` 管理のPython 3.12を使っていて `py -3.12` で見つからない場合、仮想環境の作成行を `uv venv --python 3.12 --seed .game-venvs/tesuto` に置き換えます。このPCでは `uv` のPython 3.12.13で作成済みです。
+
 ### 2. `games.json` の枠を書き換える
 
 `games` 配列は1〜8枠。`id` は重複しない半角英数字とハイフン、`path` はランチャーのフォルダからの相対パスです。

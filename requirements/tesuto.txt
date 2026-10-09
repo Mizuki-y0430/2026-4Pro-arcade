@@ -1,0 +1,3 @@
+# pygame-ce provides the pygame import used by brain_mole.py.
+# Do not install pygame alongside it: both packages provide the same module.
+pygame-ce==2.5.8
