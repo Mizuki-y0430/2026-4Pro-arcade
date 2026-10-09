@@ -22,8 +22,19 @@
       "controls": "クリック / タップで風船を割る・スタートボタン / Enterで開始",
       "color": "violet"
     },
-    { "id": "game-03", "title": "GAME 03", "description": "次の作品を、ここに。", "enabled": false, "color": "amber" },
-    { "id": "game-04", "title": "GAME 04", "description": "次の作品を、ここに。", "enabled": false, "color": "pink" },
+    { "id": "game-03", "title": "GAME 03", "description": "釣りゲームは作者に確認中です。", "enabled": false, "color": "amber" },
+    {
+      "id": "realtime-chess",
+      "title": "リアルタイムチェス",
+      "menu_title": "リアルタイムチェス",
+      "description": "ターンを待たずに駒を動かせるチェス。白の駒でAIと対戦、またはAI同士の対局を観戦しよう。別ウィンドウで遊べます。",
+      "kind": "python",
+      "language": "python",
+      "path": "games/local/chess",
+      "entry": "chess.py",
+      "controls": "スタートを押して開始・駒と移動先をクリック・Q / EscでAI停止・リセットでやり直し",
+      "color": "pink"
+    },
     { "id": "game-05", "title": "GAME 05", "description": "次の作品を、ここに。", "enabled": false, "color": "blue" },
     { "id": "game-06", "title": "GAME 06", "description": "次の作品を、ここに。", "enabled": false, "color": "mint" },
     { "id": "game-07", "title": "GAME 07", "description": "次の作品を、ここに。", "enabled": false, "color": "violet" },

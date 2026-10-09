@@ -21,7 +21,9 @@ Pythonサンプルはブラウザー内で動きます。元のTkinter版も `ga
 
 - **ゲーム1：こうせんサバイバー**: メンバーのWebゲーム。単位を集めながら留年・壁・自分の体をよけます。矢印キー / WASDで移動、スペース / Enterで開始します。
 - **ゲーム2：ふうせんハンター**: メンバーのWebゲーム（3hu）。30秒間で風船をクリック / タップして得点を集めます。小さい風船は3点、中くらいは2点、大きい風船は1点。スタートボタン / Enterで開始します。
-- **ゲーム3〜8**: 未登録です。メンバーのゲームを順に追加できます。
+- **ゲーム3：保留**: 釣りゲームの本体を作者に確認中です。
+- **ゲーム4：リアルタイムチェス**: Python / Tkinterのゲーム（chess）。メニューから別ウィンドウで起動します。スタート後、白の駒と移動先をクリックしてAIと対戦します。ターン制ではなくクールタイムがあります。AI同士の観戦、AIの強さ変更、Q / EscでAI停止、リセットにも対応します。
+- **ゲーム5〜8**: 未登録です。メンバーのゲームを順に追加できます。
 
 NEON DODGEとREACTION LABはゲーム一覧から外しています。実装例のコードは `games/samples/` にあります。
 
@@ -99,6 +101,14 @@ git clone https://github.com/gkykw5cyzc-alt/2026-4Pro-ishida.git games/local/202
 ```powershell
 git clone https://github.com/hi-1505/3hu.git games/local/3hu
 ```
+
+ゲーム4の「リアルタイムチェス」は次のコマンドで用意します。クローン済みなら再実行は不要です。
+
+```powershell
+git clone https://github.com/k4m4b0k02009/chess.git games/local/chess
+```
+
+ランチャーの `.venv` のPythonで `chess.py` を起動します。外部パッケージは不要ですが、PythonにTcl/Tk（Tkinter）が必要です。現在のPCでは起動・駒の操作・AI対戦を確認済みです。Webへの移植は行わず、別ウィンドウでプレイします。
 
 ### 2. `games.json` の枠を書き換える
 
