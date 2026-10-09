@@ -1,35 +1,6 @@
 {
   "games": [
     {
-      "id": "neon-dodge",
-      "title": "NEON DODGE",
-      "menu_title": "ブロックよけ",
-      "cover": "/showcase/assets/neon-dodge-cover.png",
-      "description": "光のブロックをよけて、30秒を生き残れ。",
-      "author": "動作確認用サンプル",
-      "kind": "static",
-      "path": "games/samples/neon-dodge",
-      "entry": "index.html",
-      "profile": "showcase/neon-dodge.json",
-      "controls": "← → / A D キーで移動・スペースで開始",
-      "color": "mint"
-    },
-    {
-      "id": "reaction-lab",
-      "title": "REACTION LAB",
-      "menu_title": "反応チャレンジ",
-      "cover": "/showcase/assets/reaction-lab-cover.png",
-      "description": "緑になったらクリック。きみの反応速度は？",
-      "author": "動作確認用サンプル",
-      "kind": "service",
-      "language": "python",
-      "profile": "showcase/reaction-lab.json",
-      "path": "games/samples/reaction-lab",
-      "command": ["{python}", "web.py", "--port", "{port}"],
-      "controls": "クリック / スペースでプレイ",
-      "color": "violet"
-    },
-    {
       "id": "kosen-survivor",
       "title": "こうせんサバイバー",
       "menu_title": "こうせんサバイバー",
@@ -40,6 +11,8 @@
       "controls": "矢印キー / WASDで移動・スペース / Enterで開始・難易度は3段階",
       "color": "amber"
     },
+    { "id": "game-02", "title": "GAME 02", "description": "次の作品を、ここに。", "enabled": false, "color": "violet" },
+    { "id": "game-03", "title": "GAME 03", "description": "次の作品を、ここに。", "enabled": false, "color": "amber" },
     { "id": "game-04", "title": "GAME 04", "description": "次の作品を、ここに。", "enabled": false, "color": "pink" },
     { "id": "game-05", "title": "GAME 05", "description": "次の作品を、ここに。", "enabled": false, "color": "blue" },
     { "id": "game-06", "title": "GAME 06", "description": "次の作品を、ここに。", "enabled": false, "color": "mint" },
