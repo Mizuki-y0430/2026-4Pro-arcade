@@ -15,4 +15,12 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
+if exist "games\local\tesuto\requirements-web.txt" (
+  ".venv\Scripts\python.exe" -m pip install -r "games\local\tesuto\requirements-web.txt"
+  if errorlevel 1 (
+    echo Failed to install the mole game's Excel reader. Check the message above.
+    pause
+    exit /b 1
+  )
+)
 echo Setup complete. Double-click start.bat to play.

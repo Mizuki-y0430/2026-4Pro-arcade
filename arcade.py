@@ -52,6 +52,10 @@ def load_games(root: Path, config: Path) -> list[dict]:
         if "menu_title" in game and (not isinstance(game["menu_title"], str) or
                                       not 1 <= len(game["menu_title"].strip()) <= 24):
             raise ValueError(f"{gid}: menu_titleは1〜24文字にしてください。")
+        for field in ("rules", "operations"):
+            if field in game and (not isinstance(game[field], list) or len(game[field]) > 10 or
+                                  not all(isinstance(item, str) and 1 <= len(item.strip()) <= 300 for item in game[field])):
+                raise ValueError(f"{gid}: {field}は300文字以内の説明を最大10個までの配列で指定してください。")
         if "cover" in game:
             cover = game["cover"]
             if not isinstance(cover, str) or not re.fullmatch(r"/showcase/assets/[a-z0-9-]+\.(png|jpg|webp)", cover):
@@ -169,6 +173,7 @@ class GameManager:
             self._refresh(runtime)
             status, message = runtime["status"], runtime["message"]
         result = {key: game.get(key, "") for key in ("id", "title", "menu_title", "cover", "description", "author", "kind", "language", "controls", "color")}
+        result.update(rules=game.get("rules", []), operations=game.get("operations", []))
         result.update(status=status, message=message)
         result["profile_status"] = "ready" if game.get("profile") else "draft"
         if runtime:
@@ -378,7 +383,15 @@ class LauncherHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(content)
             return
-        allowed = {"/": "index.html", "/app.js": "app.js", "/style.css": "style.css", "/menu.css": "menu.css", "/learn": "learn.html", "/learning.js": "learning.js", "/showcase.js": "showcase.js", "/content.css": "content.css", "/assets/pop-blue-background.png": "assets/pop-blue-background.png"}
+        rules_match = re.fullmatch(r"/games/([a-z0-9-]+)/rules", path)
+        if rules_match and rules_match[1] not in self.server.manager.games:
+            self.send_error(404)
+            return
+        allowed = {"/": "index.html", "/app.js": "app.js", "/style.css": "style.css", "/menu.css": "menu.css", "/learn": "learn.html", "/learning.js": "learning.js", "/showcase.js": "showcase.js", "/content.css": "content.css", "/rules.js": "rules.js", "/rules.css": "rules.css", "/assets/pop-blue-background.png": "assets/pop-blue-background.png", "/assets/red-white-honeycomb-background.png": "assets/red-white-honeycomb-background.png"}
+        if rules_match:
+            allowed[path] = "rules.html"
+        allowed["/assets/red-champagne-honeycomb-background.png"] = "assets/red-white-matte-honeycomb.png"
+        allowed["/assets/4PROARCADE_logo.png"] = "assets/4PROARCADE_logo.png"
         if re.fullmatch(r"/games/[a-z0-9-]+(?:/slides)?", path):
             allowed[path] = "showcase.html"
         if path not in allowed:

@@ -3,8 +3,8 @@ const $ = (id) => document.getElementById(id);
 let token = "", games = [], filter = "all", selectedGame = null, pendingGame = null;
 let signature = "", ended = false, busy = false, toastTimer;
 let requestedGame = new URLSearchParams(location.search).get("play");
-const genericCover = '<svg class="tile-fallback" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" fill="#fff2a6" stroke="#17345c" stroke-width="5"/><path d="M34 37h52c9 0 15 8 18 17l5 26c3 13-8 19-17 10L77 76H43L28 90c-9 9-20 3-17-10l5-26c3-9 9-17 18-17Z" fill="#fff" stroke="#17345c" stroke-width="5"/><path d="M27 51h10V41h10v10h10v10H47v10H37V61H27Z" fill="#24b8db" stroke="#17345c" stroke-width="2"/><circle cx="80" cy="51" r="8" fill="#b582ec" stroke="#17345c" stroke-width="2"/><circle cx="92" cy="65" r="8" fill="#ffbb60" stroke="#17345c" stroke-width="2"/></svg>';
-const lockedCover = '<svg class="locked-mark" viewBox="0 0 100 100" aria-hidden="true"><path d="M32 38V25a18 18 0 0 1 36 0v13" fill="none" stroke="#3675ab" stroke-width="8" stroke-linecap="round"/><rect x="19" y="36" width="62" height="50" rx="15" fill="currentColor" stroke="#3675ab" stroke-width="5"/><circle cx="50" cy="56" r="7" fill="#3675ab"/><path d="M50 60v10" stroke="#3675ab" stroke-width="7" stroke-linecap="round"/></svg>';
+const genericCover = '<svg class="tile-fallback" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" fill="#fff2a6" stroke="#000" stroke-width="5"/><path d="M34 37h52c9 0 15 8 18 17l5 26c3 13-8 19-17 10L77 76H43L28 90c-9 9-20 3-17-10l5-26c3-9 9-17 18-17Z" fill="#fff" stroke="#000" stroke-width="5"/><path d="M27 51h10V41h10v10h10v10H47v10H37V61H27Z" fill="#24b8db" stroke="#000" stroke-width="2"/><circle cx="80" cy="51" r="8" fill="#b582ec" stroke="#000" stroke-width="2"/><circle cx="92" cy="65" r="8" fill="#ffbb60" stroke="#000" stroke-width="2"/></svg>';
+const lockedCover = '<svg class="locked-mark" viewBox="0 0 100 100" aria-hidden="true"><path d="M32 38V25a18 18 0 0 1 36 0v13" fill="none" stroke="#555" stroke-width="8" stroke-linecap="round"/><rect x="19" y="36" width="62" height="50" rx="15" fill="currentColor" stroke="#555" stroke-width="5"/><circle cx="50" cy="56" r="7" fill="#555"/><path d="M50 60v10" stroke="#555" stroke-width="7" stroke-linecap="round"/></svg>';
 
 function toast(message) {
   clearTimeout(toastTimer);
@@ -42,7 +42,7 @@ function render() {
     card.className = `card ${available ? "available" : "unavailable"}`;
     card.dataset.color = game.color || "mint";
 
-    // The whole illustrated tile is a button; the help button is a separate sibling.
+    // Play, rules and information are separate controls, never nested buttons.
     const button = document.createElement("button");
     button.className = "play game-launch";
     button.dataset.game = game.id;
@@ -68,13 +68,7 @@ function render() {
     title.className = "tile-title";
     title.textContent = available ? game.menu_title || game.title : "準備中";
     button.append(art, title);
-    if (available) {
-      const badge = document.createElement("span");
-      badge.className = "tile-badge";
-      badge.textContent = stop ? "停止" : game.status === "error" ? "再挑戦" : "あそぶ";
-      badge.setAttribute("aria-hidden", "true");
-      button.append(badge);
-    } else {
+    if (!available) {
       const number = document.createElement("span");
       number.className = "slot-number";
       number.textContent = String(games.indexOf(game) + 1).padStart(2, "0");
@@ -92,6 +86,16 @@ function render() {
     info.title = "遊び方・紹介・発表";
     info.addEventListener("click", () => openInfo(game));
     card.append(button, info);
+    if (game.kind) {
+      const rules = document.createElement("a");
+      rules.className = "tile-rules";
+      rules.href = `/games/${encodeURIComponent(game.id)}/rules`;
+      rules.dataset.game = game.id;
+      rules.dataset.action = "rules";
+      rules.textContent = "ルール";
+      rules.setAttribute("aria-label", `${game.title}のルールと操作方法`);
+      card.append(rules);
+    }
     fragment.append(card);
   }
   $("games").replaceChildren(fragment);

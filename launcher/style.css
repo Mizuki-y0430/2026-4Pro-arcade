@@ -1,11 +1,15 @@
 :root {
   color-scheme: light;
-  --bg: #49c4f3; --panel: #fff; --line: #badff3;
+  --arcade-unit: clamp(.65px,min(.07353vw,.11111dvh),2.4px);
+  --bg: #fff; --panel: #fff; --line: #badff3;
   --text: #173b62; --muted: #496983; --mint: #0875b9;
   --shadow: 0 6px 0 #1587c026, 0 12px 28px #09649a15;
 }
 * { box-sizing: border-box; }
-body { margin:0; background:var(--bg) url('/assets/pop-blue-background.png') center top / cover fixed; color:var(--text); font-family:"Yu Gothic UI","Meiryo",system-ui,sans-serif; }
+/* Keep the background anchored to the viewport on every page, even when content scrolls. */
+html { scrollbar-gutter:stable; }
+body { margin:0; position:relative; isolation:isolate; background:var(--bg); color:var(--text); font-family:"Yu Gothic UI","Meiryo",system-ui,sans-serif; }
+body::before { content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; background:var(--bg) url('/assets/red-champagne-honeycomb-background.png') center / cover no-repeat; }
 button,a { -webkit-tap-highlight-color:transparent; touch-action:manipulation; transition:transform .16s,background .16s,box-shadow .16s; }
 button { font:inherit; cursor:pointer; border:0; }
 button:disabled { cursor:default; }

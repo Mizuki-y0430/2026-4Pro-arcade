@@ -104,6 +104,16 @@ git clone https://github.com/gkykw5cyzc-alt/2026-4Pro-ishida.git games/local/202
 git clone https://github.com/hi-1505/3hu.git games/local/3hu
 ```
 
+ゲーム3の「ゆうぐれ釣り日和」は、別のPCでは次のコマンドで用意します。クローン済みなら `git -C games/local/2026_4Pro_fishinggame pull --ff-only` で更新してください。
+
+```powershell
+git clone https://github.com/yuu-rgb000/2026_4Pro_fishinggame.git games/local/2026_4Pro_fishinggame
+```
+
+HTML / CSS / JavaScriptで動くため、追加パッケージやビルドは不要です。`index.html` が釣りゲームの起動ファイルです。同じリポジトリの `rooftop-run.html` は別のゲームで、今回のゲーム3には登録していません。
+
+60秒以内に魚を釣り、匹数と得点を伸ばします。Spaceまたは「投げる」で仕掛けを投げ、HITが表示されたらEnterまたは「合わせる」を押します。魚ごとに得点と合わせる猶予が異なります。終了後は「もう一度遊ぶ」で再挑戦できます。ゲーム一覧から起動すると、ブラウザー内のゲーム画面で遊べます。
+
 ゲーム4の「リアルタイムチェス」は次のコマンドで用意します。クローン済みなら再実行は不要です。
 
 ```powershell
@@ -113,6 +123,22 @@ git clone --branch yamamoto/web-chess https://github.com/k4m4b0k02009/chess.git 
 Web対応はGitHubの `yamamoto/web-chess` ブランチで共有しています。別のPCでは上のコマンドでWeb版を取得できます。元のPython版は `main` に残しています。変更内容は[チェスのWeb対応Pull Request](https://github.com/k4m4b0k02009/chess/pull/1)で確認できます。
 
 ランチャーの `.venv` のPythonで `web.py` を起動し、ブラウザー内に表示します。追加パッケージ・ビルド・TkinterはWeb版には不要です。元のPython / Tkinter版は残してあり、`chess.py` または `python -m chess` で起動できます。両方の版で作者のルール・AIを共通利用します。詳細は `games/local/chess/README.md` を参照してください。
+
+ゲーム5の「デス・モグラたたき」（`tesuto`）は、Python + Web版で画面内に表示します。問題・得点・時間はPythonで管理し、回答や設定の画面はHTML / CSS / JavaScriptで表示します。ランチャーの `.venv` を使います。問題をExcelから読み込むため `openpyxl` が必要です。PygameはWeb版には不要です。tesutoのクローン後に `setup.bat` を実行するとExcel読込用パッケージをインストールします。
+
+Web版のファイルは `tesuto` リポジトリの `yamamoto/web-mole` ブランチにあります。GitHubで共有しています。別のPCでは次のコマンドで取得できます。
+
+```powershell
+git clone --branch yamamoto/web-mole https://github.com/painaplle/tesuto.git games/local/tesuto
+```
+
+クローン済みの場合は、そのリポジトリで `git fetch origin` と `git switch --track origin/yamamoto/web-mole` を実行します（ローカルに同名ブランチがある場合は `git switch yamamoto/web-mole`）。
+
+正解のモグラをクリック・タップして回答します。1〜9 / 0で分野を選択、Spaceで開始、Sで設定、Rでランキング、Escでメニューに戻ります。設定画面のEscは保存して戻ります。時間・ライフ・色・文字スタイルを変更でき、分野別のランキングも表示できます。
+
+Web版は初回に元の設定・記録を読み、`games/local/tesuto/.web-data/` にWeb専用のコピーを保存します。以後の更新・記録消去は元の `mole_settings.json` / `mole_rankings.json` に影響しません。Pygame版も起動でき、このブランチではWeb版と同じExcelから出題します。元の作品はtesutoの `main` ブランチに残っています。元の版に必要なPython 3.12用の仮想環境 `.game-venvs/tesuto/` と `requirements/tesuto.txt` も残しています。Web版の構成と起動方法は `games/local/tesuto/README.md` を参照してください。
+
+モグラたたきの問題は `games/local/tesuto/data/questions.xlsx` で管理します。「問題一覧」に問題文・正解・不正解・有効／無効を入力し、「分野設定」で分野名やLv.1の自動計算の範囲を変更できます。保存後、次のゲーム開始時に読み直します。編集手順はtesutoのREADMEに記載しています。ゲームはExcelを読み取るだけで、設定・ランキングはJSONへ保存します。
 
 ### 2. `games.json` の枠を書き換える
 
@@ -287,3 +313,11 @@ GitHub ActionsでもWindows + Python 3.11でバックエンドのテストを実
 `menu_title` は1〜24文字で、未設定なら `title` を表示します。表紙は正方形を推奨します。
 `cover` が未設定、または表示時に画像が読めない場合は、共通のゲームイラストを使います。
 サンプルの表紙は新しく生成したものです。[生成プロンプト](showcase/assets/menu-artwork.md) を記録しています。
+
+## ゲームのルールページ
+
+各ゲームの左上にある丸い「ルール」ボタンから、ルールと操作方法を確認できます。ページ内の「このゲームであそぶ」でゲームを開始します。ゲームアイコン本体は直接プレイ、右上の「？」は紹介・発表の案内です。
+
+説明は `games.json` の各ゲームにある `rules`（ルール）と `operations`（操作方法）を編集します。どちらも日本語の説明を並べた配列で、最大10項目・各300文字までです。`operations` が未登録の場合は既存の `controls` を表示します。変更後はランチャーを再起動してください。
+
+ルールページのURLは `/games/ゲームID/rules` です。説明を開くだけではゲームは起動しません。
