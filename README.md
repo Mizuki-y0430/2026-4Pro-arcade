@@ -126,13 +126,13 @@ Web対応はGitHubの `yamamoto/web-chess` ブランチで共有しています�
 
 ゲーム5の「デス・モグラたたき」（`tesuto`）は、Python + Web版で画面内に表示します。問題・得点・時間はPythonで管理し、回答や設定の画面はHTML / CSS / JavaScriptで表示します。ランチャーの `.venv` を使います。問題をExcelから読み込むため `openpyxl` が必要です。PygameはWeb版には不要です。tesutoのクローン後に `setup.bat` を実行するとExcel読込用パッケージをインストールします。
 
-Web版のファイルは `tesuto` リポジトリの `yamamoto/web-mole` ブランチにあります。現在はローカルで開発済みです。GitHubへの共有後、別のPCでは次のコマンドで取得できます。
+Web版のファイルは `tesuto` リポジトリの `yamamoto/web-mole` ブランチにあります。GitHubで共有しています。別のPCでは次のコマンドで取得できます。
 
 ```powershell
 git clone --branch yamamoto/web-mole https://github.com/painaplle/tesuto.git games/local/tesuto
 ```
 
-クローン済みの場合は、共有後にそのリポジトリで `git fetch origin` と `git switch --track origin/yamamoto/web-mole` を実行します（ローカルに同名ブランチがある場合は `git switch yamamoto/web-mole`）。
+クローン済みの場合は、そのリポジトリで `git fetch origin` と `git switch --track origin/yamamoto/web-mole` を実行します（ローカルに同名ブランチがある場合は `git switch yamamoto/web-mole`）。
 
 正解のモグラをクリック・タップして回答します。1〜9 / 0で分野を選択、Spaceで開始、Sで設定、Rでランキング、Escでメニューに戻ります。設定画面のEscは保存して戻ります。時間・ライフ・色・文字スタイルを変更でき、分野別のランキングも表示できます。
 
