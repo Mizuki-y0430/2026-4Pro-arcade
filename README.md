@@ -124,7 +124,7 @@ Web対応はGitHubの `yamamoto/web-chess` ブランチで共有しています�
 
 ランチャーの `.venv` のPythonで `web.py` を起動し、ブラウザー内に表示します。追加パッケージ・ビルド・TkinterはWeb版には不要です。元のPython / Tkinter版は残してあり、`chess.py` または `python -m chess` で起動できます。両方の版で作者のルール・AIを共通利用します。詳細は `games/local/chess/README.md` を参照してください。
 
-ゲーム5の「デス・モグラたたき」（`tesuto`）は、Python + Web版で画面内に表示します。問題・得点・時間はPythonで管理し、回答や設定の画面はHTML / CSS / JavaScriptで表示します。ランチャーの `.venv` を使い、追加パッケージやPygameは不要です。
+ゲーム5の「デス・モグラたたき」（`tesuto`）は、Python + Web版で画面内に表示します。問題・得点・時間はPythonで管理し、回答や設定の画面はHTML / CSS / JavaScriptで表示します。ランチャーの `.venv` を使います。問題をExcelから読み込むため `openpyxl` が必要です。PygameはWeb版には不要です。tesutoのクローン後に `setup.bat` を実行するとExcel読込用パッケージをインストールします。
 
 Web版のファイルは `tesuto` リポジトリの `yamamoto/web-mole` ブランチにあります。現在はローカルで開発済みです。GitHubへの共有後、別のPCでは次のコマンドで取得できます。
 
@@ -136,7 +136,9 @@ git clone --branch yamamoto/web-mole https://github.com/painaplle/tesuto.git gam
 
 正解のモグラをクリック・タップして回答します。1〜9 / 0で分野を選択、Spaceで開始、Sで設定、Rでランキング、Escでメニューに戻ります。設定画面のEscは保存して戻ります。時間・ライフ・色・文字スタイルを変更でき、分野別のランキングも表示できます。
 
-Web版は初回に元の設定・記録を読み、`games/local/tesuto/.web-data/` にWeb専用のコピーを保存します。以後の更新・記録消去は元の `mole_settings.json` / `mole_rankings.json` に影響しません。元の `brain_mole.py` は変更せず残してあり、従来のPygame版も起動できます。元の版に必要なPython 3.12用の仮想環境 `.game-venvs/tesuto/` と `requirements/tesuto.txt` も残しています。Web版の構成と起動方法は `games/local/tesuto/README.md` を参照してください。
+Web版は初回に元の設定・記録を読み、`games/local/tesuto/.web-data/` にWeb専用のコピーを保存します。以後の更新・記録消去は元の `mole_settings.json` / `mole_rankings.json` に影響しません。Pygame版も起動でき、このブランチではWeb版と同じExcelから出題します。元の作品はtesutoの `main` ブランチに残っています。元の版に必要なPython 3.12用の仮想環境 `.game-venvs/tesuto/` と `requirements/tesuto.txt` も残しています。Web版の構成と起動方法は `games/local/tesuto/README.md` を参照してください。
+
+モグラたたきの問題は `games/local/tesuto/data/questions.xlsx` で管理します。「問題一覧」に問題文・正解・不正解・有効／無効を入力し、「分野設定」で分野名やLv.1の自動計算の範囲を変更できます。保存後、次のゲーム開始時に読み直します。編集手順はtesutoのREADMEに記載しています。ゲームはExcelを読み取るだけで、設定・ランキングはJSONへ保存します。
 
 ### 2. `games.json` の枠を書き換える
 
