@@ -11,7 +11,17 @@
       "controls": "矢印キー / WASDで移動・スペース / Enterで開始・難易度は3段階",
       "color": "amber"
     },
-    { "id": "game-02", "title": "GAME 02", "description": "次の作品を、ここに。", "enabled": false, "color": "violet" },
+    {
+      "id": "balloon-hunter",
+      "title": "ふうせんハンター",
+      "menu_title": "ふうせんハンター",
+      "description": "風船を割って高得点を目指そう！小さい風船は3点、中くらいは2点、大きい風船は1点。制限時間は30秒。",
+      "kind": "static",
+      "path": "games/local/3hu",
+      "entry": "index.html",
+      "controls": "クリック / タップで風船を割る・スタートボタン / Enterで開始",
+      "color": "violet"
+    },
     { "id": "game-03", "title": "GAME 03", "description": "次の作品を、ここに。", "enabled": false, "color": "amber" },
     { "id": "game-04", "title": "GAME 04", "description": "次の作品を、ここに。", "enabled": false, "color": "pink" },
     { "id": "game-05", "title": "GAME 05", "description": "次の作品を、ここに。", "enabled": false, "color": "blue" },
