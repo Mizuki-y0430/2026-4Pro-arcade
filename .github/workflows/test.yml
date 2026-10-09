@@ -9,4 +9,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m unittest discover -s tests -v
-      - run: python arcade.py --check
+      - name: Validate registered game configuration
+        run: python -c "from pathlib import Path; from arcade import load_games; load_games(Path.cwd(), Path('games.json'))"
+      - name: Check bundled samples (member repositories are cloned separately)
+        run: python arcade.py --config .github/sample-games.json --check

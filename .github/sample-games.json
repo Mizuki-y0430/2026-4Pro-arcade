@@ -1,0 +1,20 @@
+{
+  "games": [
+    {
+      "id": "neon-dodge",
+      "title": "NEON DODGE",
+      "kind": "static",
+      "path": "games/samples/neon-dodge",
+      "entry": "index.html",
+      "profile": "showcase/neon-dodge.json"
+    },
+    {
+      "id": "reaction-lab",
+      "title": "REACTION LAB",
+      "kind": "service",
+      "path": "games/samples/reaction-lab",
+      "command": ["{python}", "web.py", "--port", "{port}"],
+      "profile": "showcase/reaction-lab.json"
+    }
+  ]
+}
