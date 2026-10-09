@@ -178,6 +178,34 @@ class ArcadeTests(unittest.TestCase):
             with self.subTest(changes=changes), self.assertRaises(ValueError):
                 self.configure([{**self.game, "kind": "service", **changes}])
 
+    def test_rules_metadata_is_validated_and_public_without_internal_paths(self):
+        guide = {**self.game, "rules": ["10点を目指そう"], "operations": ["クリックで回答"]}
+        self.configure([guide])
+        self.game.update(guide)
+        base = self.api_server()
+        game = json.loads(self.read(base + "/api/games"))["games"][0]
+        self.assertEqual(game["rules"], guide["rules"])
+        self.assertEqual(game["operations"], guide["operations"])
+        self.assertNotIn("path", game)
+        self.assertEqual(self.manager.runtime, {})
+        for field in ("rules", "operations"):
+            for value in ("text", None, [""], [10], ["x" * 301], ["説明"] * 11):
+                with self.subTest(field=field, value=value), self.assertRaises(ValueError):
+                    self.configure([{**guide, field: value}])
+
+    def test_rules_page_and_assets_work_without_starting_a_game(self):
+        launcher = self.root / "launcher"
+        launcher.mkdir()
+        source = Path(__file__).resolve().parents[1] / "launcher"
+        for name in ("rules.html", "rules.js", "rules.css"):
+            (launcher / name).write_bytes((source / name).read_bytes())
+        base = self.api_server()
+        self.assertIn("ルールと操作方法", self.read(base + "/games/test/rules").decode())
+        self.assertIn(b"loadRules", self.read(base + "/rules.js"))
+        self.assertIn(b"rules-card", self.read(base + "/rules.css"))
+        self.assert_http(404, base + "/games/unknown/rules")
+        self.assertEqual(self.server.manager.runtime, {})
+
     def test_closed_manager_cannot_launch(self):
         self.manager.close()
         with self.assertRaises(ValueError):
@@ -187,12 +215,17 @@ class ArcadeTests(unittest.TestCase):
         assets = self.root / "launcher/assets"
         assets.mkdir(parents=True)
         content = b"\x89PNG\r\n\x1a\n\x00\xff"
-        (assets / "pop-blue-background.png").write_bytes(content)
+        public_images = ("pop-blue-background.png", "red-white-honeycomb-background.png", "4PROARCADE_logo.png")
+        public_images = {name: name for name in public_images}
+        public_images["red-champagne-honeycomb-background.png"] = "red-white-matte-honeycomb.png"
+        for name in public_images.values():
+            (assets / name).write_bytes(content)
         (assets / "private.png").write_bytes(b"PRIVATE")
         base = self.api_server()
-        with self.opener.open(base + "/assets/pop-blue-background.png") as response:
-            self.assertEqual(response.headers["Content-Type"], "image/png")
-            self.assertEqual(response.read(), content)
+        for name in public_images:
+            with self.subTest(image=name), self.opener.open(base + "/assets/" + name) as response:
+                self.assertEqual(response.headers["Content-Type"], "image/png")
+                self.assertEqual(response.read(), content)
         for path in ["private.png", "../style.css", "%2e%2e/style.css"]:
             self.assert_http(404, base + "/assets/" + path)
 
