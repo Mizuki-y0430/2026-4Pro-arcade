@@ -29,7 +29,17 @@
       "controls": "クリック / スペースでプレイ",
       "color": "violet"
     },
-    { "id": "game-03", "title": "GAME 03", "description": "次の作品を、ここに。", "enabled": false, "color": "amber" },
+    {
+      "id": "kosen-survivor",
+      "title": "こうせんサバイバー",
+      "menu_title": "こうせんサバイバー",
+      "description": "単位を集めて体を伸ばそう。留年と壁をよけて、最高記録に挑戦！",
+      "kind": "static",
+      "path": "games/local/2026-4Pro-ishida",
+      "entry": "index.html",
+      "controls": "矢印キー / WASDで移動・スペース / Enterで開始・難易度は3段階",
+      "color": "amber"
+    },
     { "id": "game-04", "title": "GAME 04", "description": "次の作品を、ここに。", "enabled": false, "color": "pink" },
     { "id": "game-05", "title": "GAME 05", "description": "次の作品を、ここに。", "enabled": false, "color": "blue" },
     { "id": "game-06", "title": "GAME 06", "description": "次の作品を、ここに。", "enabled": false, "color": "mint" },
