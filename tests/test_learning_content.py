@@ -54,8 +54,10 @@ class LearningTests(unittest.TestCase):
 
     def test_template_and_samples_validate_with_real_code(self):
         validate_profile(json.loads((ROOT / "showcase/template.json").read_text(encoding="utf-8")))
-        games = json.loads((ROOT / "games.json").read_text(encoding="utf-8"))["games"]
-        for game in games[:2]:
+        # メニューの先頭はメンバー作品。実装例は登録順から独立して検証する。
+        for name in ("neon-dodge", "reaction-lab"):
+            game = {"id": name, "title": name, "path": f"games/samples/{name}",
+                    "profile": f"showcase/{name}.json"}
             result = load_profile(ROOT, game)
             self.assertEqual(len(result["slides"]), 3)
             self.assertEqual(result["status"], "sample")
