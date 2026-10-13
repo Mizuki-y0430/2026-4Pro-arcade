@@ -9,7 +9,7 @@ import unittest
 from urllib.error import HTTPError
 from urllib.request import ProxyHandler, Request, build_opener
 
-from arcade import GameManager, inside, load_games, make_server
+from arcade import GameManager, TECHNOLOGY_PAGES, inside, load_games, make_server
 
 
 class ArcadeTests(unittest.TestCase):
@@ -70,10 +70,10 @@ class ArcadeTests(unittest.TestCase):
             time.sleep(.05)
         self.fail(f"Expected {status}, got {item}")
 
-    def test_eight_slots_and_disabled_placeholder(self):
-        self.assertEqual(len(self.configure([self.game, *[{"id": f"slot-{i}", "title": "Empty", "enabled": False} for i in range(7)]])), 8)
+    def test_six_slots_and_disabled_placeholder(self):
+        self.assertEqual(len(self.configure([self.game, *[{"id": f"slot-{i}", "title": "Empty", "enabled": False} for i in range(5)]])), 6)
         with self.assertRaises(ValueError):
-            self.configure([{"id": f"slot-{i}", "title": "Empty", "enabled": False} for i in range(9)])
+            self.configure([{"id": f"slot-{i}", "title": "Empty", "enabled": False} for i in range(7)])
 
     def test_duplicates_and_unknown_kind_are_rejected(self):
         with self.assertRaises(ValueError):
@@ -200,7 +200,9 @@ class ArcadeTests(unittest.TestCase):
         for name in ("rules.html", "rules.js", "rules.css"):
             (launcher / name).write_bytes((source / name).read_bytes())
         base = self.api_server()
-        self.assertIn("ルールと操作方法", self.read(base + "/games/test/rules").decode())
+        with self.opener.open(base + "/games/test/rules") as response:
+            self.assertEqual(response.headers["X-Frame-Options"], "SAMEORIGIN")
+            self.assertIn("ルールと操作方法", response.read().decode())
         self.assertIn(b"loadRules", self.read(base + "/rules.js"))
         self.assertIn(b"rules-card", self.read(base + "/rules.css"))
         self.assert_http(404, base + "/games/unknown/rules")
@@ -210,6 +212,33 @@ class ArcadeTests(unittest.TestCase):
         self.manager.close()
         with self.assertRaises(ValueError):
             self.manager.start("test")
+
+    def test_technology_guides_and_pending_slots_without_starting_games(self):
+        source = Path(__file__).resolve().parents[1] / "launcher"
+        launcher = self.root / "launcher"
+        launcher.mkdir()
+        for name in [*TECHNOLOGY_PAGES.values(), "technology-pending.html", "technology.js", "technology.css", "guide-navigation.js", "index.html"]:
+            (launcher / name).write_bytes((source / name).read_bytes())
+        games = [{**self.game, "id": gid} for gid in TECHNOLOGY_PAGES]
+        games += [{"id": "game-06", "title": "GAME 06", "enabled": False}]
+        self.server = make_server(self.root, games)
+        self.server_thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.server_thread.start()
+        base = f"http://127.0.0.1:{self.server.server_port}"
+        for gid, name in TECHNOLOGY_PAGES.items():
+            with self.subTest(game=gid):
+                with self.opener.open(base + f"/games/{gid}/technology") as response:
+                    self.assertEqual(response.headers["X-Frame-Options"], "SAMEORIGIN")
+                    self.assertEqual(response.read(), (source / name).read_bytes())
+        self.assertIn("技術説明は準備中", self.read(base + "/games/game-06/technology").decode())
+        for gid in ("game-07", "game-08"):
+            self.assert_http(404, base + f"/games/{gid}/technology")
+        for name in ("technology.js", "technology.css", "guide-navigation.js"):
+            self.assertEqual(self.read(base + "/" + name), (source / name).read_bytes())
+        self.assert_http(404, base + "/games/unknown/technology")
+        with self.opener.open(base + "/") as response:
+            self.assertEqual(response.headers["X-Frame-Options"], "DENY")
+        self.assertEqual(self.server.manager.runtime, {})
 
     def test_background_serves_only_the_allowed_binary_asset(self):
         assets = self.root / "launcher/assets"

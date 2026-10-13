@@ -3,7 +3,7 @@
   --ink: #000;
   /* Size follows viewport width and height; 1360x900 is the baseline. */
   --menu-unit: var(--arcade-unit);
-  --menu-width: calc(1120 * var(--menu-unit));
+  --menu-width: calc(840 * var(--menu-unit));
   --button-red: #b71929;
   --button-face: linear-gradient(#fff 0%,#fff7f7 48%,#ffdada 100%);
   --button-shade: #d98991;
@@ -35,11 +35,19 @@
 .menu-logo-image { position:absolute; top:50%; left:0; width:100%; height:auto; transform:translateY(-48.4%); }
 .menu-instruction { margin:8px 0 0; font-size:clamp(18px,calc(26 * var(--menu-unit)),64px); font-weight:900; color:#fff; text-shadow:0 2px 0 var(--ink); transform:rotate(2deg); }
 .menu-toolbar { display:flex; justify-content:space-between; align-items:center; gap:calc(16 * var(--menu-unit)); max-width:var(--menu-width); margin:0 auto calc(22 * var(--menu-unit)); }
+.menu-actions { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:calc(16 * var(--menu-unit)); }
+/* 説明を同じ文書内のフレームで開き、タイトル画面の全画面表示を保ちます。 */
+.guide-dialog { width:100%; max-width:none; height:100dvh; max-height:none; margin:0; padding:0; border:0; border-radius:0; background:#fff; }
+.guide-dialog[open] { display:block; }
+.guide-dialog iframe { width:100%; height:100%; }
+/* 説明を開いている間は、背後の一覧をスクロールさせません。 */
+.arcade-home:has(.guide-dialog[open]) { overflow:hidden; }
 .ready-count { flex:none; white-space:nowrap; color:var(--ink); font-size:clamp(12px,calc(14 * var(--menu-unit)),34px); font-weight:850; padding:calc(8 * var(--menu-unit)) calc(12 * var(--menu-unit)); border-radius:20px; background:#fff; border:2px solid var(--ink); box-shadow:0 3px 0 var(--ink); }
 .arcade-home .filters { width:auto; border:3px solid var(--ink); border-radius:calc(24 * var(--menu-unit)); padding:calc(3 * var(--menu-unit)); box-shadow:0 4px 0 var(--ink); background:#fff; }
 .arcade-home .filters button { flex:none; white-space:nowrap; min-height:max(44px,calc(48 * var(--menu-unit))); padding:calc(6 * var(--menu-unit)) calc(22 * var(--menu-unit)); border-radius:calc(18 * var(--menu-unit)); font-size:clamp(12px,calc(14 * var(--menu-unit)),34px); color:var(--ink); font-weight:900; }
 .arcade-home .filters .selected { background:linear-gradient(#f45b60,#cd2333); color:#fff; box-shadow:inset 0 2px 0 #ffb5b8,inset 0 -3px 0 #a41725; }
-.arcade-home .arcade-grid { grid-template-columns:repeat(4,minmax(0,1fr)); max-width:var(--menu-width); gap:calc(32 * var(--menu-unit)) calc(34 * var(--menu-unit)); margin:auto; }
+/* ゲーム1〜3を上段、ゲーム4〜6を下段に並べます。 */
+.arcade-home .arcade-grid { grid-template-columns:repeat(3,minmax(0,1fr)); max-width:var(--menu-width); gap:calc(32 * var(--menu-unit)) calc(34 * var(--menu-unit)); margin:auto; }
 .arcade-home .card {
   position:relative; overflow:visible; border:0; border-radius:0; background:none; box-shadow:none;
   min-width:0; padding:0 0 calc(9 * var(--menu-unit));
@@ -81,24 +89,24 @@
 .tile-rules:hover { transform:rotate(-10deg) scale(1.08); filter:brightness(1.08); }
 .tile-info {
   position:absolute; z-index:4; right:4%; top:6%; width:max(44px,calc(44 * var(--menu-unit))); height:max(44px,calc(44 * var(--menu-unit)));
-  display:grid; place-items:center; background:var(--button-face); color:var(--button-red);
+  display:grid; place-items:center; background:linear-gradient(#f45b60,#cd2333); color:#fff;
   border:3px solid var(--ink); border-radius:50%; font-size:clamp(23px,calc(25 * var(--menu-unit)),60px); font-weight:1000;
-  box-shadow:inset 0 0 0 2px #fff,inset 0 -5px 0 var(--button-shade),0 4px 0 var(--ink);
+  box-shadow:inset 0 2px 0 #ffb5b8,inset 0 -5px 0 #a41725,0 4px 0 var(--ink); text-shadow:0 1px 0 #7f1320;
 }
 .tile-info:hover { transform:rotate(10deg) scale(1.08); filter:brightness(1.08); }
 .tile-rules:active, .tile-info:active { transform:translateY(3px) scale(.96); box-shadow:inset 0 0 0 2px #fff,inset 0 -3px 0 var(--button-shade),0 1px 0 var(--ink); }
+.tile-info:active { box-shadow:inset 0 2px 0 #ffb5b8,inset 0 -3px 0 #a41725,0 1px 0 var(--ink); }
 .arcade-home .unavailable .game-launch {
   background:linear-gradient(145deg,#f6f6f699,#b7c6d199); border-color:#0006;
   box-shadow:inset 0 0 0 3px #ffffff70,0 4px 0 #0006; opacity:1;
 }
 .arcade-home .unavailable .game-launch:before { border-color:#c2e9ff4d; }
 .arcade-home .unavailable .tile-title { color:#fff0a8; -webkit-text-stroke:4px #444; font-size:clamp(18px,calc(22 * var(--menu-unit)),53px); filter:drop-shadow(0 2px 0 #444); }
-.arcade-home .unavailable .tile-info { background:linear-gradient(#fff,#e5e5e5); color:#666; border-color:#555; box-shadow:inset 0 0 0 2px #fff,0 3px 0 #555; }
 .slot-number { position:absolute; top:14%; left:14%; font:900 clamp(12px,calc(15 * var(--menu-unit)),36px) ui-monospace,monospace; color:#444; }
 .locked-mark { width:56%; height:56%; opacity:.65; color:#c4cbd0; }
 .arcade-home .menu-nav {
-  margin:calc(24 * var(--menu-unit)) auto 0; padding:0; border:0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:calc(18 * var(--menu-unit)); max-width:var(--menu-width); align-items:stretch;
+  margin:calc(24 * var(--menu-unit)) auto 0; padding:0; border:0; display:flex; justify-content:center;
+  width:100%; max-width:calc(280 * var(--menu-unit));
 }
 .menu-nav-button {
   display:flex; justify-content:center; align-items:center; gap:calc(8 * var(--menu-unit)); min-height:max(58px,calc(70 * var(--menu-unit)));
@@ -110,7 +118,8 @@
 .menu-nav-button svg { width:calc(43 * var(--menu-unit)); height:calc(43 * var(--menu-unit)); flex-shrink:0; transform:rotate(-7deg); }
 .menu-nav-button:hover { transform:translateY(-3px); filter:brightness(1.05); }
 .menu-nav-button:active { transform:translateY(4px) scale(.97); box-shadow:inset 0 3px 0 #ffffffb3; }
-.nav-exit { background:linear-gradient(#ff777b,#ed3943 48%,#c91d2f); color:#fff; box-shadow:inset 0 3px 0 #ffb7bb,inset 0 -4px 0 #9e1020,0 4px 0 var(--ink); -webkit-text-stroke:2px var(--ink); }
+.menu-fullscreen { min-height:44px; padding:8px 14px; border-radius:16px; font-size:clamp(14px,calc(14 * var(--menu-unit)),34px); white-space:nowrap; }
+.nav-exit { width:100%; background:linear-gradient(#ff777b,#ed3943 48%,#c91d2f); color:#fff; box-shadow:inset 0 3px 0 #ffb7bb,inset 0 -4px 0 #9e1020,0 4px 0 var(--ink); -webkit-text-stroke:2px var(--ink); }
 .game-info { border:4px solid var(--ink); box-shadow:0 6px 0 var(--ink),0 20px 80px #0006; }
 .info-heading { display:flex; justify-content:space-between; align-items:center; gap:16px; }
 .info-type { font-size:12px; font-weight:800; color:#356383; }
@@ -124,7 +133,7 @@
 #info-author { display:block; margin-top:18px; color:#55728a; }
 .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 @media(min-width:851px) and (max-height:700px) {
-  .arcade-home { --menu-width:calc(1040 * var(--menu-unit)); }
+  .arcade-home { --menu-width:calc(780 * var(--menu-unit)); }
 }
 @media(max-width:850px) {
   .arcade-home { --menu-unit:1px; --menu-width:100%; padding:16px; }
@@ -145,17 +154,16 @@
   .menu-toolbar { gap:10px; margin-bottom:22px; flex-direction:column; }
   .ready-count { font-size:11px; padding:5px 10px; }
   .arcade-home .filters { width:auto; } .arcade-home .filters button { flex:none; padding:7px 18px; min-height:44px; }
-  .arcade-home .arcade-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:28px 24px; }
+  .arcade-home .arcade-grid { gap:28px 24px; }
   .arcade-home .game-launch { border-width:4px; }
   .arcade-home .game-launch:before { border-width:3px; }
   .tile-title { font-size:19px; -webkit-text-stroke:5px var(--ink); left:-10px; right:-10px; bottom:-9px; }
-  .tile-rules { width:48px; height:48px; font-size:13px; }
-  .tile-info { width:max(44px,calc(44 * var(--menu-unit))); height:max(44px,calc(44 * var(--menu-unit))); font-size:23px; border-width:3px; }
+  .tile-rules { left:-12px; width:48px; height:48px; font-size:13px; }
+  .tile-info { right:-12px; width:max(44px,calc(44 * var(--menu-unit))); height:max(44px,calc(44 * var(--menu-unit))); font-size:23px; border-width:3px; }
   .arcade-home .unavailable .tile-title { font-size:20px; }
-  .arcade-home .menu-nav { gap:9px; grid-template-columns:1fr 1fr; margin-top:26px; }
+  .arcade-home .menu-nav { margin-top:26px; }
   .menu-nav-button { min-height:58px; border-radius:17px; font-size:16px; gap:4px; padding:5px; }
-  .menu-nav-button svg { width:34px; height:34px; } .nav-add { font-size:14px; }
-  .nav-exit { grid-column:1 / -1; width:65%; justify-self:center; }
+  .menu-nav-button svg { width:34px; height:34px; }
   .game-info { padding:22px; }
 }
 @media(prefers-reduced-motion:reduce) { .arcade-home * { transition:none!important; } }

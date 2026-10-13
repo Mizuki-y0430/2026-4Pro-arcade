@@ -82,9 +82,11 @@ function render() {
     info.dataset.game = game.id;
     info.dataset.action = "info";
     info.textContent = "？";
-    info.setAttribute("aria-label", `${game.title}の遊び方・発表`);
-    info.title = "遊び方・紹介・発表";
-    info.addEventListener("click", () => openInfo(game));
+    info.setAttribute("aria-label", `${game.title}の技術を知る`);
+    info.title = game.kind ? "このゲームの技術を知る（3ページ）" : "技術説明は準備中です";
+    info.addEventListener("click", () => {
+      openGuide(game, "technology");
+    });
     card.append(button, info);
     if (game.kind) {
       const rules = document.createElement("a");
@@ -94,6 +96,11 @@ function render() {
       rules.dataset.action = "rules";
       rules.textContent = "ルール";
       rules.setAttribute("aria-label", `${game.title}のルールと操作方法`);
+      rules.addEventListener("click", event => {
+        if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        openGuide(game, "rules");
+      });
       card.append(rules);
     }
     fragment.append(card);
@@ -102,24 +109,48 @@ function render() {
   if (focusGame) [...document.querySelectorAll("[data-game]")].find(el => el.dataset.game === focusGame && el.dataset.action === focusAction)?.focus();
 }
 
-function openInfo(game) {
-  $("info-title").textContent = game.menu_title || game.title;
-  $("info-description").textContent = game.description;
-  $("info-controls").textContent = game.controls || "ゲームを登録すると、ここに遊び方が表示されます。";
-  $("info-type").textContent = game.language === "python" ? "Python × Web" : game.kind === "static" ? "Webゲーム" : game.kind === "python" ? "Pythonゲーム" : "これから登場";
-  $("info-author").textContent = [game.title, game.author].filter(Boolean).join(" / ");
-  $("info-status").textContent = game.status === "error" ? `${game.message} ${game.log || ""}` : game.message;
-  $("info-detail").href = `/games/${encodeURIComponent(game.id)}`;
-  $("info-slides").href = `/games/${encodeURIComponent(game.id)}/slides`;
-  $("info-play").disabled = ["unregistered", "missing"].includes(game.status);
-  const stop = game.status === "starting" || (game.kind === "python" && game.status === "running");
-  $("info-play").textContent = stop ? "停止する ■" : game.status === "error" ? "もう一度起動 ▶" : "プレイする ▶";
-  $("info-play").onclick = () => {
-    $("game-info").close();
-    play(games.find(current => current.id === game.id) || game);
-  };
-  $("game-info").showModal();
+// ページ自体を移動すると全画面が解除されるので、説明だけをフレームに読み込みます。
+function openGuide(game, section, addHistory = true) {
+  const title = `${game.title}の${section === "rules" ? "ルール" : "技術説明"}`;
+  const url = `/games/${encodeURIComponent(game.id)}/${section}`;
+  $("guide").setAttribute("aria-label", title);
+  $("guide-frame").title = title;
+  // フレーム側の履歴を増やさず、履歴は親画面のpushStateだけで管理します。
+  $("guide-frame").contentWindow.location.replace(url);
+  if (!$("guide").open) $("guide").showModal();
+  document.title = `${title} — 4Pro Arcade`;
+  if (addHistory) history.pushState({ arcadeGuide: true }, "", url);
 }
+
+function closeGuide() {
+  if (history.state?.arcadeGuide) history.back();
+  else $("guide").close();
+}
+$("guide").addEventListener("cancel", event => { event.preventDefault(); closeGuide(); });
+$("guide").addEventListener("close", () => {
+  $("guide-frame").contentWindow.location.replace("about:blank");
+  document.title = "4Pro Arcade";
+});
+// ブラウザーの「戻る・進む」でも、文書を再読み込みせず説明を切り替えます。
+window.addEventListener("popstate", () => {
+  const match = location.pathname.match(/^\/games\/([a-z0-9-]+)\/(technology|rules)$/);
+  const game = match && games.find(item => item.id === match[1]);
+  if (history.state?.arcadeGuide && game) openGuide(game, match[2], false);
+  else if ($("guide").open) $("guide").close();
+});
+// 説明内の戻るリンクと、ルール内の開始リンクから受け取ります。
+window.addEventListener("message", event => {
+  if (event.origin !== location.origin || event.source !== $("guide-frame").contentWindow ||
+      !$("guide").open || event.data?.type !== "arcade-guide") return;
+  if (event.data.action === "close") closeGuide();
+  if (event.data.action === "play") {
+    const game = games.find(item => item.id === event.data.gameId);
+    if (game && !["unregistered", "missing"].includes(game.status)) {
+      closeGuide();
+      play(game);
+    }
+  }
+});
 
 async function refresh() {
   if (ended) return;
@@ -185,7 +216,7 @@ async function play(game) {
 async function back() {
   const gid = selectedGame;
   selectedGame = null;
-  if (document.fullscreenElement) await document.exitFullscreen();
+  if (document.fullscreenElement && document.fullscreenElement !== document.documentElement) await document.exitFullscreen();
   $("game-frame").src = "about:blank";
   $("player").close();
   if (gid) {
@@ -193,13 +224,28 @@ async function back() {
     catch (error) { toast(error.message); }
   }
 }
-$("info-close").addEventListener("click", () => $("game-info").close());
 $("back").addEventListener("click", back);
 $("player").addEventListener("cancel", event => { event.preventDefault(); back(); });
 $("fullscreen").addEventListener("click", async () => {
   try { await $("play-area").requestFullscreen(); }
   catch { toast("このブラウザーでは全画面表示を利用できません。"); }
 });
+
+// タイトル画面全体を全画面表示にします。Escで解除した場合も表示を更新します。
+$("home-fullscreen").addEventListener("click", async () => {
+  try {
+    if (document.fullscreenElement) await document.exitFullscreen();
+    else await document.documentElement.requestFullscreen();
+  } catch { toast("このブラウザーでは全画面表示を利用できません。"); }
+});
+function updateHomeFullscreen() {
+  const active = Boolean(document.fullscreenElement);
+  $("home-fullscreen").textContent = active ? "⛶ 全画面を終了" : "⛶ 全画面";
+  $("home-fullscreen").setAttribute("aria-pressed", String(active));
+}
+document.addEventListener("fullscreenchange", updateHomeFullscreen);
+$("home-fullscreen").hidden = !document.fullscreenEnabled;
+updateHomeFullscreen();
 document.querySelectorAll("[data-filter]").forEach(button => button.addEventListener("click", () => {
   filter = button.dataset.filter;
   document.querySelectorAll("[data-filter]").forEach(el => {
@@ -209,8 +255,6 @@ document.querySelectorAll("[data-filter]").forEach(button => button.addEventList
   });
   render();
 }));
-$("help").addEventListener("click", () => $("help-dialog").showModal());
-$("help-close").addEventListener("click", () => $("help-dialog").close());
 $("exit").addEventListener("click", () => $("exit-dialog").showModal());
 $("exit-cancel").addEventListener("click", () => $("exit-dialog").close());
 $("exit-confirm").addEventListener("click", async () => {

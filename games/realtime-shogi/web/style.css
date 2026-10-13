@@ -1,0 +1,94 @@
+:root{color-scheme:light;font-family:"Yu Gothic UI","Meiryo",system-ui,sans-serif;color:#193c36;background:#f5f2e8}
+*{box-sizing:border-box}
+body{margin:0;min-height:100dvh;background:radial-gradient(circle at 10% 5%,#fff2b9,transparent 35%),linear-gradient(135deg,#f6f3e8,#dceee6)}
+button,select,input{font:inherit}
+button,select{min-height:44px;border:2px solid #193457;border-radius:13px;background:#fff;color:#193457;font-weight:800;cursor:pointer}
+button{padding:8px 14px;box-shadow:0 3px 0 #193457;transition:transform .12s,box-shadow .12s}
+button:hover:not(:disabled){background:#fff8d2}
+button:active:not(:disabled){transform:translateY(3px);box-shadow:none}
+button:disabled{cursor:default;opacity:.65}
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #f68042;outline-offset:3px}
+.shell{max-width:1420px;padding:12px 20px 10px;margin:auto}
+.heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.eyebrow{font-size:10px;letter-spacing:.12em;color:#506c91;margin:0 0 3px;font-weight:800}
+h1{font-size:clamp(20px,2.7vw,30px);margin:0;font-weight:900}
+h1 span{color:#24745e}
+h2{margin:6px 0;font-size:20px}
+.actions{display:flex;gap:10px;flex-shrink:0}
+.primary{background:#ffe482}.primary.running{background:#ffcfdf}
+.options{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:12px 0;font-size:12px;font-weight:800}
+.options label{display:flex;align-items:center;gap:6px}
+.options select{padding:6px;font-size:12px;min-height:40px}
+.cooldown-option{flex-wrap:wrap;max-width:175px}
+.cooldown-option input{width:150px;accent-color:#7854b2}
+.animation-option input{width:18px;height:18px;accent-color:#7854b2}
+.notice{padding:10px 14px;border-radius:12px;border:2px solid #d58826;background:#fff5d2;margin-bottom:10px;font-weight:700}
+/* The board gets the main row; match information sits underneath it. */
+.play-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.board-area{--board-size:min(calc(100vw - 228px),calc(100dvh - 180px),800px);min-width:0;display:grid;grid-template-columns:84px minmax(0,var(--board-size)) 84px;justify-content:center;align-items:start;gap:10px}
+.board-wrap{position:relative;width:100%;margin:0;border:5px solid #694e2d;border-radius:8px;box-shadow:0 5px 0 #694e2d;overflow:hidden;background:#694e2d;container-type:inline-size}
+.board{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));aspect-ratio:1}
+.square{position:relative;border:0;border-right:1px solid #977442;border-bottom:1px solid #977442;border-radius:0;box-shadow:none;padding:0;min-height:0;aspect-ratio:1;background:#ebc78a;display:grid;place-items:center}
+.square:hover:not(:disabled){background:#c4dfa4}
+.square:disabled{opacity:1}.square:active:not(:disabled){transform:none}
+.square.last{background:#f6dba4}
+.square.selected{background:#a4dcb0;box-shadow:inset 0 0 0 4px #207951}
+.square.legal{background:#d4df9b}
+.square.legal::after{content:"";position:absolute;width:21%;height:21%;border-radius:50%;background:#2a8c66aa;pointer-events:none}
+.square.legal.occupied::after{width:87%;height:87%;border:4px solid #2a8c66;background:transparent}
+.square.check{box-shadow:inset 0 0 0 4px #df4c65;background:#ffb8c8}
+.square:focus-visible{z-index:3;outline:3px solid #e96728;outline-offset:-3px}
+.coordinate{position:absolute;left:2px;top:0;font-size:clamp(7px,1.5cqw,11px);font-weight:800;color:#73562e;z-index:3;pointer-events:none}
+.piece{position:relative;z-index:2;width:75%;height:83%;display:grid;place-items:center;padding-top:9%;clip-path:polygon(50% 0,88% 17%,100% 100%,0 100%,12% 17%);background:linear-gradient(120deg,#fff3ca,#e9bb70);filter:drop-shadow(0 1px 1px #785129);font-family:"Yu Mincho","MS PMincho",serif;font-weight:900;font-size:clamp(16px,6.2cqw,48px);line-height:1;color:#332919;pointer-events:none}
+.piece:empty{display:none}.piece.enemy{transform:rotate(180deg);background:linear-gradient(120deg,#ffe9b1,#e0ae60)}.piece.promoted{color:#a1262b}
+.piece-cd{position:absolute;bottom:2px;right:3px;font-size:9px;border-radius:6px;background:#193457dc;color:white;padding:1px 3px;z-index:3;pointer-events:none}
+.countdown{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;font-size:clamp(70px,14vw,140px);font-weight:900;color:#fff4a5;text-shadow:4px 5px #193457;background:#19345730}
+.countdown[hidden]{display:none}
+/* Komadai stay on opposite sides of the board, including on narrow screens. */
+.hand-tray{width:100%;margin:0;padding:8px;border:2px solid #92724c;border-radius:10px;background:#fff9e9}
+.opponent-hand{align-self:start}.player-hand{align-self:end}
+.hand-tray h2{font-size:11px;line-height:1.5;margin:0 0 8px;text-align:center;color:#655031}
+.hand-tray h2 span{display:block;font-size:13px}
+.hand-pieces{display:grid;grid-template-columns:1fr;gap:6px}
+.hand-pieces button{width:100%;min-width:0;min-height:38px;border:1px solid #92724c;border-radius:6px;padding:4px 0;box-shadow:0 2px 0 #92724c;font-family:"Yu Mincho",serif;font-size:19px;white-space:nowrap;background:#fff1ce;color:#49351d}
+.hand-pieces button:disabled{opacity:.45}
+.hand-pieces button.selected{background:#a4dcb0;outline:2px solid #287653}
+.hand-hint{text-align:center;font-size:10px;line-height:1.5;margin:8px 0 0;color:#655031}
+.hint{grid-column:1/-1;text-align:center;font-size:12px;font-weight:800;line-height:1.6;margin:3px 0 0}
+.hint span{font-size:10px;color:#526984}#play-hint{font-size:inherit;color:inherit}
+.side{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:start;max-width:1000px;width:100%;margin:auto}
+.side section,.history-panel{border:2px solid #193457;border-radius:16px;background:#ffffffda;padding:12px;box-shadow:0 3px 0 #193457}
+.status-panel{background:#fff4c9!important}
+.panel-label{margin:0;font-weight:900;font-size:11px;letter-spacing:.04em;color:#566c87}
+#status-detail{font-size:12px;line-height:1.5;margin:6px 0}
+.matches{font-size:11px;font-weight:800;margin:8px 0 0;color:#7854a3}
+.cooldown-panel div{margin-top:8px;font-size:12px;font-weight:800}
+.cooldown-panel progress{display:block;width:100%;height:10px;accent-color:#7754b2;margin-top:3px}
+.piece-guide p,.rules-help p{font-size:12px;line-height:1.7;margin:6px 0}.piece-guide h2{font-size:16px}
+.history-panel summary{cursor:pointer;font-weight:800;font-size:13px;min-height:28px}
+.history-panel summary span{float:right;font-size:11px;color:#687f98}
+.history-panel ol{max-height:100px;overflow:auto;margin:8px 0 0;padding-left:22px;font-size:11px;line-height:1.9}
+.history-panel li:last-child{font-weight:800;color:#5c3da5}
+.history-panel{grid-column:span 2}.rules-help{grid-column:span 1;font-size:11px}
+footer{text-align:center;color:#617c98;font-size:10px;margin-top:12px}
+dialog{border:3px solid #193457;border-radius:22px;background:#effcff;color:#193457;padding:24px;width:min(430px,92vw);box-shadow:0 10px 0 #193457}
+dialog::backdrop{background:#19345799}dialog p{font-size:13px}
+.promotion-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+@media(max-width:850px){
+  .shell{padding:10px 12px}.options{gap:8px}
+  .board-area{--board-size:min(calc(100vw - 184px),calc(100dvh - 170px),800px);grid-template-columns:70px minmax(0,var(--board-size)) 70px;gap:8px}
+  .hand-tray{padding:6px}.hand-pieces{gap:5px}.hand-pieces button{font-size:17px;min-height:34px}
+}
+@media(max-width:650px){
+  .shell{padding:10px 8px}.heading{flex-wrap:wrap}.heading h1{font-size:22px}.actions{gap:8px}
+  .actions button{font-size:12px;padding:6px 10px;min-height:38px}
+  .options{gap:6px;margin:10px 0}.options label{font-size:11px}.options select{min-height:38px;font-size:11px}
+  .cooldown-option{max-width:160px}.cooldown-option input{width:130px}
+  .board-area{--board-size:min(calc(100vw - 124px),calc(100dvh - 190px),800px);grid-template-columns:48px minmax(0,var(--board-size)) 48px;gap:6px}
+  .hand-tray{padding:4px}.hand-tray h2{font-size:9px;margin-bottom:5px}.hand-tray h2 span{font-size:11px}
+  .hand-pieces{gap:4px}.hand-pieces button{font-size:15px;min-height:28px;padding:2px 0}.hand-hint{font-size:9px;margin-top:5px}
+  .side{grid-template-columns:1fr 1fr}.status-panel{grid-column:1/-1}.history-panel,.rules-help{grid-column:1/-1}
+  .hint{font-size:11px}.piece-cd{font-size:8px;padding:0 2px}
+}
+@media(max-width:400px){.actions{width:100%}.actions button{flex:1}.hand-tray h2{font-size:8px}.piece{font-size:clamp(13px,6.2cqw,48px)}}
+@media(prefers-reduced-motion:reduce){button{transition:none}}

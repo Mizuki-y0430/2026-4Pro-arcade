@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>こうせんサバイバーのしくみ — 4Pro Arcade</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/technology.css">
+  <script src="/technology.js" defer></script>
+  <script src="/guide-navigation.js" defer></script>
+</head>
+<body>
+  <div class="deck">
+    <header class="deck-header">
+      <a class="back-link" href="/">← ゲーム一覧</a>
+      <span class="deck-label"><b>GAME 01</b> こうせんサバイバーのしくみ</span>
+    </header>
+
+    <main id="slides" aria-label="ゲームの技術を説明する3ページ">
+      <!-- 文章を変えるときは、各 section の見出しや説明を編集します。 -->
+      <!-- 1ページ目：実際のゲーム画面と、3つの技術の役割 -->
+      <section class="slide screen-slide" id="page-1" aria-labelledby="title-1">
+        <div class="slide-heading"><p class="chapter">01 <span>画面をつくる技術</span></p><span class="topic">HTML / CSS / JavaScript</span></div>
+        <h1 id="title-1" tabindex="-1">このゲームは、何でできている？</h1>
+        <p class="lead">画面と動きを、3つの技術でつくっています。</p>
+        <div class="screen-layout">
+          <figure class="game-figure">
+            <div class="image-frame">
+              <img src="/showcase/assets/kosen-survivor-play.png" width="1196" height="585" alt="こうせんサバイバーのプレイ画面。上に得点欄があり、マス目の中にキャラクター、単位、留年が表示されている。">
+              <span class="image-callout score-callout">得点を表示</span>
+              <span class="image-callout canvas-callout">Canvasで描くゲーム画面</span>
+            </div>
+            <figcaption>実際のプレイ画面</figcaption>
+            <div class="start-example"><img src="/showcase/assets/kosen-survivor-ready.png" width="1196" height="585" alt="HTMLで用意したスタートボタンと難易度ボタンがある開始画面。"><p>スタートボタンも<br><b>HTML</b>で用意。</p></div>
+          </figure>
+          <div class="technology-cards">
+            <article class="technology html-card"><span class="tech-number">1</span><div><h2>HTML <small>画面の部品</small></h2><p>ボタンや得点欄を用意する。</p></div></article>
+            <article class="technology css-card"><span class="tech-number">2</span><div><h2>CSS <small>見た目</small></h2><p>色・文字・配置を整える。</p></div></article>
+            <article class="technology js-card"><span class="tech-number">3</span><div><h2>JavaScript <small>動きと判定</small></h2><p>移動・得点・ゲーム終了を決める。</p></div></article>
+          </div>
+        </div>
+        <p class="takeaway"><span>ここがポイント</span>画面の部品・見た目・動きには、それぞれ役割がある。</p>
+      </section>
+
+      <!-- 2ページ目：ゲームの処理を、マス目と順番で説明 -->
+      <section class="slide movement-slide" id="page-2" aria-labelledby="title-2">
+        <div class="slide-heading"><p class="chapter">02 <span>キャラクターが動くしくみ</span></p><span class="topic">JavaScript / Canvas</span></div>
+        <h1 id="title-2" tabindex="-1">位置を変えて、何度も描き直す。</h1>
+        <p class="lead">キーの操作を、画面の動きに変えています。</p>
+        <ol class="flow" aria-label="操作から描画までの順番">
+          <li><span>1</span><b>キーを押す</b><small>操作を受け取る</small></li>
+          <li><span>2</span><b>方向を決める</b><small>右・左・上・下</small></li>
+          <li><span>3</span><b>位置と判定を更新</b><small>移動・得点・衝突</small></li>
+          <li><span>4</span><b>画面を描き直す</b><small>Canvasに表示</small></li>
+        </ol>
+        <div class="movement-layout">
+          <figure class="movement-figure">
+            <div class="board-comparison" role="img" aria-label="移動を説明する模式図。右キーを押すと、頭の位置が横3・縦2のマスから横4・縦2へ1マス進む。">
+              <div><span class="board-label">移動前</span><div class="mini-board before"><span class="body-cell"></span><span class="head-cell"><i></i></span><span class="cell-label">横3・縦2</span></div></div>
+              <div class="move-arrow"><kbd>→</kbd><b>1マス</b><span aria-hidden="true">⟶</span></div>
+              <div><span class="board-label">移動後</span><div class="mini-board after"><span class="body-cell"></span><span class="head-cell"><i></i></span><span class="cell-label">横4・縦2</span></div></div>
+            </div>
+            <figcaption>説明用に拡大したマス目</figcaption>
+          </figure>
+          <div class="movement-copy"><p class="big-equation">右に進む = <strong>横の番号 + 1</strong></p><p>位置を横・縦の番号で管理。<br>進む方向に合わせて番号を変えます。</p><div class="canvas-note"><b>Canvas は「絵を描く場所」</b><p>更新した位置にキャラクターを描き、<br>その繰り返しで動きを表します。</p></div></div>
+        </div>
+        <p class="takeaway"><span>ここがポイント</span>操作を受け取り、計算と描画を繰り返すと、ゲームが動く。</p>
+      </section>
+
+      <!-- 3ページ目：現行ゲームの条件と数値を使った具体例 -->
+      <section class="slide rules-slide" id="page-3" aria-labelledby="title-3">
+        <div class="slide-heading"><p class="chapter">03 <span>ルールを決めるしくみ</span></p><span class="topic">条件分岐 / 数値</span></div>
+        <h1 id="title-3" tabindex="-1">ルールは、「条件」と「数値」で。</h1>
+        <p class="lead">JavaScriptが、ゲームの状態を調べて判断します。</p>
+        <div class="rule-cards">
+          <article class="rule-card collect-rule"><span class="rule-label">単位を取る</span><div class="rule-visual collect-visual" role="img" aria-label="キャラクターが単位と同じマスに到着し、得点が1増える模式図。"><span class="game-piece snake-piece"></span><span class="visual-arrow" aria-hidden="true">→</span><span class="game-piece credit-piece"></span><b>+1</b></div><h2>同じマスに来たら</h2><p>得点を <strong>1</strong> 増やす。<br>2単位ごとに体も伸びます。</p><div class="condition">もし単位と位置が同じなら<br><b>得点を増やす</b></div></article>
+          <article class="rule-card collision-rule"><span class="rule-label">ぶつかる</span><div class="rule-visual collision-visual" role="img" aria-label="キャラクターが壁にぶつかり、ゲーム終了になる模式図。"><span class="game-piece snake-piece"></span><span class="visual-arrow" aria-hidden="true">→</span><span class="wall"></span><b>STOP</b></div><h2>壁や自分の体に当たったら</h2><p>ゲームを終了して、<br>結果の画面を表示します。</p><div class="condition">もし壁や体に当たったなら<br><b>ゲーム終了</b></div></article>
+          <article class="rule-card difficulty-rule"><span class="rule-label">難易度を変える</span><div class="speed-chart" role="img" aria-label="開始時の移動間隔。かんたん160ミリ秒、ふつう142ミリ秒、むずかしい122ミリ秒。間隔が短いほど速く進む。"><div><span>かんたん</span><i style="--bar:100%"></i><b>160</b></div><div><span>ふつう</span><i style="--bar:89%"></i><b>142</b></div><div><span>むずかしい</span><i style="--bar:76%"></i><b>122</b></div><small>1マス進む間隔（開始時・ミリ秒）</small></div><h2>進む間隔を短くすると</h2><p>キャラクターが速く進む。<br>よけるのが難しくなります。</p><div class="condition">難易度に合わせて<br><b>動きの数値を変える</b></div></article>
+        </div>
+        <p class="takeaway"><span>ここがポイント</span>「どんなときに、何をするか」を書くと、ルールをつくれる。</p>
+      </section>
+    </main>
+
+    <nav class="deck-controls" aria-label="ページ送り" hidden>
+      <button id="previous" class="page-button">← 前へ</button>
+      <div class="page-indicator"><div class="page-dots" aria-label="ページを選ぶ"><button data-page="0" aria-label="1ページ目：画面をつくる技術" aria-current="page"></button><button data-page="1" aria-label="2ページ目：キャラクターが動くしくみ"></button><button data-page="2" aria-label="3ページ目：ルールを決めるしくみ"></button></div><span id="page-count" aria-live="polite">1 / 3</span></div>
+      <button id="next" class="page-button primary">次へ →</button>
+    </nav>
+    <p class="key-hint" hidden>キーボードの ← → でもページを切り替えられます</p>
+    <noscript><p>3ページを続けて表示しています。下へスクロールしてご覧ください。</p></noscript>
+  </div>
+</body>
+</html>

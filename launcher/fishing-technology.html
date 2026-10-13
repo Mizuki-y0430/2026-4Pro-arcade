@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ゆうぐれ釣り日和のしくみ — 4Pro Arcade</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/technology.css">
+  <script src="/technology.js" defer></script>
+  <script src="/guide-navigation.js" defer></script>
+</head>
+<body>
+<div class="deck">
+  <header class="deck-header">
+    <a class="back-link" href="/">← ゲーム一覧</a>
+    <span class="deck-label"><b>GAME 03</b> ゆうぐれ釣り日和のしくみ</span>
+  </header>
+  <!-- 各 section が1ページです。文章・図・画像はこのHTMLで編集できます。 -->
+  <main id="slides" aria-label="ゲームの技術を説明する3ページ">
+    <!-- 1ページ目：画面をつくる技術 -->
+    <section class="slide illustrated-slide" id="page-1" aria-labelledby="title-1">
+      <div class="slide-heading"><p class="chapter">01 <span>画面をつくる技術</span></p><span class="topic">HTML / CSS / JavaScript / SVG</span></div>
+      <h1 id="title-1" tabindex="-1">夕焼けの海も、魚も、Webで描く。</h1>
+      <p class="lead">背景・ウキ・魚を組み合わせて、釣りの世界をつくっています。</p>
+      <div class="screen-layout">
+        <figure class="game-figure"><div class="image-frame whole-game"><img src="/showcase/assets/yuugure-fishing-play.png" alt="ゆうぐれ釣り日和の画面。夕焼けの海にウキが浮かび、残り時間と釣るボタンがある。"></div><figcaption>実際のゲーム画面</figcaption></figure>
+        <div class="technology-cards"><article class="technology html-card"><span class="tech-number">1</span><div><h2>HTML <small>画面の部品</small></h2><p>時間・得点・釣るボタンを用意。</p></div></article><article class="technology css-card"><span class="tech-number">2</span><div><h2>CSS <small>海と動き</small></h2><p>夕焼け・波・ウキの動きを表現。</p></div></article><article class="technology js-card"><span class="tech-number">3</span><div><h2>JavaScript ＋ SVG <small>魚と判定</small></h2><p>魚を選び、図形の線で魚を描く。</p></div></article></div>
+      </div>
+      <p class="takeaway"><span>ここがポイント</span>背景はCSS、魚の絵はSVG。技術を組み合わせて画面をつくる。</p>
+    </section>
+    <!-- 2ページ目：釣れるタイミングのしくみ -->
+    <section class="slide illustrated-slide" id="page-2" aria-labelledby="title-2">
+      <div class="slide-heading"><p class="chapter">02 <span>釣れるタイミングのしくみ</span></p><span class="topic">状態 / タイマー</span></div>
+      <h1 id="title-2" tabindex="-1">「待つ」と「釣る」を、状態で分ける。</h1>
+      <p class="lead">いま何をしているかを記録して、ボタンの動作を切り替えます。</p>
+<ol class="flow" aria-label="処理の順番"><li><span>1</span><b>投げる</b><small>魚と待ち時間を抽選</small></li><li><span>2</span><b>魚を待つ</b><small>タイマーで待機</small></li><li><span>3</span><b>HIT!</b><small>釣り上げが可能</small></li><li><span>4</span><b>釣り上げる</b><small>成功なら得点を加算</small></li></ol>
+      <div class="concept-layout">
+        <div class="diagram-panel state-diagram" role="img" aria-label="投げられる状態から、魚待ち、HITへ進む。HIT中に押すと成功、遅れると失敗。どちらも再び投げられる状態に戻る。"><div class="state-node">投げられる</div><span>↓ 投げる</span><div class="state-node">魚待ち</div><span>↓ 魚がかかる</span><div class="state-node hit-node">HIT!</div><div class="state-branches"><span>時間内に押す<br><b>成功 ＋得点</b></span><span>時間切れ<br><b>逃げられる</b></span></div><small>どちらも「投げられる」に戻る ↺</small></div>
+        <div class="explain"><p class="big-equation">いまの状態が <strong>HITのときだけ釣れる</strong></p><p>早すぎる操作では釣れません。<br>魚がかかるまでの待ち時間は、<br>魚ごとにランダムに決めます。</p><div class="canvas-note"><b>タイマーで時間を計る</b><p>HITから一定時間たつと、<br>「逃げられた」に切り替えます。</p></div></div>
+      </div>
+      <p class="takeaway"><span>ここがポイント</span>状態を持つと、同じボタンでも場面に合った動作にできる。</p>
+    </section>
+    <!-- 3ページ目：魚と得点を決めるしくみ -->
+    <section class="slide illustrated-slide" id="page-3" aria-labelledby="title-3">
+      <div class="slide-heading"><p class="chapter">03 <span>魚と得点を決めるしくみ</span></p><span class="topic">重み付き抽選 / 制限時間</span></div>
+      <h1 id="title-3" tabindex="-1">出やすさと、釣りやすさを変える。</h1>
+      <p class="lead">魚ごとに、選ばれる割合・点数・反応できる時間があります。</p>
+      <div class="concept-layout fish-rules">
+        <div class="diagram-panel fish-table"><table><caption>魚ごとの設定</caption><thead><tr><th scope="col">魚</th><th scope="col">割合</th><th scope="col">得点</th><th scope="col">HIT後</th></tr></thead><tbody><tr><th scope="row">アジ</th><td>30%</td><td>10点</td><td>0.80秒</td></tr><tr><th scope="row">サバ</th><td>28%</td><td>15点</td><td>0.65秒</td></tr><tr><th scope="row">タイ</th><td>26%</td><td>25点</td><td>0.54秒</td></tr><tr><th scope="row">カレイ</th><td>15%</td><td>40点</td><td>0.40秒</td></tr><tr><th scope="row">キンメダイ</th><td>1%</td><td>100点</td><td>0.35秒</td></tr></tbody></table></div>
+        <div class="explain"><p class="big-equation">100個のくじで考えると <strong>キンメダイは1個分</strong></p><p>魚ごとの「重み」を足して抽選。<br>珍しい魚ほど高得点ですが、<br>反応できる時間が短くなります。</p><div class="canvas-note"><b>ゲームは60秒</b><p>残り時間が0になると終了。<br>釣れた魚の点数を合計します。</p></div></div>
+      </div>
+      <p class="takeaway"><span>ここがポイント</span>抽選の割合と時間を変えると、魚ごとの違いや難しさをつくれる。</p>
+    </section>
+  </main>
+  <nav class="deck-controls" aria-label="ページ送り" hidden>
+    <button id="previous" class="page-button">← 前へ</button>
+    <div class="page-indicator"><div class="page-dots" aria-label="ページを選ぶ">
+      <button data-page="0" aria-label="1ページ目：画面をつくる技術" aria-current="page"></button>
+      <button data-page="1" aria-label="2ページ目：動くしくみ"></button>
+      <button data-page="2" aria-label="3ページ目：判定と数値"></button>
+    </div><span id="page-count" aria-live="polite">1 / 3</span></div>
+    <button id="next" class="page-button primary">次へ →</button>
+  </nav>
+  <p class="key-hint" hidden>キーボードの ← → でもページを切り替えられます</p>
+  <noscript><p>3ページを続けて表示しています。下へスクロールしてご覧ください。</p></noscript>
+</div>
+</body>
+</html>

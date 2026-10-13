@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>リアルタイムチェスのしくみ — 4Pro Arcade</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/technology.css">
+  <script src="/technology.js" defer></script>
+  <script src="/guide-navigation.js" defer></script>
+</head>
+<body>
+<div class="deck">
+  <header class="deck-header">
+    <a class="back-link" href="/">← ゲーム一覧</a>
+    <span class="deck-label"><b>GAME 04</b> リアルタイムチェスのしくみ</span>
+  </header>
+  <!-- 各 section が1ページです。文章・図・画像はこのHTMLで編集できます。 -->
+  <main id="slides" aria-label="ゲームの技術を説明する3ページ">
+    <!-- 1ページ目：画面と対局を動かす技術 -->
+    <section class="slide illustrated-slide" id="page-1" aria-labelledby="title-1">
+      <div class="slide-heading"><p class="chapter">01 <span>画面と対局を動かす技術</span></p><span class="topic">HTML / CSS / JavaScript / Python</span></div>
+      <h1 id="title-1" tabindex="-1">画面はWeb、対局の判断はPython。</h1>
+      <p class="lead">ブラウザーとPythonが情報をやり取りして、対局を進めます。</p>
+      <div class="screen-layout">
+        <figure class="game-figure"><div class="image-frame whole-game"><img src="/showcase/assets/realtime-chess-ready.png" alt="リアルタイムチェスの画面。8×8の盤と白黒の駒、AIの強さや動かす間隔の設定。"></div><figcaption>実際のゲーム画面</figcaption></figure>
+        <div class="technology-cards"><article class="technology html-card"><span class="tech-number">1</span><div><h2>HTML ＋ CSS <small>盤と見た目</small></h2><p>64個のマス・駒・設定欄を表示。</p></div></article><article class="technology css-card"><span class="tech-number">2</span><div><h2>JavaScript <small>操作と通信</small></h2><p>クリックを送り、盤面を更新。</p></div></article><article class="technology js-card"><span class="tech-number">3</span><div><h2>Python <small>対局の判断</small></h2><p>動ける手・勝敗・AIの手を決める。</p></div></article></div>
+      </div>
+      <p class="takeaway"><span>ここがポイント</span>ブラウザーは操作と表示、Pythonは対局の状態と判断を担当する。</p>
+    </section>
+    <!-- 2ページ目：駒が動くまでのしくみ -->
+    <section class="slide illustrated-slide" id="page-2" aria-labelledby="title-2">
+      <div class="slide-heading"><p class="chapter">02 <span>駒が動くまでのしくみ</span></p><span class="topic">座標 / 通信 / JSON</span></div>
+      <h1 id="title-2" tabindex="-1">クリックした2つのマスを、Pythonへ。</h1>
+      <p class="lead">出発点と移動先を行・列の番号で送ります。</p>
+<ol class="flow" aria-label="処理の順番"><li><span>1</span><b>駒を選ぶ</b><small>出発点を記録</small></li><li><span>2</span><b>移動先を選ぶ</b><small>行・列を送信</small></li><li><span>3</span><b>Pythonが判定</b><small>動ける手か確認</small></li><li><span>4</span><b>盤面を更新</b><small>結果のJSONを表示</small></li></ol>
+      <div class="concept-layout">
+        <div class="diagram-panel communication" role="img" aria-label="ブラウザーからPythonへ出発点と移動先を送る。Pythonが判定し、盤面と状態のJSONを返す。"><div class="system-node"><b>ブラウザー</b><span>駒と移動先をクリック</span></div><div class="message-arrow">↓ 出発点・移動先 <small>POST /api/move</small></div><div class="system-node python-node"><b>Python</b><span>ルールを調べ、盤面を更新</span></div><div class="message-arrow return-arrow">↑ 盤面・対局の状態 <small>JSONで返す</small></div></div>
+        <div class="explain"><p class="big-equation">盤面は <strong>8行 × 8列のデータ</strong></p><p>どのマスに何の駒があるかを管理。<br>Pythonが移動を認めたら、<br>ブラウザーが駒の位置を変えます。</p><div class="canvas-note"><b>相手の動きも受け取る</b><p>約0.2秒ごとに状態を確認し、<br>AIの移動や待ち時間を表示します。</p></div></div>
+      </div>
+      <p class="takeaway"><span>ここがポイント</span>座標を送って結果を受け取ると、画面とPythonの処理をつなげられる。</p>
+    </section>
+    <!-- 3ページ目：ルールとAIのしくみ -->
+    <section class="slide illustrated-slide" id="page-3" aria-labelledby="title-3">
+      <div class="slide-heading"><p class="chapter">03 <span>ルールとAIのしくみ</span></p><span class="topic">合法手 / 待ち時間 / 評価</span></div>
+      <h1 id="title-3" tabindex="-1">動ける手を調べ、AIが候補を比べる。</h1>
+      <p class="lead">Pythonが、駒のルールと対局の進み方を管理します。</p>
+      <div class="rule-cards"><article class="rule-card "><span class="rule-label">動けるかを判定</span><div class="metric"><strong>8 × 8</strong><span>盤面のマス</span></div><h2>駒のルールを調べる</h2><p>駒ごとに動ける方向を確認。<br>自分のキングが危険になる<br>移動も防ぎます。</p><div class="condition">王手から逃げる手がなければ<br><b>チェックメイト</b></div></article><article class="rule-card collision-rule"><span class="rule-label">リアルタイム</span><div class="metric"><strong>0.5</strong><span>秒：初期の待ち時間</span></div><h2>交互のターン待ちなし</h2><p>自分の待ち時間が終われば<br>次の駒を動かせます。<br>AIは1秒ごとに動きます。</p><div class="condition">設定で待ち時間を変更<br><b>0〜1.5秒</b></div></article><article class="rule-card difficulty-rule"><span class="rule-label">AIの強さ</span><div class="ai-levels" role="img" aria-label="よわいはランダム中心、ふつうは手に点数、つよいは相手の返しも検討"><div>よわい <b>ランダム中心</b></div><div>ふつう <b>手に点数をつける</b></div><div>つよい <b>相手の返しも検討</b></div></div><h2>候補の手を比べる</h2><p>取れる駒・位置・安全性を<br>点数にして評価します。<br>強さで比べ方が変わります。</p><div class="condition">「つよい」では<br><b>相手の次の手も調べる</b></div></article></div>
+      <p class="takeaway"><span>ここがポイント</span>ルールを守る判定と、よい手を選ぶAIを組み合わせて対戦をつくる。</p>
+    </section>
+  </main>
+  <nav class="deck-controls" aria-label="ページ送り" hidden>
+    <button id="previous" class="page-button">← 前へ</button>
+    <div class="page-indicator"><div class="page-dots" aria-label="ページを選ぶ">
+      <button data-page="0" aria-label="1ページ目：画面をつくる技術" aria-current="page"></button>
+      <button data-page="1" aria-label="2ページ目：動くしくみ"></button>
+      <button data-page="2" aria-label="3ページ目：判定と数値"></button>
+    </div><span id="page-count" aria-live="polite">1 / 3</span></div>
+    <button id="next" class="page-button primary">次へ →</button>
+  </nav>
+  <p class="key-hint" hidden>キーボードの ← → でもページを切り替えられます</p>
+  <noscript><p>3ページを続けて表示しています。下へスクロールしてご覧ください。</p></noscript>
+</div>
+</body>
+</html>

@@ -20,10 +20,13 @@
         <h2 class="sr-only" id="library-title">ゲームを選ぶ</h2>
         <div class="menu-toolbar">
           <span id="count" class="ready-count" aria-live="polite">読み込み中…</span>
-          <div class="filters" aria-label="ゲームの種類">
-            <button class="selected" data-filter="all" aria-pressed="true">すべて</button>
-            <button data-filter="web" aria-pressed="false">Web</button>
-            <button data-filter="python" aria-pressed="false">Python</button>
+          <div class="menu-actions">
+            <div class="filters" aria-label="ゲームの種類">
+              <button class="selected" data-filter="all" aria-pressed="true">すべて</button>
+              <button data-filter="web" aria-pressed="false">Web</button>
+              <button data-filter="python" aria-pressed="false">Python</button>
+            </div>
+            <button id="home-fullscreen" class="menu-nav-button menu-fullscreen" aria-pressed="false" hidden>⛶ 全画面</button>
           </div>
         </div>
         <div class="grid arcade-grid" id="games" aria-live="polite"></div>
@@ -31,27 +34,13 @@
       </section>
     </main>
     <footer class="menu-nav">
-      <a href="/learn" class="menu-nav-button nav-learn" aria-label="まなぶ・学習コース">
-        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M7 14q12-6 25 1 13-7 25-1v37q-13-6-25 1-13-7-25-1Z" fill="#fff" stroke="#000" stroke-width="4" stroke-linejoin="round"/><path d="M32 16v35M14 24l11 2m-11 8 11 2m15-10 10-3m-10 13 10-3" stroke="#b71929" stroke-width="3" stroke-linecap="round"/><path d="m48 8 2 6 6 2-6 2-2 6-2-6-6-2 6-2Z" fill="#ee3544" stroke="#000" stroke-width="2"/></svg><span>まなぶ</span>
-      </a>
-      <button class="menu-nav-button nav-add" id="help">
-        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 25h48v29H8Z" fill="#ee3544" stroke="#000" stroke-width="4" stroke-linejoin="round"/><path d="M23 25v-8h18v8M8 36h48" fill="none" stroke="#000" stroke-width="4"/><path d="M38 6a14 14 0 0 0-15 18L9 43l8 8 18-17a14 14 0 0 0 18-16l-10 8-8-9Z" fill="#fff" stroke="#000" stroke-width="3" stroke-linejoin="round"/></svg><span>ゲームを追加</span>
-      </button>
       <button class="menu-nav-button nav-exit" id="exit">
         <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M13 9h37v46H13Z" fill="#fff" stroke="#000" stroke-width="4" stroke-linejoin="round"/><path d="m18 16 27-4v40l-27-7Z" fill="#ee3544" stroke="#000" stroke-width="3"/><circle cx="38" cy="34" r="3" fill="#fff"/><path d="M5 30h21m-7-7 7 7-7 7" fill="none" stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>終了</span>
       </button>
     </footer>
   </div>
-  <dialog id="game-info" class="help-dialog game-info">
-    <div class="info-heading"><span id="info-type" class="info-type"></span><button id="info-close" class="quiet" aria-label="遊び方を閉じる">閉じる ×</button></div>
-    <h2 id="info-title"></h2><p id="info-description"></p>
-    <p id="info-controls" class="info-controls"></p><p id="info-status"></p>
-    <button id="info-play" class="primary">プレイする ▶</button>
-    <div class="info-links"><a id="info-detail">紹介・技術</a><a id="info-slides">発表3ページ</a></div>
-    <small id="info-author"></small>
-  </dialog>
+  <dialog id="guide" class="guide-dialog" aria-label="ゲームの説明"><iframe id="guide-frame" title="ゲームの説明" sandbox="allow-scripts allow-same-origin"></iframe></dialog>
   <dialog id="player" class="player"><div class="player-top"><button id="back" class="back">← ゲーム一覧</button><div><strong id="player-title"></strong><span id="player-controls"></span></div><button id="fullscreen" class="quiet">全画面 ⛶</button></div><div class="play-area" id="play-area"><iframe id="game-frame" title="ゲーム" sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-downloads" allow="fullscreen; autoplay; gamepad" allowfullscreen></iframe></div></dialog>
-  <dialog id="help-dialog" class="help-dialog"><h2>ゲームを追加しよう</h2><ol><li>GitHubからゲームを <code>games/local/</code> にクローン。</li><li><code>games.json</code> のサンプルや空き枠を編集。</li><li>ランチャーを終了して、<code>start.bat</code> を再起動。</li></ol><p>Webは <code>static</code>、Pythonは <code>python</code>。<br>サーバーが必要なゲームは <code>service</code> で登録できます。</p><p class="help-note">表紙イラストやメニュー名も設定できます。詳しくは README.md をご覧ください。</p><button id="help-close" class="primary">わかりました</button></dialog>
   <dialog id="exit-dialog" class="help-dialog"><h2>アーケードを終了しますか？</h2><p>起動中のゲームもすべて終了します。</p><div class="dialog-actions"><button id="exit-cancel" class="quiet">戻る</button><button id="exit-confirm" class="primary">終了する</button></div></dialog>
   <div id="toast" class="toast" role="status" hidden></div>
 </body>

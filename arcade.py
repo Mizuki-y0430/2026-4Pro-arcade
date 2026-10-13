@@ -22,6 +22,15 @@ from learning_content import learning_file, load_curriculum, load_profile, resol
 
 ROOT = Path(__file__).resolve().parent
 KINDS = {"static", "python", "service"}
+# 説明を追加するときは、3ページのHTMLを作ってこの一覧に登録します。
+TECHNOLOGY_PAGES = {
+    "kosen-survivor": "kosen-technology.html",
+    "balloon-hunter": "balloon-technology.html",
+    "yuugure-fishing": "fishing-technology.html",
+    "realtime-chess": "chess-technology.html",
+    "brain-mole": "mole-technology.html",
+    "realtime-shogi": "shogi-technology.html",
+}
 
 
 def inside(root: Path, value: str) -> Path:
@@ -35,8 +44,8 @@ def inside(root: Path, value: str) -> Path:
 def load_games(root: Path, config: Path) -> list[dict]:
     data = json.loads(config.read_text(encoding="utf-8-sig"))
     games = data.get("games") if isinstance(data, dict) else None
-    if not isinstance(games, list) or not 1 <= len(games) <= 8:
-        raise ValueError("gamesには1〜8個のゲームを設定してください。")
+    if not isinstance(games, list) or not 1 <= len(games) <= 6:
+        raise ValueError("gamesには1〜6個のゲームを設定してください。")
     seen = set()
     for game in games:
         if not isinstance(game, dict):
@@ -394,6 +403,15 @@ class LauncherHandler(BaseHTTPRequestHandler):
         allowed["/assets/4PROARCADE_logo.png"] = "assets/4PROARCADE_logo.png"
         if re.fullmatch(r"/games/[a-z0-9-]+(?:/slides)?", path):
             allowed[path] = "showcase.html"
+        technology_match = re.fullmatch(r"/games/([a-z0-9-]+)/technology", path)
+        if technology_match:
+            if technology_match[1] not in self.server.manager.games:
+                self.send_error(404)
+                return
+            allowed[path] = TECHNOLOGY_PAGES.get(technology_match[1], "technology-pending.html")
+        allowed["/technology.css"] = "technology.css"
+        allowed["/technology.js"] = "technology.js"
+        allowed["/guide-navigation.js"] = "guide-navigation.js"
         if path not in allowed:
             self.send_error(404)
             return
@@ -407,7 +425,8 @@ class LauncherHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(content)))
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
-        self.send_header("X-Frame-Options", "DENY")
+        # 説明ページだけを同一オリジンのタイトル画面から表示できます。
+        self.send_header("X-Frame-Options", "SAMEORIGIN" if rules_match or technology_match else "DENY")
         self.end_headers()
         self.wfile.write(content)
 
