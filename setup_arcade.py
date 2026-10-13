@@ -1,4 +1,4 @@
-"""Fetch the five member games and prepare all six games on a new PC."""
+"""Validate bundled games and prepare all six games on a new PC."""
 from __future__ import annotations
 
 import argparse
@@ -33,6 +33,8 @@ def load_sources(root: Path):
         if not isinstance(gid, str) or gid not in registered or gid in seen:
             raise ValueError("ゲーム取得先のIDが未登録または重複しています。")
         seen.add(gid)
+        if type(source.get("bundled", False)) is not bool:
+            raise ValueError(f"{gid}: bundled はtrue/falseにしてください。")
         repository, branch, revision = (source.get(key) for key in ("repository", "branch", "revision"))
         if not isinstance(repository, str) or not re.fullmatch(r"https://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\.git", repository):
             raise ValueError(f"{gid}: 取得先にはGitHubのHTTPS URLを指定してください。")
@@ -71,12 +73,18 @@ def prepare_game(root: Path, game: dict, source: dict, check=False):
     if folder.exists():
         missing = missing_files(folder, source)
         if missing:
+            if source.get("bundled", False):
+                raise ValueError(f"{game['title']}: 同梱ファイル {', '.join(missing)} がありません。"
+                                 "4Pro Arcade本体を再ダウンロードしてください。")
             raise ValueError(f"{game['title']}: 既存フォルダに {', '.join(missing)} がありません。"
                              f"既存の内容は変更しません。READMEのWeb版取得手順を確認してください。\n  {folder}")
         print(f"[OK] {game['title']}: 取得済み（既存の変更・記録を保持）", flush=True)
         return
     if check:
         raise ValueError(f"{game['title']}: 未取得です。setup.bat を実行してください。")
+    if source.get("bundled", False):
+        raise ValueError(f"{game['title']}: 同梱ファイルがありません。4Pro Arcade本体を再ダウンロードしてください。"
+                         "元の非公開リポジトリへのアクセスは不要です。")
     git = shutil.which("git")
     if not git:
         raise ValueError("Gitが見つかりません。Git for Windowsをインストールし、setup.batを再実行してください。")
@@ -141,7 +149,7 @@ def prepare(root: Path, check=False):
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stderr.reconfigure(encoding="utf-8")
-    parser = argparse.ArgumentParser(description="4Pro Arcadeの全ゲームを自動取得・セットアップ")
+    parser = argparse.ArgumentParser(description="4Pro Arcadeの同梱ゲームを確認・セットアップ")
     parser.add_argument("--check", action="store_true", help="ネット取得やインストールをせず準備状況を確認")
     args = parser.parse_args()
     if sys.version_info < (3, 11):

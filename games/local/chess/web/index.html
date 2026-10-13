@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#79d8ef">
+  <title>リアルタイムチェス</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="heading">
+      <div><p class="eyebrow">MOVE AT YOUR OWN PACE!</p><h1><span aria-hidden="true">♞</span> リアルタイムチェス</h1></div>
+      <div class="actions"><button id="start" class="primary" disabled>スタート ▶</button><button id="reset" disabled>リセット ↺</button></div>
+    </header>
+    <div class="options" aria-label="対局設定">
+      <label>遊び方<select id="mode" disabled><option value="ai">AI対戦・あなたは白</option><option value="aivsai">AI同士を観戦</option></select></label>
+      <label>AIの強さ<select id="level" disabled><option value="weak">よわい</option><option value="normal" selected>ふつう</option><option value="strong">つよい</option></select></label>
+      <label class="cooldown-option">動かす間隔 <output id="cooldown-value">0.5秒</output><input id="cooldown" type="range" min="0" max="1500" step="100" value="500" disabled></label>
+      <label class="animation-option"><input id="animation" type="checkbox" checked disabled>駒アニメーション</label>
+    </div>
+    <div id="notice" class="notice" role="status" hidden></div>
+    <div class="play-layout">
+      <section class="board-area" aria-label="チェス盤">
+        <div class="board-wrap"><div id="board" class="board" role="group" aria-label="8×8のチェス盤"></div><div id="countdown" class="countdown" hidden aria-live="polite"></div></div>
+        <p class="hint"><span id="play-hint">白の駒 → 移動先をクリック。ターン待ちはありません。</span><br><span id="key-hint">矢印キーでマス移動・Enterで選択 / Q・Escで停止</span></p>
+      </section>
+      <aside class="side">
+        <section class="status-panel"><p class="panel-label">いまの対局</p><h2 id="status" aria-live="polite">接続中…</h2><p id="status-detail">少し待ってください。</p><p id="matches" class="matches">白 0勝 / 黒 0勝 / 引分 0</p></section>
+        <section class="cooldown-panel"><p class="panel-label">次に動かせるまで</p><div><span id="white-cd">白：準備中</span><progress id="white-bar" max="100" value="0" aria-label="白のクールタイム"></progress></div><div><span id="black-cd">黒：準備中</span><progress id="black-bar" max="100" value="0" aria-label="黒のクールタイム"></progress></div></section>
+        <section class="capture-panel"><p class="panel-label">取った駒</p><p>白 <span id="white-captures">—</span></p><p>黒 <span id="black-captures">—</span></p></section>
+        <details class="history-panel" open><summary>棋譜 <span id="move-count">0手</span></summary><ol id="history" aria-label="これまでの移動"></ol></details>
+      </aside>
+    </div>
+    <footer>原作：<a href="https://github.com/k4m4b0k02009/chess" target="_blank" rel="noopener noreferrer">k4m4b0k02009</a> · Web対応：yamamoto</footer>
+  </main>
+  <dialog id="promotion"><h2>昇格する駒を選ぼう</h2><p>ポーンが一番奥まで進みました。</p><div class="promotion-options"><button data-promotion="Q">♕ クイーン</button><button data-promotion="R">♖ ルーク</button><button data-promotion="B">♗ ビショップ</button><button data-promotion="N">♘ ナイト</button></div><button id="promotion-cancel">キャンセル</button></dialog>
+  <script src="game.js"></script>
+</body>
+</html>

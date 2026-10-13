@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e8f4ee">
+  <title>こうせんサバイバー | たんいをあつめてりゅうねんかいひ！</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="festival-mark"><span class="festival-mark-icon">〰</span> <ruby>高専祭<rt>こうせんさい</rt></ruby></div>
+      <div class="best"><ruby>最高<rt>さいこう</rt></ruby><ruby>取得数<rt>しゅとくすう</rt></ruby> <b id="best">000</b></div>
+    </header>
+    <section class="game-layout">
+      <div class="game-column">
+        <div class="stats">
+          <div class="stat"><span class="stat-label"><ruby>単位<rt>たんい</rt></ruby><ruby>取得数<rt>しゅとくすう</rt></ruby></span><strong id="score">000</strong></div>
+          <div class="stat"><span class="stat-label"><ruby>体<rt>からだ</rt></ruby>の<ruby>長<rt>なが</rt></ruby>さ</span><strong id="length">03</strong></div>
+          <div class="stat danger-stat"><span class="stat-label"><ruby>危険度<rt>きけんど</rt></ruby></span><strong id="danger">低</strong></div>
+          <div class="stat effect-stat"><span class="stat-label"><ruby>効果<rt>こうか</rt></ruby></span><strong id="effect-status">なし</strong></div>
+        </div>
+        <div class="board-wrap">
+          <canvas id="game" width="768" height="480" aria-label="りゅうねんをさけてたんいをあつめるゲームがめん"></canvas>
+          <div class="overlay hidden" id="overlay">
+            <div class="overlay-card">
+              <div class="eyebrow" id="overlay-eyebrow">READY?</div>
+              <h1 id="overlay-title"><ruby>単位<rt>たんい</rt></ruby>を<ruby>集<rt>あつ</rt></ruby>めて、<br><em><ruby>留年<rt>りゅうねん</rt></ruby><ruby>回避<rt>かいひ</rt></ruby>。</em></h1>
+              <p id="overlay-copy"><ruby>四方<rt>しほう</rt></ruby>から<ruby>飛<rt>と</rt></ruby>んでくる「<ruby>留年<rt>りゅうねん</rt></ruby>」をかわし、<br>「<ruby>単位<rt>たんい</rt></ruby>」を<ruby>集<rt>あつ</rt></ruby>めて<ruby>体<rt>からだ</rt></ruby>を<ruby>伸<rt>の</rt></ruby>ばそう！</p>
+              <div class="difficulty-control"><span>難易度</span><div class="difficulty-picker" role="group" aria-label="なんいどをせんたく"><button type="button" data-difficulty="easy" aria-pressed="false">かんたん</button><button type="button" data-difficulty="normal" aria-pressed="true">ふつう</button><button type="button" data-difficulty="hard" aria-pressed="false">むずかしい</button></div></div>
+              <button id="start" class="primary">START GAME <span>→</span></button>
+              <div class="keys-hint"><ruby>移動<rt>いどう</rt></ruby> <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> · SPACEでスタート</div>
+            </div>
+          </div>
+        </div>
+        <div class="mobile-controls" aria-label="ほうこうそうさ">
+          <button data-dir="up" aria-label="うえ">▲</button>
+          <div><button data-dir="left" aria-label="ひだり">◀</button><button data-dir="down" aria-label="した">▼</button><button data-dir="right" aria-label="みぎ">▶</button></div>
+        </div>
+        <div class="bottomline"><span><ruby>矢印<rt>やじるし</rt></ruby>キー / WASDで<ruby>移動<rt>いどう</rt></ruby> · SPACEでスタート・<ruby>再開<rt>さいかい</rt></ruby></span><span>2<ruby>単位<rt>たんい</rt></ruby>で<ruby>体<rt>からだ</rt></ruby>が1マス<ruby>伸<rt>の</rt></ruby>びる</span></div>
+        <details class="quick-panel">
+          <summary>アイテムの<ruby>効果<rt>こうか</rt></ruby>・<ruby>記録<rt>きろく</rt></ruby>を見る</summary>
+          <div class="quick-content">
+            <div class="item-help"><span>🛡 まもり：<ruby>留年<rt>りゅうねん</rt></ruby>を1回ふせぐ</span><span>◷ ゆっくり：<ruby>留年<rt>りゅうねん</rt></ruby>の<ruby>動<rt>うご</rt></ruby>きを7<ruby>秒<rt>びょう</rt></ruby>おそくする</span><span>⌑ ひきよせ：<ruby>近<rt>ちか</rt></ruby>くの<ruby>単位<rt>たんい</rt></ruby>を8<ruby>秒<rt>びょう</rt></ruby><ruby>間<rt>かん</rt></ruby><ruby>引<rt>ひ</rt></ruby>きよせる</span><span>💥 <ruby>一掃<rt>いっそう</rt></ruby>：<ruby>画面<rt>がめん</rt></ruby>の「<ruby>留年<rt>りゅうねん</rt></ruby>」をすべて<ruby>消<rt>け</rt></ruby>す</span><span>⭐ <ruby>単位<rt>たんい</rt></ruby>ボーナス：<ruby>単位<rt>たんい</rt></ruby>を2つ<ruby>取得<rt>しゅとく</rt></ruby>して、<ruby>体<rt>からだ</rt></ruby>も1マス<ruby>伸<rt>の</rt></ruby>びる</span></div>
+            <div class="leaderboard-panel"><div class="section-kicker">HIGH SCORES · TOP 3</div><div class="leaderboard-head"><span></span><span>1ST</span><span>2ND</span><span>3RD</span></div><div class="leaderboard-row"><b>かんたん</b><span id="hs-easy-0">---</span><span id="hs-easy-1">---</span><span id="hs-easy-2">---</span></div><div class="leaderboard-row"><b>ふつう</b><span id="hs-normal-0">---</span><span id="hs-normal-1">---</span><span id="hs-normal-2">---</span></div><div class="leaderboard-row"><b>むずかしい</b><span id="hs-hard-0">---</span><span id="hs-hard-1">---</span><span id="hs-hard-2">---</span></div></div>
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>

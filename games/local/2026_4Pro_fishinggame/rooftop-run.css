@@ -1,0 +1,206 @@
+/* 色や共通値を変数にまとめ、配色を一か所で管理します。 */
+:root {
+  --ink:#192744;
+  --cream:#fff9ed;
+  --orange:#ff8a4c;
+  --mint:#9ce2d0;
+}
+* {
+  box-sizing:border-box;
+}
+body {
+  margin:0;
+  min-height:100vh;
+  padding:22px;
+  background:#f6e8d2;
+  color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  display:grid;
+  place-items:center;
+}
+/* ゲーム全体のカードと、画面幅に応じたレイアウトです。 */
+.game {
+  width:min(100%,1000px);
+  background:var(--cream);
+  border:3px solid var(--ink);
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:0 12px 0 var(--ink);
+}
+header {
+  padding:17px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+}
+.brand {
+  font-size:clamp(21px,4vw,30px);
+  font-weight:1000;
+  letter-spacing:.04em;
+}
+.brand small {
+  display:block;
+  color:#79809a;
+  font-size:11px;
+  letter-spacing:.2em;
+}
+.stats {
+  display:flex;
+  gap:8px;
+}
+.pill {
+  background:#e8f0e9;
+  border-radius:13px;
+  padding:8px 13px;
+  font-weight:900;
+  white-space:nowrap;
+}
+/* canvasを置くゲーム画面と、開始・終了オーバーレイです。 */
+.scene {
+  position:relative;
+  background:#faaf78;
+  line-height:0;
+}
+canvas {
+  width:100%;
+  height:auto;
+  display:block;
+}
+.overlay {
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:#18274499;
+  text-align:center;
+  padding:18px;
+  line-height:1.5;
+  color:var(--ink);
+}
+.overlay.hidden {
+  display:none;
+}
+.card {
+  background:#fff9ed;
+  border:3px solid var(--ink);
+  border-radius:22px;
+  padding:22px 30px;
+  max-width:440px;
+  box-shadow:0 7px 0 #192744;
+}
+.card h1 {
+  font-size:clamp(24px,5vw,36px);
+  margin:0 0 5px;
+}
+.card p {
+  line-height:1.75;
+  margin:8px 0 15px;
+}
+.card button,.action {
+  font:inherit;
+  font-weight:950;
+  border:0;
+  border-radius:13px;
+  padding:12px 20px;
+  cursor:pointer;
+  background:var(--orange);
+  color:#382b35;
+  box-shadow:0 4px #c95d39;
+}
+/* 状況メッセージと、ジャンプ／しゃがむ操作です。 */
+.bottom {
+  padding:16px 22px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+}
+.message {
+  font-weight:900;
+}
+.hint {
+  font-size:13px;
+  color:#727b93;
+  margin-top:4px;
+}
+.buttons {
+  display:flex;
+  gap:8px;
+}
+.action {
+  padding:10px 14px;
+  background:#d8eee2;
+  box-shadow:0 4px #8bbcac;
+}
+.action.jump {
+  background:#ffc564;
+  box-shadow:0 4px #d19535;
+}
+/* 障害物の色と避け方を説明する凡例です。 */
+.legend {
+  border-top:2px dashed #e1d8c8;
+  padding:11px 22px 14px;
+  display:flex;
+  gap:9px 16px;
+  flex-wrap:wrap;
+  color:#65708a;
+  font-weight:750;
+  font-size:13px;
+}
+.legend span {
+  white-space:nowrap;
+}
+.swatch {
+  display:inline-block;
+  width:13px;
+  height:13px;
+  border-radius:4px;
+  vertical-align:-2px;
+  margin-right:4px;
+}
+/* 小さい画面では余白やボタン配置を調整します。 */
+@media(max-width:620px) {
+  body {
+    padding:9px;
+  }
+  .game {
+    border-radius:17px;
+  }
+  header {
+    padding:13px 14px;
+    align-items:flex-start;
+  }
+  .stats {
+    gap:4px;
+  }
+  .pill {
+    padding:7px 8px;
+    font-size:12px;
+  }
+  .bottom {
+    padding:14px;
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .buttons {
+    width:100%;
+  }
+  .action {
+    flex:1;
+  }
+  .legend {
+    padding:10px 14px;
+  }
+}
+
+/* 凡例に表示する障害物ごとの色です。 */
+.swatch.fan {
+  background:#f5bd51;
+}
+.swatch.sign {
+  background:#75d9dc;
+}
+.swatch.drone {
+  background:#f4797c;
+}

@@ -77,6 +77,11 @@ class SetupTests(unittest.TestCase):
         run.assert_not_called()
         self.assertFalse(self.folder.exists())
 
+    def test_missing_bundled_game_does_not_access_private_repository(self):
+        with patch("setup_arcade.run") as run, self.assertRaisesRegex(ValueError, "本体を再ダウンロード"):
+            prepare_game(self.root, self.game, {**self.source, "bundled": True})
+        run.assert_not_called()
+
     def test_failed_clone_reports_access_and_can_be_retried(self):
         with patch("setup_arcade.shutil.which", return_value="git"), patch("setup_arcade.run", side_effect=subprocess.CalledProcessError(128, "git")):
             with self.assertRaisesRegex(ValueError, "閲覧権限"):

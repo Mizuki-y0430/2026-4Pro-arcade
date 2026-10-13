@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ROOFTOP RUN｜屋上ランナー</title>
+<link rel="stylesheet" href="rooftop-run.css">
+</head>
+<body>
+<main class="game">
+<!-- 距離、ベスト記録、現在の速度を表示します。 -->
+<header>
+<div class="brand">ROOFTOP RUN<small>夕焼けの屋上ランナー</small>
+</div>
+<div class="stats">
+<div class="pill">距離 <span id="distance">0</span> m</div>
+<div class="pill">ベスト <span id="best">0</span> m</div>
+<div class="pill">速度 <span id="speed">1</span>
+</div>
+</div>
+</header>
+<!-- canvasにゲームを描き、その上に開始・終了画面を重ねます。 -->
+<section class="scene">
+<canvas id="game" width="960" height="500" aria-label="ビルの屋上を走るゲーム"></canvas>
+<div id="overlay" class="overlay">
+<div class="card">
+<h1 id="title">屋上ランナー</h1>
+<p id="intro">ビルからビルへ飛び移り、障害物をよけて走ろう！<br>走る人の動きや街の景色も距離に合わせて変わるよ。</p>
+<button id="start">走り出す</button>
+</div>
+</div>
+</section>
+<!-- メッセージと操作ボタンです。 -->
+<section class="bottom">
+<div>
+<div id="message" class="message">ジャンプとスライディングで障害物を回避！</div>
+<div class="hint">Space / ↑：ジャンプ　　↓：しゃがむ　　タップ：ジャンプ</div>
+</div>
+<div class="buttons">
+<button class="action jump" id="jump">ジャンプ ↑</button>
+<button class="action" id="slide">しゃがむ ↓</button>
+</div>
+</section>
+<!-- 障害物ごとの避け方を画面下に表示します。 -->
+<footer class="legend">
+<span>
+<i class="swatch fan"></i>換気扇：跳び越える</span>
+<span>
+<i class="swatch sign"></i>看板：くぐる</span>
+<span>
+<i class="swatch drone"></i>ドローン：動きを見て避ける</span>
+<span>屋上のすき間は大ジャンプ！</span>
+</footer>
+</main>
+<script src="rooftop-run.js" defer></script>
+</body>
+</html>

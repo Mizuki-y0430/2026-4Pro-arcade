@@ -1,0 +1,15 @@
+{
+  "bg_rgb": [
+    20,
+    15,
+    25
+  ],
+  "accent_rgb": [
+    235,
+    130,
+    20
+  ],
+  "custom_time": 45,
+  "custom_lives": 3,
+  "font_idx": 0
+}

@@ -6,9 +6,9 @@ Windows + Python 3.11以上 + 現行のEdge / Chromeを想定しています。
 
 ## 起動
 
-別の人・別のPCで全体を使う場合の手順は **[4Pro Arcadeを別のPCで遊ぶ](PLAYING.md)** にまとめています。本体を1回クローンし、`setup.bat` → `start.bat` の順で実行すれば全6ゲームを準備できます。
+別の人・別のPCで全体を使う場合の手順は **[4Pro Arcadeを別のPCで遊ぶ](PLAYING.md)** にまとめています。本体を1回クローンし、`setup.bat` → `start.bat` の順で実行すれば全6ゲームを準備できます。全作品を同梱しているため、各メンバーの非公開リポジトリへの権限は不要です。
 
-1. 初回は `setup.bat` をダブルクリックします。`.venv` を作り、別管理の5作品と必要なパッケージを自動取得します。Python 3.11以上、Git、ネット接続と各リポジトリの閲覧権限が必要です。
+1. 初回は `setup.bat` をダブルクリックします。`.venv` を作り、同梱の全6作品を確認して必要なパッケージを準備します。Python 3.11以上と、初回のパッケージ取得用のネット接続が必要です。
 2. `start.bat` をダブルクリックします。ブラウザーに6枠のメニューが開きます。
 3. ゲームを選択します。Webゲームはメニュー内、Pythonのデスクトップゲームは別ウィンドウで動きます。
 4. Webゲームの「← ゲーム一覧」でゲームを停止して戻ります。Pythonゲームはゲームのウィンドウを閉じるか、カードの「停止する」で終了します。
@@ -16,7 +16,7 @@ Windows + Python 3.11以上 + 現行のEdge / Chromeを想定しています。
 
 **ブラウザーのタブを閉じるだけではランチャーは終了しません。** メニューの「終了」、または起動したターミナルで `Ctrl+C` を使ってください。
 
-`.venv` と別管理のゲームはGit管理対象外です。他のPCでは `setup.bat` が準備します。`start.bat` から始めても、不足があると自動でセットアップします。準備済みのゲーム・記録・制作途中の編集は上書きしません。
+ゲーム本体はすべてGit管理対象です。`.venv` とプレイ記録は管理対象外で、他のPCでは `setup.bat` が実行環境を準備します。`start.bat` から始めても、不足があると自動でセットアップします。準備済みのゲーム・記録・制作途中の編集は上書きしません。
 Pythonサンプルはブラウザー内で動きます。元のTkinter版も `games/samples/reaction-lab/main.py` に残しています。元の版を使う場合とテストには Tcl/Tk が必要です。
 
 ## 現在のゲーム一覧
@@ -78,70 +78,17 @@ Tkinter版を試す場合は、その枠を `"kind": "python"`, `"entry": "main.
 
 ランチャーを終了してから登録してください。変更は次の起動時に読み込まれます。
 
-### 1. GitHubからクローン
+### 1. ゲーム本体と出典
 
-PowerShellでこのフォルダに移動し、各メンバーのURLに置き換えて実行します。
+現在の6作品は本体にすべて同梱しています。ゲーム1〜5は `games/local/`、将棋は `games/realtime-shogi/` にあります。クローンまたはZIP取得で全体が揃い、元の非公開リポジトリへのアクセスは不要です。
 
-```powershell
-git clone https://github.com/MEMBER/GAME-REPO.git games/local/member-game
-```
+出典と取り込み元のコミットは [同梱ゲームの出典](games/local/README.md) と `game-sources.json` に記録しています。現在のゲームソースはこの本体リポジトリで管理します。更新は本体の `git pull --ff-only` で取得してください。
 
-`games/local/` 内のクローンは、このリポジトリのGit管理から除外しています。
-各ゲームは独立したリポジトリとして、必要に応じて `git -C games/local/member-game pull` で更新できます。
-各ゲームの依存パッケージ、アセット、起動方法はそのゲームのREADMEに従って準備してください。
-このランチャーのリポジトリをクローンした直後は、メンバーのゲームはまだありません。`setup.bat` が `game-sources.json` の取得先と確認済みコミットから自動取得します。以下の個別クローン手順は、開発や手動セットアップ向けです。
+新しい作品を取り込む際も、ソース・画像・必要なデータを本体に含めます。別リポジトリの `.git`、仮想環境、キャッシュ、個人のプレイ記録、環境変数ファイルは含めません。
 
-GitHub Actionsではユニットテスト、`games.json` の形式・パス・資料の検証、同梱サンプルの起動設定確認を行います。別管理のメンバー作品の動作確認は、各リポジトリをクローンしたPCで行います。CI用のサンプル登録は `.github/sample-games.json` に分け、通常のゲーム一覧には表示しません。
+モグラたたきの問題は `games/local/tesuto/data/questions.xlsx` で管理します。Web版は `openpyxl` を使い、Pygameは不要です。設定とランキングは `.web-data/` に保存され、Git管理対象から除外しています。将棋・チェスはPython標準ライブラリだけで動きます。
 
-現在登録済みの「こうせんサバイバー」は、別のPCでは次のコマンドで用意します（このランチャーのフォルダ内で実行）。すでにクローン済みなら再実行は不要です。
-
-```powershell
-git clone https://github.com/gkykw5cyzc-alt/2026-4Pro-ishida.git games/local/2026-4Pro-ishida
-```
-
-このゲームはHTML / CSS / JavaScriptで動き、追加パッケージやビルドは不要です。
-
-ゲーム2の「ふうせんハンター」も、別のPCでは次のコマンドで用意します。クローン済みなら再実行は不要です。追加パッケージやビルドは不要で、`index.html` だけで動きます。
-
-```powershell
-git clone https://github.com/hi-1505/3hu.git games/local/3hu
-```
-
-ゲーム3の「ゆうぐれ釣り日和」は、別のPCでは次のコマンドで用意します。クローン済みなら `git -C games/local/2026_4Pro_fishinggame pull --ff-only` で更新してください。
-
-```powershell
-git clone https://github.com/yuu-rgb000/2026_4Pro_fishinggame.git games/local/2026_4Pro_fishinggame
-```
-
-HTML / CSS / JavaScriptで動くため、追加パッケージやビルドは不要です。`index.html` が釣りゲームの起動ファイルです。同じリポジトリの `rooftop-run.html` は別のゲームで、今回のゲーム3には登録していません。
-
-60秒以内に魚を釣り、匹数と得点を伸ばします。Spaceまたは「投げる」で仕掛けを投げ、HITが表示されたらEnterまたは「合わせる」を押します。魚ごとに得点と合わせる猶予が異なります。終了後は「もう一度遊ぶ」で再挑戦できます。ゲーム一覧から起動すると、ブラウザー内のゲーム画面で遊べます。
-
-ゲーム4の「リアルタイムチェス」は次のコマンドで用意します。クローン済みなら再実行は不要です。
-
-```powershell
-git clone --branch yamamoto/web-chess https://github.com/k4m4b0k02009/chess.git games/local/chess
-```
-
-Web対応はGitHubの `yamamoto/web-chess` ブランチで共有しています。別のPCでは上のコマンドでWeb版を取得できます。元のPython版は `main` に残しています。変更内容は[チェスのWeb対応Pull Request](https://github.com/k4m4b0k02009/chess/pull/1)で確認できます。
-
-ランチャーの `.venv` のPythonで `web.py` を起動し、ブラウザー内に表示します。追加パッケージ・ビルド・TkinterはWeb版には不要です。元のPython / Tkinter版は残してあり、`chess.py` または `python -m chess` で起動できます。両方の版で作者のルール・AIを共通利用します。詳細は `games/local/chess/README.md` を参照してください。
-
-ゲーム5の「デス・モグラたたき」（`tesuto`）は、Python + Web版で画面内に表示します。問題・得点・時間はPythonで管理し、回答や設定の画面はHTML / CSS / JavaScriptで表示します。ランチャーの `.venv` を使います。問題をExcelから読み込むため `openpyxl` が必要です。PygameはWeb版には不要です。tesutoのクローン後に `setup.bat` を実行するとExcel読込用パッケージをインストールします。
-
-Web版のファイルは `tesuto` リポジトリの `yamamoto/web-mole` ブランチにあります。GitHubで共有しています。別のPCでは次のコマンドで取得できます。
-
-```powershell
-git clone --branch yamamoto/web-mole https://github.com/painaplle/tesuto.git games/local/tesuto
-```
-
-クローン済みの場合は、そのリポジトリで `git fetch origin` と `git switch --track origin/yamamoto/web-mole` を実行します（ローカルに同名ブランチがある場合は `git switch yamamoto/web-mole`）。
-
-正解のモグラをクリック・タップして回答します。1〜9 / 0で分野を選択、Spaceで開始、Sで設定、Rでランキング、Escでメニューに戻ります。設定画面のEscは保存して戻ります。時間・ライフ・色・文字スタイルを変更でき、分野別のランキングも表示できます。
-
-Web版は初回に元の設定・記録を読み、`games/local/tesuto/.web-data/` にWeb専用のコピーを保存します。以後の更新・記録消去は元の `mole_settings.json` / `mole_rankings.json` に影響しません。Pygame版も起動でき、このブランチではWeb版と同じExcelから出題します。元の作品はtesutoの `main` ブランチに残っています。元の版に必要なPython 3.12用の仮想環境 `.game-venvs/tesuto/` と `requirements/tesuto.txt` も残しています。Web版の構成と起動方法は `games/local/tesuto/README.md` を参照してください。
-
-モグラたたきの問題は `games/local/tesuto/data/questions.xlsx` で管理します。「問題一覧」に問題文・正解・不正解・有効／無効を入力し、「分野設定」で分野名やLv.1の自動計算の範囲を変更できます。保存後、次のゲーム開始時に読み直します。編集手順はtesutoのREADMEに記載しています。ゲームはExcelを読み取るだけで、設定・ランキングはJSONへ保存します。
+GitHub Actionsでランチャー・セットアップ・将棋のテストと、同梱ゲームの設定・ファイルの確認を行います。
 
 ### 2. `games.json` の枠を書き換える
 
@@ -256,7 +203,7 @@ Flaskの例です。ゲームの依存パッケージはあらかじめインス
 
 開発ブランチ: `codex/pop-blue-arcade`（`codex/arcade-launcher`から分岐）。初期状態のGitHubリポジトリは空でした。
 このブランチにランチャー本体、サンプル、設定、テストをコミットします。
-`.venv`、`.logs`、メンバーのクローンはGit管理対象外です。GitHubへのpushは別途行ってください。
+`.venv`、`.logs`、別リポジトリのGit内部情報、個人のプレイ記録はGit管理対象外です。GitHubへのpushは別途行ってください。
 
 ```powershell
 git status
@@ -273,14 +220,14 @@ GitHub ActionsでもWindows + Python 3.11でバックエンドのテストを実
 ├── .venv/                    # このPCのPython仮想環境（Git対象外）
 ├── arcade.py                 # ローカルHTTPとゲーム起動・停止の管理
 ├── games.json                # 最大6枠の設定
-├── game-sources.json         # 別管理の5作品の取得先・確認済みコミット
-├── setup_arcade.py           # 全作品の自動取得・パッケージ導入・準備確認
-├── PLAYING.md                # 別の人・別PCで遊ぶ手順と必要な閲覧権限
+├── game-sources.json         # 同梱5作品の出典・取り込み元コミット
+├── setup_arcade.py           # 同梱作品の確認・パッケージ導入
+├── PLAYING.md                # 別の人・別PCで遊ぶ手順
 ├── launcher/                 # 共通メニューのHTML / CSS / JS
 ├── games/
 │   ├── samples/              # Web / Pythonサンプル
 │   ├── realtime-shogi/       # 同梱のリアルタイム将棋
-│   └── local/                # メンバーのゲームをクローン（Git対象外）
+│   └── local/                # 同梱するメンバーのゲーム（Git管理対象）
 ├── tests/                    # 設定・HTTP・プロセス管理のテスト
 ├── .logs/                    # ゲームの実行ログ（Git対象外）
 ├── setup.bat

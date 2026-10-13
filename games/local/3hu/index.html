@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#83d8ff">
+  <title>ふうせんハンター</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17345b;
+      --muted: #c7d9f5;
+      --panel: rgba(24, 58, 105, .76);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: ui-rounded, "Hiragino Maru Gothic ProN", "Yu Gothic UI", system-ui, sans-serif;
+      color: var(--ink);
+      background: #83d8ff;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      touch-action: manipulation;
+    }
+
+    #game {
+      position: relative;
+      width: min(100vw, 177.78vh);
+      height: min(100vh, 56.25vw);
+      min-height: 360px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #70cfff 0%, #a4e4ff 58%, #e5f9ff 100%);
+      isolation: isolate;
+      user-select: none;
+    }
+
+    #game::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse at 50% 87%, rgba(255, 241, 190, .45), transparent 38%),
+        radial-gradient(ellipse at 18% 24%, rgba(255, 255, 255, .35), transparent 26%),
+        radial-gradient(ellipse at 78% 38%, rgba(255, 255, 255, .24), transparent 22%);
+    }
+
+    .hill {
+      position: absolute;
+      bottom: -16%;
+      width: 75%;
+      height: 36%;
+      border-radius: 50% 50% 0 0;
+      background: #79bd79;
+      z-index: -1;
+    }
+
+    .hill.left {
+      left: -20%;
+      transform: rotate(5deg);
+    }
+
+    .hill.right {
+      right: -20%;
+      height: 29%;
+      background: #91cd83;
+      transform: rotate(-5deg);
+    }
+
+    header {
+      position: absolute;
+      top: 5%;
+      left: 5%;
+      right: 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      z-index: 4;
+    }
+
+    .brand {
+      font-size: clamp(18px, 2.4vw, 30px);
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-shadow: 0 3px 14px #0a1230;
+    }
+
+    .brand small {
+      display: block;
+      color: #315d88;
+      font-size: clamp(10px, 1.1vw, 13px);
+      font-weight: 700;
+      letter-spacing: .12em;
+      margin-top: 3px;
+    }
+
+    .scoreboard {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 10px;
+    }
+
+    .stat {
+      min-width: 88px;
+      padding: 9px 14px;
+      border-radius: 16px;
+      background: var(--panel);
+      border: 1px solid #ffffff22;
+      box-shadow: 0 8px 24px #07102a33;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+    }
+
+    .stat b {
+      display: block;
+      font-size: clamp(20px, 2.2vw, 27px);
+      line-height: 1.2;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .average-note {
+      color: #17345b;
+      font-size: 12px;
+      font-weight: 700;
+      text-shadow: 0 1px 5px #fff;
+    }
+
+    .average-note b {
+      font-variant-numeric: tabular-nums;
+    }
+
+    #field {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .balloon {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: var(--size);
+      height: calc(var(--size) * 1.22);
+      border-radius: 50% 50% 46% 46%;
+      background:
+        radial-gradient(ellipse at 32% 25%, #ffffffc7 0 4%, #ffffff50 5% 11%, transparent 12%),
+        radial-gradient(ellipse at 35% 25%, #ffffff45, transparent 44%),
+        var(--color);
+      box-shadow: inset -8px -10px 15px #0002, 0 8px 20px #07102a42;
+      transform: translate(-50%, -50%);
+      cursor: crosshair;
+      animation: sway var(--sway, 2.5s) ease-in-out infinite alternate;
+      will-change: transform;
+    }
+
+    .balloon::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -5px;
+      transform: translateX(-50%);
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 8px solid var(--color);
+      filter: brightness(.83);
+    }
+
+    .balloon::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      width: 1px;
+      height: var(--string, 46px);
+      background: #f7f2d899;
+      transform: translateX(-50%);
+      transform-origin: top;
+      animation: string 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes sway {
+      from { margin-left: -5px; }
+      to { margin-left: 5px; }
+    }
+
+    @keyframes string {
+      from { transform: translateX(-50%) rotate(-5deg); }
+      to { transform: translateX(-50%) rotate(5deg); }
+    }
+
+    .pop {
+      position: absolute;
+      pointer-events: none;
+      font-size: 25px;
+      font-weight: 900;
+      color: #fff;
+      animation: pop .48s ease-out forwards;
+      text-shadow: 0 2px 10px #172448;
+    }
+
+    .spark {
+      position: absolute;
+      pointer-events: none;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--spark);
+      animation: spark .55s ease-out forwards;
+    }
+
+    @keyframes pop {
+      to {
+        transform: translateY(-32px) scale(1.4);
+        opacity: 0;
+      }
+    }
+
+    @keyframes spark {
+      to {
+        transform: translate(var(--dx), var(--dy)) scale(0);
+        opacity: 0;
+      }
+    }
+
+    .bottom {
+      position: absolute;
+      bottom: 4%;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 3;
+      color: #e4eaff;
+      font-size: clamp(12px, 1.25vw, 15px);
+      text-shadow: 0 2px 8px #08112c;
+      opacity: .85;
+    }
+
+    .bottom span {
+      padding: 8px 14px;
+      border-radius: 20px;
+      background: #101a3b55;
+      backdrop-filter: blur(5px);
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      display: grid;
+      place-items: center;
+      background: rgba(37, 111, 165, .16);
+      backdrop-filter: blur(5px);
+      transition: opacity .25s;
+    }
+
+    .overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .card {
+      width: min(440px, 88%);
+      padding: clamp(24px, 5vw, 42px);
+      border: 1px solid #ffffff2e;
+      border-radius: 28px;
+      background: linear-gradient(145deg, #23396bd9, #172650ed);
+      box-shadow: 0 24px 80px #070e25a6;
+      text-align: center;
+    }
+
+    .eyebrow {
+      color: #a9bcf1;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .22em;
+    }
+
+    .card h1 {
+      color: #fff;
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.15;
+      margin: 12px 0 14px;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, .15);
+    }
+
+    .card p {
+      color: #d0daf4;
+      line-height: 1.8;
+      margin: 0 auto 24px;
+      max-width: 330px;
+    }
+
+    .primary {
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 34px;
+      background: linear-gradient(135deg, #ffcf5d, #ff8d69);
+      color: #24294b;
+      font: inherit;
+      font-weight: 900;
+      font-size: 17px;
+      cursor: pointer;
+      box-shadow: 0 8px 24px #ff9b5c55;
+      transition: transform .15s, filter .15s;
+    }
+
+    .primary:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+    }
+
+    .hint {
+      margin-top: 16px;
+      color: #a9bcf1;
+      font-size: 12px;
+    }
+
+    .result {
+      font-size: 18px;
+      color: #ffe38a;
+      font-weight: 800;
+      margin: 10px 0 22px;
+    }
+
+    @media (max-width: 600px) {
+      #game {
+        width: 100vw;
+        height: 100vh;
+        min-height: 0;
+      }
+
+      header {
+        left: 3%;
+        right: 3%;
+        gap: 6px;
+      }
+
+      .brand {
+        font-size: clamp(15px, 4.5vw, 19px);
+      }
+
+      .brand small {
+        letter-spacing: .05em;
+      }
+
+      .stats {
+        gap: 4px;
+      }
+
+      .stat {
+        min-width: 50px;
+        padding: 6px 5px;
+        border-radius: 12px;
+      }
+
+      .stat label {
+        font-size: 9px;
+      }
+
+      .average-note {
+        font-size: 10px;
+      }
+
+      .bottom {
+        bottom: 3%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main id="game" aria-label="ふうせんハンター ゲーム">
+    <div class="hill left"></div>
+    <div class="hill right"></div>
+
+    <header>
+      <div class="brand">
+        🎈 ふうせんハンター
+        <small>POP THE BALLOONS!</small>
+      </div>
+
+      <div class="scoreboard">
+        <div class="stats">
+          <div class="stat">
+            <label>SCORE</label>
+            <b id="score">0</b>
+          </div>
+          <div class="stat">
+            <label>TIME</label>
+            <b id="time">30</b>
+          </div>
+        </div>
+        <div class="average-note">
+          今までの平均：<b id="average">0.0</b>点
+        </div>
+      </div>
+    </header>
+
+    <div id="field" aria-label="風船をタップして割ろう"></div>
+    <div class="bottom"><span>風船をタップして割ろう！</span></div>
+
+    <section id="overlay" class="overlay">
+      <div class="card">
+        <div class="eyebrow">BALLOON POP GAME</div>
+        <h1 id="title">空の風船を<br>つかまえよう！</h1>
+        <p id="message">
+          小さい風船は+3点、中くらいは+2点、大きい風船は+1点。<br>
+          30秒で高得点を目指そう！
+        </p>
+        <div id="result" class="result" hidden></div>
+        <button id="start" class="primary">ゲームスタート</button>
+        <div class="hint">クリック / タップで遊べます</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const field = document.querySelector("#field");
+      const overlay = document.querySelector("#overlay");
+      const scoreEl = document.querySelector("#score");
+      const timeEl = document.querySelector("#time");
+      const averageEl = document.querySelector("#average");
+      const title = document.querySelector("#title");
+      const message = document.querySelector("#message");
+      const result = document.querySelector("#result");
+      const startBtn = document.querySelector("#start");
+
+      const colors = ["#ff6684", "#ffb547", "#8c7bff", "#40d9c0", "#5da8ff", "#f16fda"];
+      const sizes = [44, 62, 82];
+      const points = [3, 2, 1];
+      const speeds = [125, 100, 78];
+      const historyKey = "balloonHunterScores";
+
+      let score = 0;
+      let time = 30;
+      let running = false;
+      let lastSpawn = 0;
+      let raf = 0;
+      let previous = 0;
+      let balloons = [];
+      let scoreHistory = loadScores();
+
+      function loadScores() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(historyKey) || "[]");
+          return Array.isArray(saved)
+            ? saved.filter(value => Number.isFinite(value) && value >= 0)
+            : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function updateAverage() {
+        if (scoreHistory.length === 0) {
+          averageEl.textContent = "0.0";
+          return;
+        }
+
+        const total = scoreHistory.reduce((sum, value) => sum + value, 0);
+        averageEl.textContent = (total / scoreHistory.length).toFixed(1);
+      }
+
+      function rand(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      function spawnBalloon() {
+        const kind = Math.floor(Math.random() * 3);
+        const size = sizes[kind];
+        const x = rand(8, 92);
+        const speed = speeds[kind] + score * 0.5;
+        const el = document.createElement("div");
+
+        el.className = "balloon";
+        el.style.cssText = `
+          --size: ${size}px;
+          --color: ${colors[Math.floor(Math.random() * colors.length)]};
+          --sway: ${rand(1.8, 3.2)}s;
+          --string: ${rand(34, 54)}px;
+          left: ${x}%;
+        `;
+
+        field.append(el);
+
+        const balloon = {
+          el,
+          y: field.clientHeight + size,
+          v: speed,
+          size,
+          points: points[kind],
+          popped: false
+        };
+
+        balloons.push(balloon);
+
+        el.addEventListener("pointerdown", event => {
+          event.stopPropagation();
+          if (!running || balloon.popped) return;
+
+          const rect = el.getBoundingClientRect();
+          showPop(
+            rect.left + rect.width / 2,
+            rect.top + rect.height / 2,
+            balloon.points
+          );
+
+          balloon.popped = true;
+          score += balloon.points;
+          scoreEl.textContent = score;
+        });
+      }
+
+      function showPop(x, y, earnedPoints) {
+        const box = field.getBoundingClientRect();
+        const px = x - box.left;
+        const py = y - box.top;
+
+        const label = document.createElement("div");
+        label.className = "pop";
+        label.textContent = `+${earnedPoints}`;
+        label.style.cssText = `left:${px}px;top:${py}px`;
+        field.append(label);
+        setTimeout(() => label.remove(), 500);
+
+        for (let i = 0; i < 7; i++) {
+          const spark = document.createElement("i");
+          spark.className = "spark";
+          spark.style.cssText = `
+            left: ${px}px;
+            top: ${py}px;
+            --dx: ${rand(-48, 48)}px;
+            --dy: ${rand(-48, 48)}px;
+            --spark: ${colors[Math.floor(Math.random() * colors.length)]};
+          `;
+          field.append(spark);
+          setTimeout(() => spark.remove(), 600);
+        }
+      }
+
+      function gameLoop(now) {
+        if (!running) return;
+
+        const dt = Math.min((now - previous) / 1000, 0.04);
+        previous = now;
+        time -= dt;
+
+        if (time <= 0) {
+          time = 0;
+          endGame();
+          return;
+        }
+
+        timeEl.textContent = Math.ceil(time);
+
+        if (now - lastSpawn > Math.max(340, 850 - score * 8)) {
+          spawnBalloon();
+          lastSpawn = now;
+        }
+
+        for (let i = balloons.length - 1; i >= 0; i--) {
+          const balloon = balloons[i];
+
+          if (balloon.popped) {
+            balloon.el.remove();
+            balloons.splice(i, 1);
+            continue;
+          }
+
+          balloon.y -= balloon.v * dt;
+          balloon.el.style.top = `${balloon.y}px`;
+
+          if (balloon.y < -balloon.size) {
+            balloon.el.remove();
+            balloons.splice(i, 1);
+          }
+        }
+
+        raf = requestAnimationFrame(gameLoop);
+      }
+
+      function startGame() {
+        cancelAnimationFrame(raf);
+        field.replaceChildren();
+        balloons = [];
+        score = 0;
+        time = 30;
+
+        scoreEl.textContent = "0";
+        timeEl.textContent = "30";
+        title.innerHTML = "空の風船を<br>つかまえよう！";
+        message.innerHTML =
+          "小さい風船は+3点、中くらいは+2点、大きい風船は+1点。<br>" +
+          "30秒で高得点を目指そう！";
+
+        result.hidden = true;
+        startBtn.textContent = "ゲームスタート";
+        overlay.classList.add("hidden");
+
+        running = true;
+        previous = performance.now();
+        lastSpawn = 0;
+        raf = requestAnimationFrame(gameLoop);
+      }
+
+      function endGame() {
+        running = false;
+        cancelAnimationFrame(raf);
+
+        scoreHistory.push(score);
+
+        try {
+          localStorage.setItem(historyKey, JSON.stringify(scoreHistory));
+        } catch {
+          // 保存できない場合も、プレイ中の平均点表示は続けます。
+        }
+
+        updateAverage();
+
+        title.textContent = "タイムアップ！";
+        message.textContent = "空いっぱいの風船、よくがんばったね。";
+        result.hidden = false;
+        result.textContent =
+          `🎈 今回は ${score} 点！ 今までの平均：${averageEl.textContent} 点`;
+
+        startBtn.textContent = "もう一度あそぶ";
+        overlay.classList.remove("hidden");
+      }
+
+      startBtn.addEventListener("click", startGame);
+
+      document.addEventListener("keydown", event => {
+        if (event.key === "Enter" && !running) {
+          startGame();
+        }
+      });
+
+      updateAverage();
+    })();
+  </script>
+</body>
+</html>

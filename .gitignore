@@ -4,8 +4,14 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .logs/
-games/local/*
-!games/local/.gitkeep
+# Member game source is bundled. Keep repository metadata and local play data private.
+.member-git/
+**/.git/
+**/.web-data/
+**/.vscode/
+games/local/tesuto/mole_rankings.json
+~$*.xlsx
+*.xlsx.inspect.ndjson
 node_modules/
 .env
 .env.*

@@ -13,5 +13,13 @@ jobs:
         run: python -m unittest discover -s games/realtime-shogi/tests -v
       - name: Validate registered game configuration
         run: python -c "from pathlib import Path; from arcade import load_games; load_games(Path.cwd(), Path('games.json'))"
-      - name: Check bundled samples (member repositories are cloned separately)
+      - name: Install bundled game dependencies
+        run: python -m pip install -r requirements/arcade-web.txt
+      - name: Check all six bundled games
+        run: python setup_arcade.py --check
+      - name: Test bundled chess
+        run: python -m unittest discover -s games/local/chess/tests -v
+      - name: Test bundled mole game
+        run: python -m unittest discover -s games/local/tesuto/tests -v
+      - name: Check bundled samples
         run: python arcade.py --config .github/sample-games.json --check
