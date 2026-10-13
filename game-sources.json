@@ -1,0 +1,39 @@
+{
+  "sources": [
+    {
+      "game_id": "kosen-survivor",
+      "repository": "https://github.com/gkykw5cyzc-alt/2026-4Pro-ishida.git",
+      "branch": "main",
+      "revision": "fb6947687690977e8362bc9816f63fc5ba7fe3b3",
+      "required_files": ["index.html", "game.js", "style.css"]
+    },
+    {
+      "game_id": "balloon-hunter",
+      "repository": "https://github.com/hi-1505/3hu.git",
+      "branch": "main",
+      "revision": "0be9c5bacfe276dcd9f2f0be0a39c0e9ea955236",
+      "required_files": ["index.html"]
+    },
+    {
+      "game_id": "yuugure-fishing",
+      "repository": "https://github.com/yuu-rgb000/2026_4Pro_fishinggame.git",
+      "branch": "main",
+      "revision": "aae229008a008223247dc243a5c34bb1a958377e",
+      "required_files": ["index.html", "fishing.js", "fishing.css"]
+    },
+    {
+      "game_id": "realtime-chess",
+      "repository": "https://github.com/k4m4b0k02009/chess.git",
+      "branch": "yamamoto/web-chess",
+      "revision": "64532ab716b0cd0092ec95f2deb0d385c1eef333",
+      "required_files": ["web.py", "chess/web_game.py", "web/index.html", "web/game.js", "web/style.css"]
+    },
+    {
+      "game_id": "brain-mole",
+      "repository": "https://github.com/painaplle/tesuto.git",
+      "branch": "yamamoto/web-mole",
+      "revision": "ec3e5f9e575724a0ed3246b90247c2b30bc5c394",
+      "required_files": ["web.py", "web_game.py", "quiz_database.py", "web/index.html", "web/game.js", "web/style.css", "data/questions.xlsx"]
+    }
+  ]
+}

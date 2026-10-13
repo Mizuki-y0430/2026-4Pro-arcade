@@ -1,0 +1,2 @@
+# All six registered games. Desktop-only pygame/Tkinter are not needed.
+openpyxl==3.1.5
