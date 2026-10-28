@@ -94,3 +94,13 @@ body{background:radial-gradient(ellipse at 12% 10%,#fff 0,transparent 34%),radia
 .overlay h1{color:#1f6647}
 .primary{border-radius:999px}
 .mobile-controls button{border-radius:10px;border-color:#a7cdb0;box-shadow:0 3px 8px #36764a12}
+
+/* 盤面と同じ札を使い、取るもの・よけるものをすぐに見分けられるようにする。 */
+.play-guide{display:flex;align-items:center;flex-wrap:wrap;gap:10px 20px;padding:14px 2px 6px;font-size:13px;line-height:1.6;color:#284f3d}
+.play-guide>span{display:flex;align-items:center;gap:7px}
+.credit-label,.hazard-label{display:inline-block;padding:1px 5px;border:2px solid;border-radius:3px;font-size:14px;line-height:1.5;white-space:nowrap}
+.credit-label{background:#fff9d9;color:#124d6b;border-color:#176387}
+.hazard-label{background:#b52638;color:#fff;border-color:#761b29}
+.play-guide .collision-note,.play-guide .spawn-note{font-size:12px}
+.play-guide .spawn-note{color:#596b60}
+@media(max-width:620px){.play-guide{gap:8px 14px;font-size:12px}.play-guide .collision-note,.play-guide .spawn-note{flex-basis:100%;font-size:11px}}

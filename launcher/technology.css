@@ -73,7 +73,7 @@ figcaption { margin-top:.5cqw; font-size:1.1cqw; color:#69595c; }
 .rule-label { font-size:1.5cqw; font-weight:800; }.rule-card h2 { font-size:1.65cqw; line-height:1.5; margin:1.1cqw 0 .4cqw; }.rule-card p { font-size:1.7cqw; line-height:1.7; margin:0 0 1.2cqw; }.rule-card p strong { color:var(--accent); }
 .rule-visual { display:flex; align-items:center; gap:.9cqw; height:7.5cqw; }.game-piece { display:block; background-image:url('/showcase/assets/kosen-survivor-play.png'); background-repeat:no-repeat; width:4.5cqw; height:4.5cqw; flex-shrink:0; border-radius:10px; border:1px solid #e1c8cd; background-color:#fff0f2; }
 /* 実際の画面画像から、キャラクターと単位の部分だけを見せます。 */
-.snake-piece { background-size:119.6cqw 58.5cqw; background-position:-60.4cqw -31.9cqw; }.credit-piece { background-size:119.6cqw 58.5cqw; background-position:-73.3cqw -34.5cqw; }
+.snake-piece { background-size:119.6cqw 58.5cqw; background-position:-57.55cqw -44.35cqw; }.credit-piece { background-size:119.6cqw 58.5cqw; background-position:-49.95cqw -34.65cqw; }
 .visual-arrow { font-size:2cqw; color:#b71929; }.rule-visual>b { margin-left:auto; font-size:3cqw; color:var(--accent); }.collision-visual>b { color:#b71929; font-size:2.2cqw; }
 .wall { width:1.3cqw; height:4.5cqw; border-radius:3px; background:repeating-linear-gradient(0deg,#b71929 0,#b71929 1cqw,#f5a8b0 1cqw,#f5a8b0 1.15cqw); border:1px solid #7f1320; }
 .condition { margin-top:auto; font-size:1.25cqw; line-height:1.7; padding:.85cqw 1cqw; background:#ffffffb3; border-radius:8px; }.condition b { font-size:1.5cqw; }
@@ -107,7 +107,7 @@ figcaption { margin-top:.5cqw; font-size:1.1cqw; color:#69595c; }
   .board-comparison { grid-template-columns:1fr 32px 1fr; gap:10px; }.mini-board { height:130px; }.board-label,.cell-label { font-size:15px; }.move-arrow kbd { font-size:22px; }.move-arrow b { font-size:12px; }.move-arrow>span { font-size:28px; }
   .canvas-note { padding:15px; margin-top:15px; }.canvas-note p { margin-top:8px; }.movement-copy>p { margin-bottom:12px; }
   .rule-cards { grid-template-columns:1fr; gap:15px; }.rule-card { padding:18px; }.rule-card h2 { font-size:22px; margin:8px 0; }.rule-card p { margin-bottom:16px; }.condition { padding:12px; }
-  .rule-visual { height:90px; gap:12px; }.game-piece { width:54px; height:54px; }.snake-piece { background-size:1435.2px 702px; background-position:-724.8px -382.8px; }.credit-piece { background-size:1435.2px 702px; background-position:-879.6px -414px; }.visual-arrow { font-size:24px; }.rule-visual>b { font-size:36px; }.collision-visual>b { font-size:26px; }.wall { height:54px; width:16px; }
+  .rule-visual { height:90px; gap:12px; }.game-piece { width:54px; height:54px; }.snake-piece { background-size:1435.2px 702px; background-position:-690.6px -532.2px; }.credit-piece { background-size:1435.2px 702px; background-position:-599.4px -415.8px; }.visual-arrow { font-size:24px; }.rule-visual>b { font-size:36px; }.collision-visual>b { font-size:26px; }.wall { height:54px; width:16px; }
   .speed-chart { min-height:100px; gap:8px; }.speed-chart>div { grid-template-columns:85px 1fr 32px; font-size:14px; }.speed-chart i { height:9px; }.speed-chart small { font-size:12px; }
   .page-button { min-width:90px; padding:10px 12px; }.deck-controls { gap:8px; }.page-indicator { gap:5px; }.page-dots button { width:27px; }#page-count { font-size:13px; }.key-hint { display:none; }
 }

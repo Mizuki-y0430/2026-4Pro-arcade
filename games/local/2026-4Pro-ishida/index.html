@@ -25,11 +25,11 @@
           <canvas id="game" width="768" height="480" aria-label="りゅうねんをさけてたんいをあつめるゲームがめん"></canvas>
           <div class="overlay hidden" id="overlay">
             <div class="overlay-card">
-              <div class="eyebrow" id="overlay-eyebrow">READY?</div>
+              <div class="eyebrow" id="overlay-eyebrow">あそびかた</div>
               <h1 id="overlay-title"><ruby>単位<rt>たんい</rt></ruby>を<ruby>集<rt>あつ</rt></ruby>めて、<br><em><ruby>留年<rt>りゅうねん</rt></ruby><ruby>回避<rt>かいひ</rt></ruby>。</em></h1>
-              <p id="overlay-copy"><ruby>四方<rt>しほう</rt></ruby>から<ruby>飛<rt>と</rt></ruby>んでくる「<ruby>留年<rt>りゅうねん</rt></ruby>」をかわし、<br>「<ruby>単位<rt>たんい</rt></ruby>」を<ruby>集<rt>あつ</rt></ruby>めて<ruby>体<rt>からだ</rt></ruby>を<ruby>伸<rt>の</rt></ruby>ばそう！</p>
+              <p id="overlay-copy">単位を集めて、留年をよけよう。点滅は出現の合図！</p>
               <div class="difficulty-control"><span>難易度</span><div class="difficulty-picker" role="group" aria-label="なんいどをせんたく"><button type="button" data-difficulty="easy" aria-pressed="false">かんたん</button><button type="button" data-difficulty="normal" aria-pressed="true">ふつう</button><button type="button" data-difficulty="hard" aria-pressed="false">むずかしい</button></div></div>
-              <button id="start" class="primary">START GAME <span>→</span></button>
+              <button id="start" class="primary">スタート <span>→</span></button>
               <div class="keys-hint"><ruby>移動<rt>いどう</rt></ruby> <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> · SPACEでスタート</div>
             </div>
           </div>
@@ -37,6 +37,12 @@
         <div class="mobile-controls" aria-label="ほうこうそうさ">
           <button data-dir="up" aria-label="うえ">▲</button>
           <div><button data-dir="left" aria-label="ひだり">◀</button><button data-dir="down" aria-label="した">▼</button><button data-dir="right" aria-label="みぎ">▶</button></div>
+        </div>
+        <div class="play-guide" aria-label="ゲームのルール">
+          <span><b class="credit-label">単位</b> とって集める</span>
+          <span><b class="hazard-label">留年</b> 頭に当たると終了</span>
+          <span class="collision-note">留年は胴体に触れてもOK。壁と自分の体はよけよう。</span>
+          <span class="spawn-note">点滅中は予告。矢印の向きへ動き出すよ。</span>
         </div>
         <div class="bottomline"><span><ruby>矢印<rt>やじるし</rt></ruby>キー / WASDで<ruby>移動<rt>いどう</rt></ruby> · SPACEでスタート・<ruby>再開<rt>さいかい</rt></ruby></span><span>2<ruby>単位<rt>たんい</rt></ruby>で<ruby>体<rt>からだ</rt></ruby>が1マス<ruby>伸<rt>の</rt></ruby>びる</span></div>
         <details class="quick-panel">
