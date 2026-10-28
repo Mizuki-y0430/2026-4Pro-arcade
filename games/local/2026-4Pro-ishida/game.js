@@ -2,10 +2,12 @@
   const canvas = document.querySelector('#game');
   const ctx = canvas.getContext('2d');
   const COLS = 32, ROWS = 20, CELL = 24;
+  const MAX_DROPPED = 6;
+  const palette = {red:'#b71929',white:'#ffffff',ink:'#181818',grid:'#333333'};
   const scoreEl = document.querySelector('#score');
   const lengthEl = document.querySelector('#length');
   const bestEl = document.querySelector('#best');
-  const dangerEl = document.querySelector('#danger');
+  const droppedEl = document.querySelector('#dropped');
   const effectStatusEl = document.querySelector('#effect-status');
   const overlay = document.querySelector('#overlay');
   const startBtn = document.querySelector('#start');
@@ -18,7 +20,7 @@
     normal: {speed:160,minSpeed:125,hazardSpeed:340,minHazardSpeed:270,warning:1000,interval:1600,intervalDrop:4,minInterval:850,startHazards:1,capStart:3,capEvery:20,waveEvery:55,maxWave:2},
     hard: {speed:138,minSpeed:105,hazardSpeed:270,minHazardSpeed:210,warning:900,interval:1250,intervalDrop:6,minInterval:600,startHazards:2,capStart:4,capEvery:16,waveEvery:40,maxWave:2}
   };
-  let difficulty='normal', collectedOrbs=0;
+  let difficulty='normal', collectedOrbs=0, droppedCredits=0;
   let snake, previousSnake, dir, directionQueue, food, hazards, powerup, score, stepMs, lastStep, lastSpawn, lastPowerSpawn, startedAt, running, gameOver, shieldCharges=0, slowUntil=0, magnetUntil=0, growthPending=0, frame=0, lastStatsUpdate=0;
   const leaderboardKey='neon-serpent-leaderboard-v1';
   function loadLeaderboard(){
@@ -50,19 +52,30 @@
   }
   function reset(){
     copyEl.className='';
-    snake=[{x:15,y:10},{x:14,y:10},{x:13,y:10}];previousSnake=snake.map(s=>({...s}));dir={x:1,y:0};directionQueue=[];hazards=[];powerup=null;shieldCharges=0;slowUntil=0;magnetUntil=0;growthPending=0;score=0;collectedOrbs=0;stepMs=difficultySettings[difficulty].speed;lastStep=performance.now();lastSpawn=0;lastPowerSpawn=lastStep;startedAt=performance.now();running=true;gameOver=false;placeFood();updateStats();updatePowerStatus();overlay.classList.add('hidden');
+    snake=[{x:15,y:10},{x:14,y:10},{x:13,y:10}];previousSnake=snake.map(s=>({...s}));dir={x:1,y:0};directionQueue=[];hazards=[];powerup=null;shieldCharges=0;slowUntil=0;magnetUntil=0;growthPending=0;score=0;collectedOrbs=0;droppedCredits=0;stepMs=difficultySettings[difficulty].speed;lastStep=performance.now();lastSpawn=0;lastPowerSpawn=lastStep;startedAt=performance.now();running=true;gameOver=false;placeFood();updateStats();updatePowerStatus();overlay.classList.add('hidden');
   }
-  function showReady(){reset();running=false;titleEl.textContent='こうせんサバイバー';copyEl.textContent='単位を集めて、留年をよけよう。点滅は出現の合図！';eyebrowEl.textContent='あそびかた';startBtn.innerHTML='スタート <span>→</span>';overlay.classList.remove('hidden');}
-  function updateStats(){scoreEl.textContent=String(score).padStart(3,'0');lengthEl.textContent=String(snake?.length||3).padStart(2,'0');const elapsed=startedAt?Math.max(0,(performance.now()-startedAt)/1000):0;const level=Math.min(100,Math.round((elapsed/90)*100));dangerEl.textContent=level>70?'高':level>35?'中':'低';dangerEl.style.color=level>70?'#bd3c52':level>35?'#a86614':'#21845f';}
+  function showReady(){reset();running=false;titleEl.textContent='こうせんサバイバー';copyEl.textContent='単位を集めよう！落単は6単位までOK、7単位で終了。';eyebrowEl.textContent='あそびかた';startBtn.innerHTML='スタート <span>→</span>';overlay.classList.remove('hidden');}
+  function updateStats(){
+    scoreEl.textContent=String(score).padStart(3,'0');
+    lengthEl.textContent=String(snake?.length||3).padStart(2,'0');
+    const droppedLabel=`${droppedCredits} / ${MAX_DROPPED}`;
+    if(droppedEl.textContent!==droppedLabel)droppedEl.textContent=droppedLabel;
+    droppedEl.style.color=droppedCredits>=MAX_DROPPED?palette.red:palette.ink;
+  }
   function updatePowerStatus(){const now=performance.now();const active=[];if(shieldCharges)active.push('まもり ×'+shieldCharges);if(slowUntil>now)active.push('ゆっくり '+Math.ceil((slowUntil-now)/1000)+'秒');if(magnetUntil>now)active.push('ひきよせ '+Math.ceil((magnetUntil-now)/1000)+'秒');effectStatusEl.textContent=active.join(' · ')||'なし';}
   function spawnPowerup(ts){const types=['shield','slow','magnet','clear','bonus'];let position;do{position={x:Math.floor(Math.random()*COLS),y:Math.floor(Math.random()*ROWS)}}while(snake.some(s=>same(s,position))||hazards.some(h=>same(h,position))||same(food,position));powerup={...position,type:types[Math.floor(Math.random()*types.length)],expiresAt:ts+10000};lastPowerSpawn=ts;}
   function collectPowerup(){const now=performance.now();if(powerup.type==='shield')shieldCharges=1;else if(powerup.type==='slow')slowUntil=Math.max(now,slowUntil)+7000;else if(powerup.type==='magnet')magnetUntil=Math.max(now,magnetUntil)+8000;else if(powerup.type==='clear')hazards=[];else if(powerup.type==='bonus'){score+=2;collectedOrbs+=2;growthPending++;updateStats();}powerup=null;lastPowerSpawn=now;updatePowerStatus();}
   function resolveHazardCollisions(){
-    // 留年に当たるのは頭だけ。長い胴体を横切られても終了しない。
+    // 落単に当たるのは頭だけ。札1枚で1単位、6単位までは続行できる。
     for(let i=hazards.length-1;i>=0;i--){
       if(hazards[i].active&&same(snake[0],hazards[i])){
-        if(shieldCharges>0){shieldCharges--;hazards.splice(i,1);}
-        else return true;
+        // 接触済みの札を消して、次のフレームで重複カウントしない。
+        hazards.splice(i,1);
+        if(shieldCharges>0)shieldCharges--;
+        else droppedCredits++;
+        updateStats();
+        updatePowerStatus();
+        if(droppedCredits>MAX_DROPPED)return true;
       }
     }
     updatePowerStatus();
@@ -72,13 +85,14 @@
     running=false;gameOver=true;
     recordScore();
     let result, resultClass;
-    if(score<=3){result='<ruby>君<rt>きみ</rt></ruby>は<ruby>留年<rt>りゅうねん</rt></ruby>してしまった！もう<ruby>一年<rt>いちねん</rt></ruby><ruby>頑張<rt>がんば</rt></ruby>ろう！';resultClass='result-fail';}
-    else if(score<=5){result='もう<ruby>一歩<rt>いっぽ</rt></ruby>！あと<ruby>少<rt>すこ</rt></ruby>しで<ruby>留年<rt>りゅうねん</rt></ruby><ruby>回避<rt>かいひ</rt></ruby>！';resultClass='result-mid';}
-    else if(score<10){result='ギリギリ<ruby>留年<rt>りゅうねん</rt></ruby><ruby>回避<rt>かいひ</rt></ruby>！おめでとう！';resultClass='result-close';}
+    if(droppedCredits>MAX_DROPPED){result='落単が7単位に！<br>次の挑戦で取り返そう！';resultClass='result-fail';}
+    else if(score<=3){result='まだまだこれから！<br>単位を集めていこう！';resultClass='result-mid';}
+    else if(score<=5){result='いい調子！<br>次はもっと単位を集めよう！';resultClass='result-mid';}
+    else if(score<10){result='単位をしっかり確保！<br>この調子で挑戦しよう！';resultClass='result-close';}
     else{result='キミはエリート<ruby>高専生<rt>こうせんせい</rt></ruby>だ！';resultClass='result-elite';}
     titleEl.textContent='おつかれさま！';
     copyEl.className=`result-message ${resultClass}`;
-    copyEl.innerHTML=`<span class="result-phrase">${result}</span><span class="result-score"><ruby>取得単位<rt>しゅとくたんい</rt></ruby> <b>${String(score).padStart(3,'0')}</b> ・ <ruby>長<rt>なが</rt></ruby>さ ${snake.length}</span>`;
+    copyEl.innerHTML=`<span class="result-phrase">${result}</span><span class="result-score"><ruby>取得単位<rt>しゅとくたんい</rt></ruby> <b>${String(score).padStart(3,'0')}</b> ・ <ruby>落単<rt>らくたん</rt></ruby> ${droppedCredits}単位 ・ <ruby>長<rt>なが</rt></ruby>さ ${snake.length}</span>`;
     eyebrowEl.textContent='けっか';startBtn.innerHTML='もう一度あそぶ <span>→</span>';overlay.classList.remove('hidden');
   }
   function setDirection(d){
@@ -93,7 +107,7 @@
   }
   function spawnHazard(ts){
     const choices=[];
-    // 頭の近く・単位・アイテム・他の留年を避け、盤面全体から選ぶ。
+    // 頭の近く・単位・アイテム・他の落単を避け、盤面全体から選ぶ。
     for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
       const cell={x,y};
       if(Math.abs(x-snake[0].x)+Math.abs(y-snake[0].y)<6)continue;
@@ -149,28 +163,70 @@
     hazards=hazards.filter(h=>h.x>=0&&h.x<COLS&&h.y>=0&&h.y<ROWS);
     if(resolveHazardCollisions())endGame();
   }
-  function draw(ts){frame++;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#d9f0d7';ctx.fillRect(0,0,canvas.width,canvas.height);
-    for(let y=0;y<ROWS;y+=2){ctx.fillStyle='rgba(87,157,91,.035)';ctx.fillRect(0,y*CELL,canvas.width,CELL)}
-    ctx.strokeStyle='rgba(49,112,70,.12)';ctx.lineWidth=1;for(let x=0;x<=COLS;x++){ctx.beginPath();ctx.moveTo(x*CELL+.5,0);ctx.lineTo(x*CELL+.5,canvas.height);ctx.stroke()}for(let y=0;y<=ROWS;y++){ctx.beginPath();ctx.moveTo(0,y*CELL+.5);ctx.lineTo(canvas.width,y*CELL+.5);ctx.stroke()}
-    // Soft arena edge
-    const grad=ctx.createRadialGradient(canvas.width/2,canvas.height/2,70,canvas.width/2,canvas.height/2,380);grad.addColorStop(0,'rgba(255,255,255,0)');grad.addColorStop(1,'rgba(46,107,102,.10)');ctx.fillStyle=grad;ctx.fillRect(0,0,canvas.width,canvas.height);
-    // A faint schoolyard court marking beneath the action.
-    ctx.save();ctx.strokeStyle='rgba(255,255,255,.48)';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(10,10,canvas.width-20,canvas.height-20,13);ctx.stroke();ctx.beginPath();ctx.moveTo(canvas.width/2,12);ctx.lineTo(canvas.width/2,canvas.height-12);ctx.stroke();ctx.beginPath();ctx.arc(canvas.width/2,canvas.height/2,42,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(canvas.width/2,canvas.height/2,3,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.55)';ctx.fill();ctx.restore();
-    // 単位は明るい札、留年は赤い札で見分ける。
+  function draw(ts){frame++;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle=palette.ink;ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle=palette.grid;ctx.lineWidth=1;for(let x=0;x<=COLS;x++){ctx.beginPath();ctx.moveTo(x*CELL+.5,0);ctx.lineTo(x*CELL+.5,canvas.height);ctx.stroke()}for(let y=0;y<=ROWS;y++){ctx.beginPath();ctx.moveTo(0,y*CELL+.5);ctx.lineTo(canvas.width,y*CELL+.5);ctx.stroke()}
+    // 黒い盤面の四隅を赤で縁取り、筐体のフレームと色をそろえる。
+    ctx.save();ctx.strokeStyle=palette.red;ctx.lineWidth=3;
+    for(const [x,y,sx,sy] of [[2,2,1,1],[canvas.width-2,2,-1,1],[2,canvas.height-2,1,-1],[canvas.width-2,canvas.height-2,-1,-1]]){
+      ctx.beginPath();ctx.moveTo(x+sx*18,y);ctx.lineTo(x,y);ctx.lineTo(x,y+sy*18);ctx.stroke();
+    }
+    ctx.restore();
+    // 単位は認定カード、落単は警告札で見分ける。
     const progress=running?Math.max(0,Math.min(1,(ts-lastStep)/stepMs)):1;
     const lerp=(a,b)=>a+(b-a)*progress;
-    if(food){
-      const x=food.x*CELL+12,y=food.y*CELL+12;
-      ctx.fillStyle='#fff9d9';ctx.strokeStyle='#176387';ctx.lineWidth=2;
-      ctx.beginPath();ctx.roundRect(x-15,y-12,30,24,3);ctx.fill();ctx.stroke();
-      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#124d6b';
-      ctx.font='bold 13px sans-serif';ctx.fillText('単位',x,y+1);
+    if(food)drawCredit(food.x*CELL+12,food.y*CELL+12,ts);
+    if(powerup){
+      const p=1+Math.sin(frame*.12)*.08;const x=powerup.x*CELL+12,y=powerup.y*CELL+12;
+      const glyphs={shield:'盾',slow:'時',magnet:'引',clear:'消',bonus:'+2'};
+      ctx.fillStyle=palette.ink;ctx.strokeStyle=palette.white;ctx.lineWidth=2;
+      ctx.beginPath();ctx.roundRect(x-10*p,y-10*p,20*p,20*p,5);ctx.fill();ctx.stroke();
+      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=palette.white;
+      ctx.font='bold 12px sans-serif';ctx.fillText(glyphs[powerup.type],x,y+1);
     }
-    if(powerup){const p=1+Math.sin(frame*.12)*.08;const x=powerup.x*CELL+12,y=powerup.y*CELL+12;const colors={shield:'#5388ee',slow:'#9864de',magnet:'#ed963d',clear:'#e6537d',bonus:'#24a879'};const glyphs={shield:'盾',slow:'時',magnet:'引',clear:'消',bonus:'+2'};const readings={shield:'たて',slow:'とき',magnet:'ひ',clear:'けす',bonus:'たんい'};ctx.shadowBlur=18;ctx.shadowColor=colors[powerup.type];ctx.fillStyle=colors[powerup.type];ctx.beginPath();ctx.roundRect(x-10*p,y-10*p,20*p,20*p,5);ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff';ctx.font='3.5px sans-serif';ctx.fillText(readings[powerup.type],x,y-2.5);ctx.font='bold 7px sans-serif';ctx.fillText(glyphs[powerup.type],x,y+4.5)}
     const points=snake?.map((s,i)=>{const from=previousSnake?.[i]||s;return{x:lerp(from.x,s.x),y:lerp(from.y,s.y)}})||[];
-    if(points.length>1){ctx.beginPath();ctx.moveTo(points[points.length-1].x*CELL+12,points[points.length-1].y*CELL+12);for(let i=points.length-2;i>=0;i--)ctx.lineTo(points[i].x*CELL+12,points[i].y*CELL+12);ctx.strokeStyle='#42ae83';ctx.lineWidth=15;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke()}
-    points.forEach((s,i)=>{const x=s.x*CELL,y=s.y*CELL;const t=i/Math.max(1,points.length-1);if(i>0){ctx.fillStyle=`hsl(${151-t*13} ${49-t*5}% ${48-t*7}%)`;ctx.beginPath();ctx.arc(x+12,y+12,5.5,0,Math.PI*2);ctx.fill();return;}ctx.fillStyle='#167a5a';ctx.shadowBlur=9;ctx.shadowColor='#24956d';ctx.beginPath();ctx.roundRect(x+2,y+2,CELL-4,CELL-4,7);ctx.fill();ctx.shadowBlur=0;const eyeX=dir.x===1?x+17:dir.x===-1?x+7:x+8;const eyeY=dir.y===1?y+17:dir.y===-1?y+7:y+8;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(eyeX,eyeY,2,0,Math.PI*2);ctx.fill();const ex=dir.x===1?eyeX:dir.x===-1?eyeX:eyeX+8,ey=dir.y===1?eyeY:dir.y===-1?eyeY:eyeY+8;ctx.beginPath();ctx.arc(ex,ey,2,0,Math.PI*2);ctx.fill();ctx.fillStyle='#163d36';ctx.beginPath();ctx.arc(eyeX,eyeY,1,0,Math.PI*2);ctx.arc(ex,ey,1,0,Math.PI*2);ctx.fill()});
+    if(points.length>1){ctx.beginPath();ctx.moveTo(points[points.length-1].x*CELL+12,points[points.length-1].y*CELL+12);for(let i=points.length-2;i>=0;i--)ctx.lineTo(points[i].x*CELL+12,points[i].y*CELL+12);ctx.strokeStyle='#dedede';ctx.lineWidth=15;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke()}
+    points.forEach((s,i)=>{const x=s.x*CELL,y=s.y*CELL;if(i>0){ctx.fillStyle='#888888';ctx.beginPath();ctx.arc(x+12,y+12,4,0,Math.PI*2);ctx.fill();return;}ctx.fillStyle=palette.white;ctx.beginPath();ctx.roundRect(x+2,y+2,CELL-4,CELL-4,5);ctx.fill();const eyeX=dir.x===1?x+17:dir.x===-1?x+7:x+8;const eyeY=dir.y===1?y+17:dir.y===-1?y+7:y+8;ctx.fillStyle=palette.ink;ctx.beginPath();ctx.arc(eyeX,eyeY,2,0,Math.PI*2);ctx.fill();const ex=dir.x===1?eyeX:dir.x===-1?eyeX:eyeX+8,ey=dir.y===1?eyeY:dir.y===-1?eyeY:eyeY+8;ctx.beginPath();ctx.arc(ex,ey,2,0,Math.PI*2);ctx.fill()});
     drawHazards(ts);
+  }
+  function drawCredit(x,y,ts){
+    ctx.save();ctx.translate(x,y+Math.sin(ts/300));
+    // 折り返した紙、赤い帯、合格のチェック印。
+    ctx.fillStyle='#000';ctx.globalAlpha=.45;
+    ctx.beginPath();ctx.roundRect(-15,-12,33,30,3);ctx.fill();ctx.globalAlpha=1;
+    ctx.fillStyle=palette.white;ctx.strokeStyle=palette.ink;ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(-16,-15);ctx.lineTo(9,-15);ctx.lineTo(16,-8);
+    ctx.lineTo(16,15);ctx.lineTo(-16,15);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#dedede';ctx.beginPath();ctx.moveTo(9,-15);ctx.lineTo(9,-8);ctx.lineTo(16,-8);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle=palette.red;ctx.fillRect(-14,9,28,4);
+    ctx.fillStyle=palette.ink;ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.font='900 13px sans-serif';ctx.fillText('単位',0,0);
+    ctx.fillStyle=palette.red;ctx.strokeStyle=palette.white;ctx.lineWidth=1.2;
+    ctx.beginPath();ctx.arc(-12,-13,6.5,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.strokeStyle=palette.white;ctx.lineWidth=2;ctx.lineCap='round';ctx.lineJoin='round';
+    ctx.beginPath();ctx.moveTo(-15,-13);ctx.lineTo(-13,-11);ctx.lineTo(-9,-15);ctx.stroke();
+    // 取れるアイテムの目印になる、小さなきらめき。
+    ctx.globalAlpha=.45+.35*Math.sin(ts/240);ctx.strokeStyle=palette.white;ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(21,-19);ctx.lineTo(21,-13);ctx.moveTo(18,-16);ctx.lineTo(24,-16);ctx.stroke();
+    ctx.restore();
+  }
+  function drawHazardBadge(x,y,warning,ts){
+    ctx.save();ctx.translate(x,y);
+    if(warning)ctx.rotate(Math.sin(ts/75)*.055);
+    // 角を落とした停止標識。赤い面と白い縁で危険を伝える。
+    ctx.fillStyle=palette.red;ctx.strokeStyle=palette.white;ctx.lineWidth=1.8;
+    ctx.beginPath();ctx.moveTo(-10,-15);ctx.lineTo(10,-15);ctx.lineTo(17,-8);
+    ctx.lineTo(17,8);ctx.lineTo(10,15);ctx.lineTo(-10,15);ctx.lineTo(-17,8);ctx.lineTo(-17,-8);ctx.closePath();ctx.fill();ctx.stroke();
+    // つり上がった眉と警告テープで、単位のカードと形も区別する。
+    ctx.strokeStyle=palette.white;ctx.lineWidth=2;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(-9,-9);ctx.lineTo(-4,-7);ctx.moveTo(9,-9);ctx.lineTo(4,-7);ctx.stroke();
+    ctx.fillStyle=palette.white;ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.font='900 13px sans-serif';ctx.fillText('落単',0,2);
+    ctx.strokeStyle=palette.ink;ctx.lineWidth=2;
+    for(let i=-8;i<=8;i+=4){ctx.beginPath();ctx.moveTo(i,11);ctx.lineTo(i+2,13);ctx.stroke();}
+    ctx.fillStyle=palette.white;ctx.strokeStyle=palette.ink;ctx.lineWidth=1;
+    ctx.beginPath();ctx.arc(14,-14,6,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.fillStyle=palette.red;ctx.font='900 10px sans-serif';ctx.fillText('!',14,-13);
+    ctx.restore();
   }
   function drawHazards(ts){
     for(const h of hazards){
@@ -179,19 +235,15 @@
       const y=(h.prevY+(h.y-h.prevY)*progress)*CELL+12;
       ctx.save();
       if(!h.active){
-        ctx.globalAlpha=.45+.25*Math.sin(ts/90);
-        ctx.strokeStyle='#a52332';ctx.lineWidth=2;ctx.setLineDash([3,3]);
-        ctx.beginPath();ctx.roundRect(x-18,y-16,36,32,5);ctx.stroke();ctx.setLineDash([]);
+        ctx.globalAlpha=.65+.2*Math.sin(ts/90);
+        ctx.strokeStyle=palette.red;ctx.lineWidth=2;ctx.setLineDash([3,3]);
+        ctx.beginPath();ctx.arc(x,y,23,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
       }
-      ctx.fillStyle=h.active?'#b52638':'#fff0e9';
-      ctx.strokeStyle='#761b29';ctx.lineWidth=1.5;
-      ctx.beginPath();ctx.roundRect(x-15,y-12,30,24,5);ctx.fill();ctx.stroke();
-      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=h.active?'#fff':'#9b2534';
-      ctx.font='bold 13px sans-serif';ctx.fillText('留年',x,y+1);
+      drawHazardBadge(x,y,!h.active,ts);
       // 矢印で次に進む向きを示す。
-      const tipX=x+h.v.x*20,tipY=y+h.v.y*18;
-      const baseX=x+h.v.x*15,baseY=y+h.v.y*13;
-      ctx.fillStyle='#761b29';ctx.beginPath();ctx.moveTo(tipX,tipY);
+      const tipX=x+h.v.x*23,tipY=y+h.v.y*22;
+      const baseX=x+h.v.x*18,baseY=y+h.v.y*17;
+      ctx.fillStyle=palette.white;ctx.beginPath();ctx.moveTo(tipX,tipY);
       ctx.lineTo(baseX-h.v.y*3,baseY+h.v.x*3);
       ctx.lineTo(baseX+h.v.y*3,baseY-h.v.x*3);ctx.closePath();ctx.fill();
       ctx.restore();

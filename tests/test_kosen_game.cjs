@@ -34,7 +34,7 @@ function game() {
   return run;
 }
 
-test('留年は内側にも出現し、頭・単位・アイテム・他の留年を避ける', () => {
+test('落単は内側にも出現し、頭・単位・アイテム・他の落単を避ける', () => {
   for (const level of ['easy', 'normal', 'hard']) {
     const run = game();
     run(`difficulty='${level}'; powerup={x:5,y:5};`);
@@ -58,15 +58,73 @@ test('留年は内側にも出現し、頭・単位・アイテム・他の留�
   }
 });
 
-test('胴体への接触は安全で、頭に留年が当たると衝突する', () => {
+test('胴体への接触は安全で、頭に当たった札だけ落単として数える', () => {
   const run = game();
   run('hazards=[{x:14,y:10,active:true}];');
   assert.equal(run('resolveHazardCollisions()'), false);
+  assert.equal(run('droppedCredits'), 0);
   run('hazards[0].x=15;');
-  assert.equal(run('resolveHazardCollisions()'), true);
-  run('shieldCharges=1;');
   assert.equal(run('resolveHazardCollisions()'), false);
+  assert.equal(run('droppedCredits'), 1);
+  assert.equal(run('hazards.length'), 0);
+  // 同じフレームや次のフレームでも二重に数えない。
+  run('resolveHazardCollisions(); resolveHazardCollisions();');
+  assert.equal(run('droppedCredits'), 1);
+  run('shieldCharges=1; hazards=[{x:15,y:10,active:true}];');
+  assert.equal(run('resolveHazardCollisions()'), false);
+  assert.equal(run('droppedCredits'), 1);
   assert.equal(run('shieldCharges'), 0);
+  assert.equal(run('hazards.length'), 0);
+});
+
+test('全難易度で落単6単位までは続行し、7単位目で終了する', () => {
+  for (const level of ['easy', 'normal', 'hard']) {
+    const run = game();
+    run(`difficulty='${level}'; reset(); score=12;`);
+    for (let count = 1; count <= 7; count++) {
+      run('hazards=[{x:15,y:10,prevX:15,prevY:10,v:{x:1,y:0},active:true,lastMove:1000,stepMs:340}]; updateHazards(1000);');
+      assert.equal(run('droppedCredits'), count);
+      assert.equal(run('running'), count <= 6);
+      assert.equal(run('gameOver'), count === 7);
+      assert.equal(run('score'), 12);
+      assert.equal(run('droppedEl.textContent'), `${count} / 6`);
+      assert.equal(run('hazards.length'), 0);
+    }
+    assert.match(run('copyEl.innerHTML'), /落単が7単位/);
+    assert.match(run('copyEl.innerHTML'), /7単位/);
+    run('reset();');
+    assert.equal(run('droppedCredits'), 0);
+    assert.equal(run('droppedEl.textContent'), '0 / 6');
+    assert.equal(run('gameOver'), false);
+  }
+});
+
+test('落単6単位のときも、まもりで防いだ札は落単数に含めない', () => {
+  const run = game();
+  run('droppedCredits=6; shieldCharges=1; hazards=[{x:15,y:10,prevX:15,prevY:10,v:{x:1,y:0},active:true,lastMove:1000,stepMs:340}]; updateHazards(1000);');
+  assert.equal(run('running'), true);
+  assert.equal(run('droppedCredits'), 6);
+  assert.equal(run('shieldCharges'), 0);
+  run('hazards=[{x:15,y:10,prevX:15,prevY:10,v:{x:1,y:0},active:true,lastMove:1000,stepMs:340}]; updateHazards(1000);');
+  assert.equal(run('gameOver'), true);
+  assert.equal(run('droppedCredits'), 7);
+});
+
+test('プレーヤーが札に進んでも落単1単位で続行し、取得単位も記録する', () => {
+  const run = game();
+  run('food={x:16,y:10}; hazards=[{x:16,y:10,active:true}]; tick(1160);');
+  assert.equal(run('running'), true);
+  assert.equal(run('droppedCredits'), 1);
+  assert.equal(run('score'), 1);
+  assert.equal(run('hazards.length'), 0);
+  assert.equal(run('droppedEl.textContent'), '1 / 6');
+});
+
+test('同じマスに重なった別々の札はそれぞれ1単位だけ数える', () => {
+  const run = game();
+  run('hazards=Array.from({length:2},()=>({x:15,y:10,prevX:15,prevY:10,v:{x:1,y:0},active:true,lastMove:1000,stepMs:340})); updateHazards(1000); updateHazards(1000);');
+  assert.equal(run('running'), true);
+  assert.equal(run('droppedCredits'), 2);
   assert.equal(run('hazards.length'), 0);
 });
 
@@ -76,12 +134,13 @@ test('出現予告は無害で、頭に重なっている間は実体化を待�
   assert.equal(run('resolveHazardCollisions()'), false);
   run('updateHazards(2000);');
   assert.equal(run('hazards[0].active'), false);
+  assert.equal(run('droppedCredits'), 0);
   assert.equal(run('running'), true);
   run('snake[0]={x:16,y:10}; updateHazards(2400);');
   assert.equal(run('hazards[0].active'), true);
 });
 
-test('留年はプレーヤーの移動とは別の時計で動く', () => {
+test('落単はプレーヤーの移動とは別の時計で動く', () => {
   const run = game();
   run('hazards=[{x:2,y:2,prevX:2,prevY:2,v:{x:1,y:0},active:true,lastMove:1000,stepMs:340}];');
   run('tick(1160); tick(1320); updateHazards(1320);');
@@ -91,7 +150,7 @@ test('留年はプレーヤーの移動とは別の時計で動く', () => {
   assert.equal(run('hazards[0].x'), 3);
 });
 
-test('ゆっくりアイテムは留年を停止させず半分の速さにする', () => {
+test('ゆっくりアイテムは落単を停止させず半分の速さにする', () => {
   const run = game();
   run('hazards=[{x:2,y:2,prevX:2,prevY:2,v:{x:1,y:0},active:true,lastMove:1000,stepMs:340}]; slowUntil=8000;');
   run('updateHazards(1340);');
@@ -143,7 +202,7 @@ test('出現上限と空きマスがない場合にも安全に処理できる',
   assert.equal(run('hazards.length'), 0);
 });
 
-test('画面端を抜けた留年は消える', () => {
+test('画面端を抜けた落単は消える', () => {
   const run = game();
   run('hazards=[{x:31,y:2,prevX:30,prevY:2,v:{x:1,y:0},active:true,lastMove:1000,stepMs:340}]; updateHazards(1340);');
   assert.equal(run('hazards.length'), 0);
