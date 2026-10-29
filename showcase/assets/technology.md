@@ -11,9 +11,9 @@
 
 ## 追加4作品
 
-以下も2026年10月13日に、このPCで実際のゲームを起動して撮影しています。生成画像ではありません。
+以下もこのPCで実際のゲームを起動して撮影しています。風船ハンターは2026年10月29日、ほかの3作品は2026年10月13日の撮影です。生成画像ではありません。
 
-- `balloon-hunter-play.png`：`games/local/3hu/` のプレイ画面。
+- `balloon-hunter-play.png`：`games/local/3hu/` のプレイ画面。青空・緑の丘・カラフルな風船は最初の見た目を使い、外枠・得点欄・ボタンを赤・白・黒に統一しています。得点は色に関係なく、小型3点・中型2点・大型1点です。
 - `yuugure-fishing-play.png`：`games/local/2026_4Pro_fishinggame/` の釣り画面。
 - `realtime-chess-ready.png`：`games/local/chess/` の開始前の盤面と設定。
 - `brain-mole-play.png`：`games/local/tesuto/` の基礎数学のプレイ画面。

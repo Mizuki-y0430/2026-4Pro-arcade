@@ -3,392 +3,108 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <meta name="theme-color" content="#83d8ff">
+  <meta name="theme-color" content="#b71929">
   <title>ふうせんハンター</title>
   <style>
     :root {
       color-scheme: light;
-      --ink: #17345b;
-      --muted: #c7d9f5;
-      --panel: rgba(24, 58, 105, .76);
+      --red: #b71929;
+      --ink: #181818;
+      --paper: #fff;
+      --muted: #626262;
     }
-
     * { box-sizing: border-box; }
-
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      font-family: ui-rounded, "Hiragino Maru Gothic ProN", "Yu Gothic UI", system-ui, sans-serif;
-      color: var(--ink);
-      background: #83d8ff;
-    }
-
-    body {
-      display: grid;
-      place-items: center;
-      touch-action: manipulation;
-    }
-
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; font-family: "Yu Gothic UI", "Meiryo", system-ui, sans-serif; color: var(--ink); background: #f5f5f5; }
+    body { display: grid; place-items: center; touch-action: manipulation; }
     #game {
       position: relative;
       width: min(100vw, 177.78vh);
       height: min(100vh, 56.25vw);
-      min-height: 360px;
+      min-height: min(360px, 100vh);
       overflow: hidden;
+      border: 3px solid var(--ink);
+      border-top: 6px solid var(--red);
+      border-radius: 12px;
       background: linear-gradient(180deg, #70cfff 0%, #a4e4ff 58%, #e5f9ff 100%);
       isolation: isolate;
       user-select: none;
     }
-
-    #game::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      background:
-        radial-gradient(ellipse at 50% 87%, rgba(255, 241, 190, .45), transparent 38%),
-        radial-gradient(ellipse at 18% 24%, rgba(255, 255, 255, .35), transparent 26%),
-        radial-gradient(ellipse at 78% 38%, rgba(255, 255, 255, .24), transparent 22%);
-    }
-
-    .hill {
-      position: absolute;
-      bottom: -16%;
-      width: 75%;
-      height: 36%;
-      border-radius: 50% 50% 0 0;
-      background: #79bd79;
-      z-index: -1;
-    }
-
-    .hill.left {
-      left: -20%;
-      transform: rotate(5deg);
-    }
-
-    .hill.right {
-      right: -20%;
-      height: 29%;
-      background: #91cd83;
-      transform: rotate(-5deg);
-    }
-
-    header {
-      position: absolute;
-      top: 5%;
-      left: 5%;
-      right: 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      z-index: 4;
-    }
-
-    .brand {
-      font-size: clamp(18px, 2.4vw, 30px);
-      font-weight: 900;
-      letter-spacing: .04em;
-      text-shadow: 0 3px 14px #0a1230;
-    }
-
-    .brand small {
-      display: block;
-      color: #315d88;
-      font-size: clamp(10px, 1.1vw, 13px);
-      font-weight: 700;
-      letter-spacing: .12em;
-      margin-top: 3px;
-    }
-
-    .scoreboard {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 4px;
-    }
-
-    .stats {
-      display: flex;
-      gap: 10px;
-    }
-
-    .stat {
-      min-width: 88px;
-      padding: 9px 14px;
-      border-radius: 16px;
-      background: var(--panel);
-      border: 1px solid #ffffff22;
-      box-shadow: 0 8px 24px #07102a33;
-      text-align: center;
-      backdrop-filter: blur(10px);
-    }
-
-    .stat label {
-      display: block;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .12em;
-    }
-
-    .stat b {
-      display: block;
-      font-size: clamp(20px, 2.2vw, 27px);
-      line-height: 1.2;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .average-note {
-      color: #17345b;
-      font-size: 12px;
-      font-weight: 700;
-      text-shadow: 0 1px 5px #fff;
-    }
-
-    .average-note b {
-      font-variant-numeric: tabular-nums;
-    }
-
-    #field {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-    }
-
+    #game::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(ellipse at 50% 87%, #fff1be73, transparent 38%), radial-gradient(ellipse at 18% 24%, #ffffff59, transparent 26%), radial-gradient(ellipse at 78% 38%, #ffffff3d, transparent 22%); }
+    .hill { position: absolute; bottom: -16%; width: 75%; height: 36%; border-radius: 50% 50% 0 0; background: #79bd79; z-index: -1; }
+    .hill.left { left: -20%; transform: rotate(5deg); }
+    .hill.right { right: -20%; height: 29%; background: #91cd83; transform: rotate(-5deg); }
+    header { position: absolute; top: 5%; left: 4%; right: 4%; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; z-index: 4; pointer-events: none; }
+    .brand { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border: 2px solid var(--ink); border-left: 4px solid var(--red); border-radius: 7px; background: var(--paper); color: var(--ink); font-size: clamp(18px, 2.4vw, 28px); line-height: 1.25; font-weight: 900; }
+    .brand-number { display: grid; place-items: center; width: 40px; height: 42px; border: 2px solid var(--ink); border-radius: 7px; background: var(--red); color: var(--paper); font: 900 21px ui-monospace, monospace; box-shadow: 2px 2px 0 #000; }
+    .brand small { display: block; margin-bottom: 4px; color: var(--red); font-size: 10px; font-weight: 700; letter-spacing: .12em; }
+    .scoreboard { display: flex; flex-direction: column; align-items: flex-end; gap: 7px; }
+    .stats { display: flex; gap: 8px; }
+    .stat { min-width: 84px; padding: 8px 14px; border: 2px solid var(--ink); border-radius: 7px; background: var(--paper); text-align: center; box-shadow: 3px 3px 0 #000; }
+    .stat label { display: block; margin-bottom: 3px; color: var(--muted); font-size: 10px; font-weight: 700; }
+    .stat b { display: block; color: var(--red); font: 900 clamp(22px, 2.2vw, 28px)/1.1 ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+    .average-note { padding: 3px 6px; border-radius: 3px; color: var(--paper); background: var(--ink); font-size: 11px; font-weight: 700; }
+    .average-note b { font-variant-numeric: tabular-nums; }
+    #field { position: absolute; inset: 0; overflow: hidden; }
     .balloon {
       position: absolute;
-      left: 0;
-      top: 0;
-      width: var(--size);
-      height: calc(var(--size) * 1.22);
+      left: 0; top: 0;
+      width: var(--size); height: calc(var(--size) * 1.22);
       border-radius: 50% 50% 46% 46%;
-      background:
-        radial-gradient(ellipse at 32% 25%, #ffffffc7 0 4%, #ffffff50 5% 11%, transparent 12%),
-        radial-gradient(ellipse at 35% 25%, #ffffff45, transparent 44%),
-        var(--color);
+      background: radial-gradient(ellipse at 32% 25%, #ffffffc7 0 4%, #ffffff50 5% 11%, transparent 12%), radial-gradient(ellipse at 35% 25%, #ffffff45, transparent 44%), var(--color);
       box-shadow: inset -8px -10px 15px #0002, 0 8px 20px #07102a42;
       transform: translate(-50%, -50%);
       cursor: crosshair;
       animation: sway var(--sway, 2.5s) ease-in-out infinite alternate;
       will-change: transform;
     }
-
-    .balloon::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      bottom: -5px;
-      transform: translateX(-50%);
-      border-left: 6px solid transparent;
-      border-right: 6px solid transparent;
-      border-top: 8px solid var(--color);
-      filter: brightness(.83);
-    }
-
-    .balloon::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 100%;
-      width: 1px;
-      height: var(--string, 46px);
-      background: #f7f2d899;
-      transform: translateX(-50%);
-      transform-origin: top;
-      animation: string 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes sway {
-      from { margin-left: -5px; }
-      to { margin-left: 5px; }
-    }
-
-    @keyframes string {
-      from { transform: translateX(-50%) rotate(-5deg); }
-      to { transform: translateX(-50%) rotate(5deg); }
-    }
-
-    .pop {
-      position: absolute;
-      pointer-events: none;
-      font-size: 25px;
-      font-weight: 900;
-      color: #fff;
-      animation: pop .48s ease-out forwards;
-      text-shadow: 0 2px 10px #172448;
-    }
-
-    .spark {
-      position: absolute;
-      pointer-events: none;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--spark);
-      animation: spark .55s ease-out forwards;
-    }
-
-    @keyframes pop {
-      to {
-        transform: translateY(-32px) scale(1.4);
-        opacity: 0;
-      }
-    }
-
-    @keyframes spark {
-      to {
-        transform: translate(var(--dx), var(--dy)) scale(0);
-        opacity: 0;
-      }
-    }
-
-    .bottom {
-      position: absolute;
-      bottom: 4%;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: center;
-      pointer-events: none;
-      z-index: 3;
-      color: #e4eaff;
-      font-size: clamp(12px, 1.25vw, 15px);
-      text-shadow: 0 2px 8px #08112c;
-      opacity: .85;
-    }
-
-    .bottom span {
-      padding: 8px 14px;
-      border-radius: 20px;
-      background: #101a3b55;
-      backdrop-filter: blur(5px);
-    }
-
-    .overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 5;
-      display: grid;
-      place-items: center;
-      background: rgba(37, 111, 165, .16);
-      backdrop-filter: blur(5px);
-      transition: opacity .25s;
-    }
-
-    .overlay.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .card {
-      width: min(440px, 88%);
-      padding: clamp(24px, 5vw, 42px);
-      border: 1px solid #ffffff2e;
-      border-radius: 28px;
-      background: linear-gradient(145deg, #23396bd9, #172650ed);
-      box-shadow: 0 24px 80px #070e25a6;
-      text-align: center;
-    }
-
-    .eyebrow {
-      color: #a9bcf1;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: .22em;
-    }
-
-    .card h1 {
-      color: #fff;
-      font-size: clamp(30px, 5vw, 48px);
-      line-height: 1.15;
-      margin: 12px 0 14px;
-      text-shadow: 0 2px 12px rgba(0, 0, 0, .15);
-    }
-
-    .card p {
-      color: #d0daf4;
-      line-height: 1.8;
-      margin: 0 auto 24px;
-      max-width: 330px;
-    }
-
-    .primary {
-      border: 0;
-      border-radius: 999px;
-      padding: 14px 34px;
-      background: linear-gradient(135deg, #ffcf5d, #ff8d69);
-      color: #24294b;
-      font: inherit;
-      font-weight: 900;
-      font-size: 17px;
-      cursor: pointer;
-      box-shadow: 0 8px 24px #ff9b5c55;
-      transition: transform .15s, filter .15s;
-    }
-
-    .primary:hover {
-      transform: translateY(-2px);
-      filter: brightness(1.08);
-    }
-
-    .hint {
-      margin-top: 16px;
-      color: #a9bcf1;
-      font-size: 12px;
-    }
-
-    .result {
-      font-size: 18px;
-      color: #ffe38a;
-      font-weight: 800;
-      margin: 10px 0 22px;
-    }
-
+    .balloon::before { content: ""; position: absolute; left: 50%; bottom: -5px; transform: translateX(-50%); border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--color); filter: brightness(.83); }
+    .balloon::after { content: ""; position: absolute; left: 50%; top: 100%; width: 1px; height: var(--string, 46px); background: #f7f2d899; transform: translateX(-50%); transform-origin: top; animation: string 2s ease-in-out infinite alternate; }
+    @keyframes sway { from { margin-left: -5px; } to { margin-left: 5px; } }
+    @keyframes string { from { transform: translateX(-50%) rotate(-5deg); } to { transform: translateX(-50%) rotate(5deg); } }
+    .pop { position: absolute; pointer-events: none; padding: 2px 6px; border: 2px solid var(--ink); border-radius: 5px; background: var(--paper); color: var(--red); font-size: 25px; font-weight: 900; animation: pop .48s ease-out forwards; box-shadow: 2px 2px 0 var(--ink); }
+    .spark { position: absolute; pointer-events: none; width: 7px; height: 7px; border-radius: 1px; background: var(--spark); border: 1px solid #ffffff80; animation: spark .55s ease-out forwards; }
+    @keyframes pop { to { transform: translateY(-32px) scale(1.4); opacity: 0; } }
+    @keyframes spark { to { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; } }
+    .bottom { position: absolute; bottom: 4%; left: 0; right: 0; display: flex; justify-content: center; pointer-events: none; z-index: 3; color: var(--paper); font-size: clamp(11px, 1.25vw, 14px); font-weight: 700; }
+    .bottom span { padding: 8px 14px; border: 1px solid #777; border-radius: 5px; background: #181818eb; }
+    .overlay { position: absolute; inset: 0; z-index: 5; display: flex; align-items: center; justify-content: center; padding: 16px; background: #ffffff40; transition: opacity .2s; }
+    .overlay.hidden { opacity: 0; pointer-events: none; visibility: hidden; }
+    .card { width: min(480px, 94%); max-height: 100%; overflow-y: auto; padding: clamp(20px, 3vw, 32px); border: 3px solid var(--ink); border-top: 7px solid var(--red); border-radius: 12px; background: var(--paper); box-shadow: 7px 7px 0 #0008; text-align: center; }
+    .eyebrow { color: var(--red); font-size: 11px; font-weight: 800; letter-spacing: .12em; }
+    .card h1 { color: var(--ink); font-size: clamp(30px, 4vw, 44px); font-weight: 900; line-height: 1.15; margin: 12px 0 14px; }
+    .card p { color: #444; font-size: 13px; line-height: 1.7; margin: 0 auto 18px; max-width: 350px; }
+    .point-guide { display: flex; justify-content: center; align-items: flex-end; gap: 24px; margin: 18px 0 24px; }
+    .point-guide>div { display: grid; justify-items: center; gap: 7px; font-size: 11px; color: var(--muted); }
+    .mini-balloon { position: relative; display: grid; place-items: center; width: 28px; height: 34px; border: 2px solid var(--ink); border-radius: 50% 50% 46% 46%; font-size: 12px; font-weight: 900; font-style: normal; }
+    .point-small .mini-balloon { width: 24px; height: 29px; background: var(--paper); color: var(--red); }
+    .point-medium .mini-balloon { background: var(--paper); color: var(--red); }
+    .point-large .mini-balloon { width: 33px; height: 40px; background: var(--paper); color: var(--red); }
+    .primary { min-height: 48px; padding: 11px 28px; border: 2px solid var(--ink); border-radius: 8px; background: var(--red); color: var(--paper); font: inherit; font-size: 16px; font-weight: 900; cursor: pointer; box-shadow: 0 4px 0 var(--ink); }
+    .primary:hover { background: #84121e; }
+    .primary:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+    .primary:focus-visible { outline: 3px solid var(--red); outline-offset: 5px; }
+    .hint { margin-top: 16px; color: var(--muted); font-size: 11px; }
+    .result { font-size: 18px; color: var(--red); font-weight: 900; margin: 10px 0 22px; line-height: 1.6; }
+    .card:has(.result:not([hidden])) .point-guide { display: none; }
     @media (max-width: 600px) {
-      #game {
-        width: 100vw;
-        height: 100vh;
-        min-height: 0;
-      }
-
-      header {
-        left: 3%;
-        right: 3%;
-        gap: 6px;
-      }
-
-      .brand {
-        font-size: clamp(15px, 4.5vw, 19px);
-      }
-
-      .brand small {
-        letter-spacing: .05em;
-      }
-
-      .stats {
-        gap: 4px;
-      }
-
-      .stat {
-        min-width: 50px;
-        padding: 6px 5px;
-        border-radius: 12px;
-      }
-
-      .stat label {
-        font-size: 9px;
-      }
-
-      .average-note {
-        font-size: 10px;
-      }
-
-      .bottom {
-        bottom: 3%;
-      }
+      #game { width: 100vw; height: 100dvh; min-height: 0; border-radius: 0; }
+      header { top: 3%; left: 3%; right: 3%; gap: 6px; }
+      .brand { gap: 6px; padding: 6px; font-size: clamp(14px, 4vw, 19px); }
+      .brand small { font-size: 8px; letter-spacing: .05em; }
+      .brand-number { width: 29px; height: 33px; font-size: 16px; }
+      .stats { gap: 5px; }
+      .stat { min-width: 55px; padding: 6px; border-radius: 5px; }
+      .stat label { font-size: 9px; }
+      .stat b { font-size: 22px; }
+      .average-note { font-size: 10px; }
+      .bottom { bottom: 3%; }
+      .bottom span { padding: 7px 10px; font-size: 11px; }
+      .card p { font-size: 12px; }
+      .point-guide { gap: 20px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .balloon, .balloon::after { animation: none; }
+      .overlay { transition: none; }
     }
   </style>
 </head>
@@ -399,18 +115,18 @@
 
     <header>
       <div class="brand">
-        🎈 ふうせんハンター
-        <small>POP THE BALLOONS!</small>
+        <span class="brand-number" aria-hidden="true">02</span>
+        <div><small>4PRO ARCADE</small>ふうせんハンター</div>
       </div>
 
       <div class="scoreboard">
         <div class="stats">
           <div class="stat">
-            <label>SCORE</label>
+            <label>スコア</label>
             <b id="score">0</b>
           </div>
           <div class="stat">
-            <label>TIME</label>
+            <label>のこり秒</label>
             <b id="time">30</b>
           </div>
         </div>
@@ -421,16 +137,21 @@
     </header>
 
     <div id="field" aria-label="風船をタップして割ろう"></div>
-    <div class="bottom"><span>風船をタップして割ろう！</span></div>
+    <div class="bottom"><span>小さい ＋3点　中くらい ＋2点　大きい ＋1点</span></div>
 
     <section id="overlay" class="overlay">
       <div class="card">
-        <div class="eyebrow">BALLOON POP GAME</div>
+        <div class="eyebrow">30秒チャレンジ</div>
         <h1 id="title">空の風船を<br>つかまえよう！</h1>
         <p id="message">
           小さい風船は+3点、中くらいは+2点、大きい風船は+1点。<br>
           30秒で高得点を目指そう！
         </p>
+        <div class="point-guide" aria-label="小さい風船は3点、中くらいの風船は2点、大きい風船は1点。色に関係なく大きさで決まります">
+          <div class="point-small"><i class="mini-balloon" aria-hidden="true">+3</i><span>小さい</span></div>
+          <div class="point-medium"><i class="mini-balloon" aria-hidden="true">+2</i><span>中くらい</span></div>
+          <div class="point-large"><i class="mini-balloon" aria-hidden="true">+1</i><span>大きい</span></div>
+        </div>
         <div id="result" class="result" hidden></div>
         <button id="start" class="primary">ゲームスタート</button>
         <div class="hint">クリック / タップで遊べます</div>
@@ -631,6 +352,7 @@
       function endGame() {
         running = false;
         cancelAnimationFrame(raf);
+        timeEl.textContent = "0";
 
         scoreHistory.push(score);
 
