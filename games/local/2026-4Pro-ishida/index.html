@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#b71929">
   <title>こうせんサバイバー | 落単6単位までOK！</title>
   <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="cabinet.css">
 </head>
 <body>
   <main class="shell">
@@ -38,6 +39,8 @@
           <button data-dir="up" aria-label="うえ">▲</button>
           <div><button data-dir="left" aria-label="ひだり">◀</button><button data-dir="down" aria-label="した">▼</button><button data-dir="right" aria-label="みぎ">▶</button></div>
         </div>
+      </div>
+      <aside class="game-info" aria-label="遊び方と記録">
         <div class="play-guide" aria-label="ゲームのルール">
           <span><b class="credit-label">単位</b> とって集める</span>
           <span><b class="hazard-label">落単</b> 頭に当たると落単＋1単位</span>
@@ -49,10 +52,10 @@
           <summary>アイテムの<ruby>効果<rt>こうか</rt></ruby>・<ruby>記録<rt>きろく</rt></ruby>を見る</summary>
           <div class="quick-content">
             <div class="item-help"><span>🛡 まもり：<ruby>落単<rt>らくたん</rt></ruby>を1回ふせぐ</span><span>◷ ゆっくり：<ruby>落単<rt>らくたん</rt></ruby>の<ruby>動<rt>うご</rt></ruby>きを7<ruby>秒<rt>びょう</rt></ruby>おそくする</span><span>⌑ ひきよせ：<ruby>近<rt>ちか</rt></ruby>くの<ruby>単位<rt>たんい</rt></ruby>を8<ruby>秒<rt>びょう</rt></ruby><ruby>間<rt>かん</rt></ruby><ruby>引<rt>ひ</rt></ruby>きよせる</span><span>💥 <ruby>一掃<rt>いっそう</rt></ruby>：<ruby>画面<rt>がめん</rt></ruby>の「<ruby>落単<rt>らくたん</rt></ruby>」をすべて<ruby>消<rt>け</rt></ruby>す</span><span>⭐ <ruby>単位<rt>たんい</rt></ruby>ボーナス：<ruby>単位<rt>たんい</rt></ruby>を2つ<ruby>取得<rt>しゅとく</rt></ruby>して、<ruby>体<rt>からだ</rt></ruby>も1マス<ruby>伸<rt>の</rt></ruby>びる</span></div>
-            <div class="leaderboard-panel"><div class="section-kicker">HIGH SCORES · TOP 3</div><div class="leaderboard-head"><span></span><span>1ST</span><span>2ND</span><span>3RD</span></div><div class="leaderboard-row"><b>かんたん</b><span id="hs-easy-0">---</span><span id="hs-easy-1">---</span><span id="hs-easy-2">---</span></div><div class="leaderboard-row"><b>ふつう</b><span id="hs-normal-0">---</span><span id="hs-normal-1">---</span><span id="hs-normal-2">---</span></div><div class="leaderboard-row"><b>むずかしい</b><span id="hs-hard-0">---</span><span id="hs-hard-1">---</span><span id="hs-hard-2">---</span></div></div>
+            <div class="leaderboard-panel"><div class="section-kicker">最高記録 ベスト3</div><div class="leaderboard-head"><span></span><span>1位</span><span>2位</span><span>3位</span></div><div class="leaderboard-row"><b>かんたん</b><span id="hs-easy-0">---</span><span id="hs-easy-1">---</span><span id="hs-easy-2">---</span></div><div class="leaderboard-row"><b>ふつう</b><span id="hs-normal-0">---</span><span id="hs-normal-1">---</span><span id="hs-normal-2">---</span></div><div class="leaderboard-row"><b>むずかしい</b><span id="hs-hard-0">---</span><span id="hs-hard-1">---</span><span id="hs-hard-2">---</span></div></div>
           </div>
         </details>
-      </div>
+      </aside>
     </section>
   </main>
   <script src="game.js"></script>

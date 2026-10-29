@@ -101,3 +101,137 @@ dialog::backdrop{background:#181818b3}dialog p{font-size:13px}
 }
 @media(max-width:400px){.actions{width:100%}.actions button{flex:1}.hand-tray h2{font-size:8px}.piece{font-size:clamp(13px,6.2cqw,48px)}}
 @media(prefers-reduced-motion:reduce){button{transition:none}}
+
+/* Fill the available game frame; only information lists scroll. */
+html,body{height:100%;overflow:hidden}
+body{min-height:0;border-top-width:4px}
+.shell{max-width:none;height:calc(100dvh - 4px);padding:8px 12px 10px;display:grid;grid-template-rows:44px minmax(0,1fr);gap:8px}
+.heading{min-width:0;gap:10px}
+.game-title{min-width:0;gap:9px}.game-number{width:32px;height:34px;font-size:20px;box-shadow:2px 2px var(--ink)}
+.eyebrow{display:none}h1{font-size:20px;white-space:nowrap}
+.actions{gap:8px}.actions button{padding:6px 12px;font-size:13px;min-height:40px}
+.play-layout{min-height:0;grid-template-columns:minmax(0,1fr) 240px;gap:12px;align-items:stretch}
+.board-area{min-height:0;display:grid;place-items:center;container-type:size}
+.board-wrap{width:min(100cqw,100cqh);aspect-ratio:1;margin:0;border-width:5px;box-shadow:3px 3px #b8b8b8;container-type:inline-size}
+.piece{font-size:9cqw}
+.side{min-height:0;grid-template-rows:auto auto auto minmax(64px,1fr);gap:8px;overflow:auto;padding:0 3px 3px 0}
+.side section,.history-panel{padding:9px;box-shadow:2px 2px #d1d0ce}
+.status-panel h2{font-size:18px;margin:4px 0}.panel-label{font-size:10px}
+#status-detail{font-size:11px;margin:4px 0}.matches{margin-top:6px;padding-top:6px}
+.cooldown-panel div{margin-top:6px}
+
+
+
+.history-panel{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+
+.history-heading{flex-shrink:0;min-height:22px}
+.history-panel ol{min-height:0;max-height:none;flex:1;margin-top:4px;overflow:auto}
+.notice{position:fixed;z-index:10;top:60px;left:16px;max-width:calc(100% - 32px);box-shadow:3px 3px #18181840}
+.options{display:grid;gap:16px;margin:18px 0;padding:0;border:0}
+.options label{justify-content:space-between}.cooldown-option{max-width:none}.cooldown-option input{width:160px}
+.hint{text-align:left;margin:14px 0}.hint span{font-size:12px}footer{text-align:left;margin:14px 0}
+dialog{max-height:calc(100dvh - 32px);overflow:auto}
+@media(max-width:650px) and (orientation:portrait){
+ .shell{padding:6px 8px 8px;grid-template-rows:76px minmax(0,1fr);gap:6px}
+ .heading{flex-wrap:wrap;gap:5px}.game-number{width:26px;height:28px;font-size:17px}h1{font-size:18px}
+ .actions{width:100%;gap:6px}.actions button{flex:1;font-size:12px;padding:4px 6px;min-height:36px}
+ .play-layout{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) 184px;gap:8px}
+ .side{grid-template-columns:1fr 1fr;grid-template-rows:104px minmax(0,1fr);gap:6px}
+ .side section,.history-panel{padding:6px}.status-panel h2{font-size:15px}#status-detail{font-size:10px;line-height:1.3}
+ .matches{font-size:10px;margin-top:4px;padding-top:4px}
+ .history-heading{font-size:12px}.coordinate{font-size:8px}.piece-cd{font-size:8px}
+}
+@media(max-height:500px) and (orientation:landscape){
+ .shell{padding:4px 8px 6px;grid-template-rows:36px minmax(0,1fr);gap:6px}
+ h1{font-size:16px}.game-number{width:26px;height:28px;font-size:17px}.actions button{font-size:12px;min-height:32px;padding:4px 8px}
+ .play-layout{grid-template-columns:minmax(0,1fr) 220px;gap:8px}.side{gap:5px}
+ .side section,.history-panel{padding:6px}#status-detail{font-size:10px}.status-panel h2{font-size:15px}
+
+}
+@media(prefers-reduced-motion:reduce){button{transition:none}}
+
+/* Fit a square wooden board between the two komadai. */
+.board-area{grid-template-columns:76px minmax(0,1fr) 76px;gap:8px;padding:8px;align-items:center}
+.board-wrap{width:min(100cqw - 188px,100cqh - 20px);justify-self:center}
+.piece{font-size:6.2cqw}
+.hand-tray{min-width:0;width:76px;max-height:100%;overflow:auto;padding:6px;border:1px solid #111;border-top:4px solid #b71929;border-radius:0;background:#fffdf8;z-index:1;scrollbar-width:thin}
+.opponent-hand{align-self:start}.player-hand{align-self:end}
+.hand-tray h2{font-size:10px;margin:0 0 6px}.hand-tray h2 span{font-size:12px}.hand-pieces{gap:5px}.hand-pieces button{font-size:17px;min-height:34px;padding:3px 0;border-radius:2px}.hand-hint{font-size:9px;margin:6px 0 0}
+.side{grid-template-columns:1fr;margin:0;max-width:none;align-items:stretch;grid-template-rows:auto auto auto minmax(60px,1fr)}
+.history-panel{grid-column:auto}.history-heading{font-weight:900;line-height:16px}.history-heading span{float:right}
+.piece-guide{max-height:138px;overflow:auto}.piece-guide h2{font-size:16px}.piece-guide p:not(.panel-label){font-size:11px;line-height:1.5}
+.side .panel-label{margin:-10px -10px 8px;padding:5px 10px;font-size:12px;line-height:16px;min-height:26px}
+.rules-help p{font-size:13px}.hint{grid-column:auto}.options select{max-width:230px}
+@media(max-width:850px){.board-area{grid-template-columns:60px minmax(0,1fr) 60px;gap:6px;padding:6px}.board-wrap{width:min(100cqw - 148px,100cqh - 16px)}.hand-tray{width:60px;padding:4px}.hand-pieces button{min-height:30px;font-size:15px}.play-layout{grid-template-columns:minmax(0,1fr) 220px}}
+@media(max-width:650px) and (orientation:portrait){
+ .play-layout{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) 184px}
+ .board-area{grid-template-columns:minmax(0,1fr);grid-template-rows:56px minmax(0,1fr) 56px;gap:4px;padding:5px;container-type:size}
+ .board-wrap{width:min(100cqw - 12px,100cqh - 132px);grid-row:2;align-self:center}
+ .hand-tray{width:100%;padding:4px;max-height:56px;display:flex;align-items:center;gap:6px;border-top-width:1px;align-self:stretch;overflow:auto}.opponent-hand{grid-row:1}.player-hand{grid-row:3}
+ .hand-tray h2{font-size:9px;min-width:26px;margin:0}.hand-tray h2 span{font-size:9px}.hand-pieces{flex:1;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}.hand-pieces button{min-height:32px;font-size:13px;padding:2px 0}.hand-hint{display:none}
+ .side{grid-template-columns:1fr 1fr;grid-template-rows:104px minmax(0,1fr)}.status-panel{grid-column:auto}.history-panel{grid-column:auto}.side .panel-label{margin:-6px -6px 4px;padding:3px 6px;font-size:10px;min-height:22px}.piece-guide{max-height:100%}.piece-guide h2{font-size:12px;margin:3px 0}.piece-guide p:not(.panel-label){font-size:9px;line-height:1.3;margin:2px 0}.history-heading{margin:-6px -6px 4px;padding:3px 6px}
+ .options select{max-width:210px}.piece{font-size:6.2cqw}
+}
+@media(max-height:500px) and (orientation:landscape){.board-area{grid-template-columns:58px minmax(0,1fr) 58px;gap:6px;padding:5px}.board-wrap{width:min(100cqw - 140px,100cqh - 14px)}.hand-tray{width:58px;padding:4px}.hand-pieces{gap:3px}.hand-pieces button{min-height:25px;font-size:13px}.hand-tray h2{margin-bottom:3px}.hand-hint{display:none}.side .panel-label{margin:-6px -6px 4px;padding:3px 6px;min-height:22px;font-size:10px}.piece-guide{max-height:90px}.piece-guide p:not(.panel-label){font-size:10px}.piece{font-size:6.2cqw}}
+
+/* Red cabinet: painted rails, a black screen surround, and physical controls. */
+body{background:#b71929;border-top:4px solid #7e1020}
+.shell{padding:6px 12px 12px;gap:10px}
+.heading{color:#fff;gap:12px}
+.game-title{gap:12px}.eyebrow{display:none}
+.game-number{width:36px;height:34px;background:#fff;color:#181818;border:2px solid #181818;border-radius:0;box-shadow:2px 2px #7e1020;font:900 22px/1 ui-monospace,monospace}
+h1{font-size:24px;letter-spacing:.04em;font-weight:900;white-space:nowrap}
+.actions{gap:10px}
+.actions button{height:36px;min-height:36px;padding:4px 14px;border:2px solid #181818;border-radius:3px;background:#fff9f0;color:#181818;box-shadow:0 4px #6a0c18;font-size:13px;letter-spacing:.03em}
+.actions button:hover:not(:disabled){background:#fff;box-shadow:0 4px #6a0c18;transform:none}
+.actions button:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px #6a0c18}
+.actions .primary{border-radius:20px;background:#fff;color:#a71124;padding-left:22px;padding-right:22px;box-shadow:0 4px #6a0c18,inset 0 -3px #e4e1dd;font-weight:900}
+.actions .primary:hover:not(:disabled){background:#fff4e5;color:#a71124}
+.actions .primary.running{background:#181818;color:#fff;border-color:#080808;box-shadow:0 4px #6a0c18,inset 0 -3px #454545}
+.play-layout{gap:12px}
+.board-area{position:relative;background:#202020;border:2px solid #101010;box-shadow:inset 0 0 0 1px #555;border-radius:2px}
+.board-area::before,.board-area::after{content:"";position:absolute;width:5px;height:5px;background:#888;border:1px solid #080808;border-radius:50%;z-index:0}
+.board-area::before{left:7px;top:7px}.board-area::after{right:7px;bottom:7px}
+.board-wrap{position:relative;z-index:1;border:5px solid #f2eee6;border-radius:0;box-shadow:0 0 0 2px #080808}
+.side{gap:8px;padding:0 2px 2px 0;background:transparent;border:0;border-radius:0;box-shadow:none;scrollbar-width:thin}
+.side section{border:2px solid #181818;border-radius:0;background:#fffdf8;padding:10px;box-shadow:2px 2px #741020}
+.side .status-panel{background:#202020;color:#fff;border-top:2px solid #181818!important}
+.panel-label,.history-heading{font-size:12px;font-weight:900;letter-spacing:.08em;color:#fff;background:#202020;margin:-10px -10px 9px;padding:5px 10px;min-height:26px;line-height:16px}
+.status-panel .panel-label{color:#fff;background:#741020}
+.status-panel h2{font-size:21px;letter-spacing:.03em;margin:9px 0;font-weight:900}
+#status-detail{color:#d1cbc9;font-size:11px;line-height:1.6}
+.matches{font-size:12px;color:#fff;border-top:1px dashed #777;margin-top:10px;padding-top:8px;font-variant-numeric:tabular-nums}
+.cooldown-panel div{font-size:12px;margin-top:7px;font-weight:800;color:#181818}
+.cooldown-panel progress{height:8px;border-radius:0;background:#ddd9d2}
+.cooldown-panel progress::-webkit-progress-bar{background:#ddd9d2}
+
+
+.history-heading{flex-shrink:0;cursor:default;margin-bottom:4px}
+.history-heading span{float:right;padding:0;color:#fff;font-size:11px;letter-spacing:0}
+.history-panel ol{font-size:12px;line-height:1.9;scrollbar-width:thin;color:#333;padding-left:23px}
+.history-panel li:last-child{font-weight:900;color:#b71929}
+button,select{border-radius:3px}
+dialog{border:3px solid #181818;border-top:8px solid #b71929;border-radius:2px;background:#fffdf8;box-shadow:8px 8px #181818}
+dialog::backdrop{background:#101010b8;backdrop-filter:none}
+dialog h2{font-size:22px}.options{font-size:13px}
+@media(max-width:650px) and (orientation:portrait){
+ .shell{padding:4px 6px 8px;gap:6px}.game-number{width:28px;height:28px;font-size:19px}.game-title{gap:8px}h1{font-size:20px}
+ .actions{gap:6px}.actions button{padding:4px 6px;min-height:34px;height:34px;font-size:11px}.actions .primary{padding:4px 8px}
+ .play-layout{gap:8px}.board-area{border-width:1px}.board-wrap{border-width:4px}
+ .side{gap:6px;grid-template-rows:104px minmax(0,1fr);padding:0}
+ .side section{padding:6px;border-width:1px;box-shadow:1px 1px #741020}
+ .panel-label,.history-heading{margin:-6px -6px 4px;padding:3px 6px;font-size:10px;min-height:22px}
+ .status-panel h2{font-size:15px;margin:4px 0}#status-detail{font-size:9px;line-height:1.3}.matches{font-size:9px;margin-top:4px;padding-top:3px}
+ .cooldown-panel div{font-size:10px;margin-top:5px}.cooldown-panel progress{height:5px;margin-top:3px}
+
+
+ .history-heading span{font-size:9px}.history-panel ol{font-size:10px}
+}
+@media(max-height:500px) and (orientation:landscape){
+ .shell{padding:3px 8px 6px;gap:6px}h1{font-size:18px}.game-number{width:28px;height:28px;font-size:18px}
+ .actions button{min-height:30px;height:30px;font-size:11px;padding:3px 10px}
+ .side section{padding:6px}.panel-label,.history-heading{margin:-6px -6px 4px;padding:3px 6px;min-height:22px;font-size:10px}
+ .status-panel h2{font-size:15px;margin:4px 0}#status-detail{font-size:10px;line-height:1.3}.matches{font-size:10px;margin-top:5px;padding-top:4px}
+
+}
+@media(prefers-reduced-motion:reduce){button{transition:none}}

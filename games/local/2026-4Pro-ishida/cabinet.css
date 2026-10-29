@@ -1,0 +1,47 @@
+/* Cabinet layout: preserve the canvas aspect ratio and give it all remaining space. */
+html,body{height:100%;overflow:hidden}
+body{min-height:0;background:#b71929}
+.shell{max-width:none;height:100dvh;padding:6px 12px 12px;display:grid;grid-template-rows:44px minmax(0,1fr);gap:10px}
+.topbar{margin:0;padding:0;border:0;min-height:0;color:#fff}
+.festival-mark{font-size:24px;gap:12px}.festival-mark small{display:none}
+.festival-mark-icon{width:36px;height:34px;background:#fff;color:#181818;border-radius:0;box-shadow:2px 2px #741020;font-size:22px}
+.best{color:#fff;font-weight:800}.best b{color:#fff;font-size:24px}
+.topbar rt{color:#fff}
+.game-layout{min-height:0;grid-template-columns:minmax(0,1fr) 260px;gap:12px}
+.game-column{min-height:0;display:grid;grid-template-rows:64px minmax(0,1fr);background:#202020;border:2px solid #181818}
+.stats{min-height:0;border:0;border-bottom:2px solid #181818;border-radius:0;background:#fffdf8}
+.stat{padding:0 14px}.stat-label{font-size:11px}.stat strong{font-size:25px}
+.board-wrap{min-height:0;border:0;border-radius:0;box-shadow:none;container-type:size;align-items:center;background:#202020;padding:4px}
+canvas{width:min(100cqw,160cqh);height:auto;max-height:100%;aspect-ratio:8/5;border:3px solid #f2eee6}
+.game-info{min-height:0;overflow:auto;scrollbar-width:thin;display:flex;flex-direction:column;gap:8px}
+.play-guide,.bottomline,.quick-panel{margin:0;padding:14px;background:#fffdf8;border:2px solid #181818;box-shadow:2px 2px #741020}
+.play-guide{display:grid;gap:16px;font-size:13px;line-height:1.7}
+.play-guide .collision-note,.play-guide .spawn-note{font-size:12px}
+.bottomline{display:grid;gap:12px;color:#333;font-size:11px;line-height:1.8}
+.quick-panel{padding:12px}.quick-panel summary{font-size:12px;line-height:1.7}
+.quick-content{grid-template-columns:minmax(0,1fr);gap:16px;padding-top:14px}.item-help{font-size:11px}
+.section-kicker{letter-spacing:0}
+.overlay-card{border-radius:2px;background:#fffdf8;box-shadow:6px 6px #181818;padding:24px;max-height:calc(100% - 16px);overflow:auto}
+.primary{background:#fff;color:#a71124;border-radius:24px;box-shadow:0 4px #741020,inset 0 -3px #e4e1dd}
+.primary:hover{background:#fff4e5;color:#a71124}
+.difficulty-picker button{border-radius:2px}
+.mobile-controls{display:none}
+@media(max-width:850px){
+ .shell{padding:6px 8px 8px;gap:8px}.game-layout{grid-template-columns:minmax(0,1fr) 220px;gap:8px}
+ .festival-mark{font-size:20px}.stat{padding:0 8px}.stat strong{font-size:20px}.effect-stat strong{font-size:12px}
+ .mobile-controls{display:flex;justify-content:center;align-items:center;gap:6px;padding:8px 0}.mobile-controls>div{display:contents}
+ .mobile-controls button{width:44px;height:40px;margin:0;border-radius:3px;box-shadow:0 3px #741020}
+ .game-column{grid-template-rows:60px minmax(0,1fr) 60px}
+}
+@media(max-width:650px) and (orientation:portrait){
+ .shell{grid-template-rows:44px minmax(0,1fr)}.festival-mark{font-size:18px;gap:8px}.festival-mark-icon{width:28px;height:28px;font-size:18px}
+ .best{font-size:9px}.best b{font-size:18px}
+ .game-layout{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) 180px}
+ .game-column{grid-template-rows:60px minmax(0,1fr) 60px}.stat{padding:0 6px}.stat-label{font-size:9px}.stat strong{font-size:20px}.effect-stat strong{font-size:11px}
+ .game-info{display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:6px}.play-guide{grid-column:1/-1;display:flex;gap:8px 14px;padding:10px;font-size:11px}
+ .play-guide .collision-note,.play-guide .spawn-note{font-size:10px}.bottomline,.quick-panel{padding:10px;font-size:10px}
+ .quick-content{min-width:0}.item-help span{padding:6px}.leaderboard-head,.leaderboard-row{grid-template-columns:minmax(45px,1fr) repeat(3,minmax(20px,1fr));gap:2px}
+ .overlay{position:fixed;inset:50px 8px 8px;z-index:5}.overlay-card{max-width:420px;max-height:100%;padding:22px 14px}
+ .overlay h1{font-size:28px}.overlay p{font-size:12px;margin:14px 0}.difficulty-control{margin:18px 0}.difficulty-picker button{min-height:38px;font-size:12px}.primary{min-height:44px;font-size:15px}
+}
+@media(max-height:500px) and (orientation:landscape){.shell{grid-template-rows:36px minmax(0,1fr);gap:6px}.festival-mark{font-size:18px}.game-column{grid-template-rows:52px minmax(0,1fr)}.mobile-controls{display:none}.overlay-card{padding:10px}.overlay h1{font-size:24px;margin:4px}.overlay p,.difficulty-control{margin:8px 0}.keys-hint{margin-top:8px}}

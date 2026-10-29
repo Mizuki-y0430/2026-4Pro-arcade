@@ -115,3 +115,19 @@ body.ended main { opacity:.4; pointer-events:none; }
   .player { width:100vw; height:100dvh; border-radius:0; max-width:100vw; border:0; } .player-top { padding:8px; gap:8px; } .player-top strong { font-size:11px; } .player-top .quiet,.back { font-size:11px; padding:10px; } .help-dialog { padding:24px; }
 }
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; } }
+
+/* All six games share the same full-size cabinet frame. */
+.player[data-game]{width:calc(100vw - 16px);height:calc(100dvh - 16px);max-width:none;max-height:none;margin:auto;border:2px solid #181818;border-radius:5px}
+.player[data-game] .player-top{min-height:44px;padding:3px 10px;gap:8px;background:#fff;border-bottom:1px solid #ccc}
+.player[data-game] .player-top>div{display:none}
+.player[data-game] .back,.player[data-game] .quiet{min-height:34px;padding:5px 12px;border:1px solid #181818;border-radius:4px;background:#fff;color:#181818;font-size:12px}
+@media(max-width:650px){.player[data-game]{width:100vw;height:100dvh;border:0;border-radius:0}}
+
+body:has(.player[data-game][open]){overflow:hidden}
+
+.player[data-game]{border:4px solid #741020;border-radius:2px;box-shadow:8px 8px #181818}
+.player[data-game]::backdrop{background:#181818dd;backdrop-filter:none}
+.player[data-game] .player-top{background:#181818;border-bottom:2px solid #741020}
+.player[data-game] .back,.player[data-game] .quiet{background:transparent;border:1px solid #777;border-radius:2px;color:#fff;font-size:12px;font-weight:800;box-shadow:none}
+.player[data-game] .back:hover,.player[data-game] .quiet:hover{background:#333}
+@media(max-width:650px){.player[data-game]{border:0;border-radius:0;box-shadow:none}}

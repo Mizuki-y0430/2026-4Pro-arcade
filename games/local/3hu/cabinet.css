@@ -1,0 +1,20 @@
+html,body{height:100%;overflow:hidden;background:#b71929}
+body{display:block;padding:6px 12px 12px}
+#game{width:100%;height:100%;min-height:0;border:2px solid #181818;border-top:0;border-radius:0;background:linear-gradient(180deg,#70cfff 0%,#a4e4ff 58%,#e5f9ff 100%)}
+header{top:0;left:0;right:0;height:66px;align-items:center;gap:12px;padding:0 10px;background:#b71929;border-bottom:4px solid #181818;pointer-events:none}
+.brand{border:0;background:transparent;color:#fff;padding:0;gap:12px;font-size:24px;border-radius:0}.brand small{display:none}
+.brand-number{width:36px;height:34px;background:#fff;color:#181818;font-size:22px;border-radius:0;box-shadow:2px 2px #741020}
+.scoreboard{flex-direction:row;align-items:center;gap:12px}.stats{gap:8px}
+.stat{border-radius:0;min-width:98px;padding:4px 12px;background:#fffdf8;box-shadow:2px 2px #741020}
+.stat label{font-size:10px;margin:0;color:#444}.stat b{font-size:26px}.average-note{background:#741020;padding:8px;border-radius:0;font-size:11px}
+#field{inset:66px 0 36px}
+.bottom{bottom:0;min-height:36px;background:#202020;align-items:center}.bottom span{border:0;border-radius:0;padding:6px 10px;background:transparent}
+.overlay{inset:66px 0 36px}.card{border-radius:2px;background:#fffdf8;box-shadow:6px 6px #181818}
+.primary{background:#fff;color:#a71124;border-radius:24px;box-shadow:0 4px #741020,inset 0 -3px #e4e1dd}.primary:hover{background:#fff4e5;color:#a71124}
+@media(max-width:650px){
+ body{padding:4px 6px 8px}#game{border-radius:0;height:100%;width:100%;border-width:1px}
+ header{height:100px;padding:6px 8px;flex-wrap:wrap;align-content:center;gap:6px}.brand{font-size:20px;gap:8px}.brand-number{width:28px;height:28px;font-size:18px}
+ .scoreboard{width:100%;justify-content:space-between;gap:8px}.stats{gap:6px}.stat{min-width:75px;padding:2px 8px}.stat b{font-size:22px}.stat label{font-size:9px}.average-note{font-size:10px;padding:5px}
+ #field{inset:100px 0 34px}.overlay{inset:100px 0 34px;padding:12px}.bottom{min-height:34px}.card{width:100%;padding:22px 14px}.card h1{font-size:32px}
+}
+@media(max-height:500px) and (orientation:landscape){header{height:48px;flex-wrap:nowrap}.brand{font-size:18px}.brand-number{width:28px;height:28px;font-size:18px}.scoreboard{width:auto}.stat{min-width:70px;padding:1px 8px}.stat b{font-size:20px}.average-note{display:none}#field{inset:48px 0 28px}.overlay{inset:48px 0 28px;padding:6px}.bottom{min-height:28px}.card{width:580px;padding:12px 20px}.card h1{font-size:25px;margin:5px}.card p{margin-bottom:6px}.point-guide{margin:8px 0;gap:30px}.hint{margin-top:8px}.primary{min-height:38px;padding:6px 24px}}

@@ -123,7 +123,11 @@ $("reset").addEventListener("click",()=>{selected=null;action("reset");});
 for(const id of ["mode","level","animation"])$(id).addEventListener("change",()=>action("settings",{mode:$("mode").value,level:$("level").value,animation:$("animation").checked}));
 $("cooldown").addEventListener("input",()=>{adjustingCooldown=true;$("cooldown-value").textContent=`${(Number($("cooldown").value)/1000).toFixed(1)}秒`;});
 $("cooldown").addEventListener("change",()=>{adjustingCooldown=false;action("settings",{cooldown_ms:Number($("cooldown").value)});});
-document.addEventListener("keydown",event=>{if(!$("promotion").open&&["q","Q","Escape"].includes(event.key)&&state?.active){event.preventDefault();action("stop");}});
+for(const name of ["settings","help"]){
+  $(name+"-open").addEventListener("click",()=>$(name+"-dialog").showModal());
+  $(name+"-close").addEventListener("click",()=>$(name+"-dialog").close());
+}
+document.addEventListener("keydown",event=>{if(!$("settings-dialog").open&&!$("help-dialog").open&&!$("promotion").open&&["q","Q","Escape"].includes(event.key)&&state?.active){event.preventDefault();action("stop");}});
 async function refresh(){if(polling||busy)return;polling=true;try{draw(await request("/api/state"));}catch(error){notice(error.message);}finally{polling=false;}}
 async function boot(){try{const session=await request("/api/session");token=session.token;draw(session.state);timer=setInterval(refresh,200);}catch(error){$("status").textContent="接続できませんでした";notice(error.message);}}
 window.addEventListener("pagehide",()=>clearInterval(timer));boot();

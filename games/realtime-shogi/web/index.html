@@ -3,31 +3,33 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#b71929"><title>リアルタイム将棋</title><link rel="icon" href="data:,"><link rel="stylesheet" href="style.css"></head>
 <body>
 <main class="shell">
-  <header class="heading"><div class="game-title"><span class="game-number" aria-hidden="true">06</span><div><p class="eyebrow">4PRO ARCADE / REALTIME SHOGI</p><h1>リアルタイム将棋</h1></div></div><div class="actions"><button id="start" class="primary" disabled>スタート ▶</button><button id="reset" disabled>リセット ↺</button></div></header>
-  <div class="options" aria-label="対局設定">
-    <label>遊び方<select id="mode" disabled><option value="ai">AI対戦・あなたは先手</option><option value="aivsai">AI同士を観戦</option></select></label>
-    <label>AIの強さ<select id="level" disabled><option value="weak">よわい</option><option value="normal" selected>ふつう</option><option value="strong">つよい</option></select></label>
-    <label class="cooldown-option">動かす間隔 <output id="cooldown-value">0.5秒</output><input id="cooldown" type="range" min="0" max="1500" step="100" value="500" disabled></label>
-    <label class="animation-option"><input id="animation" type="checkbox" checked disabled>駒アニメーション</label>
-  </div>
+  <header class="heading"><div class="game-title"><span class="game-number" aria-hidden="true">06</span><div><p class="eyebrow">4PRO ARCADE / REALTIME SHOGI</p><h1>リアルタイム将棋</h1></div></div><div class="actions"><button id="start" class="primary" disabled>スタート ▶</button><button id="reset" disabled>リセット ↺</button><button id="settings-open" aria-haspopup="dialog">設定</button><button id="help-open" aria-haspopup="dialog">操作説明</button></div></header>
   <div id="notice" class="notice" role="status" hidden></div>
   <div class="play-layout">
     <section class="board-area" aria-label="将棋盤と持ち駒">
       <section class="hand-tray opponent-hand"><h2>後手<span>持ち駒</span></h2><div id="black-hand" class="hand-pieces" aria-label="後手の持ち駒"></div></section>
       <div class="board-wrap"><div id="board" class="board" role="group" aria-label="9×9の将棋盤"></div><div id="countdown" class="countdown" hidden aria-live="polite"></div></div>
       <section class="hand-tray player-hand"><h2>先手<span>持ち駒</span></h2><div id="white-hand" class="hand-pieces" aria-label="先手の持ち駒"></div><p class="hand-hint">選んで<br>盤へ打つ</p></section>
-      <p class="hint"><span id="play-hint">自分の駒、または持ち駒 → 緑の移動先。ターン待ちはありません。</span><br><span id="key-hint">矢印キーでマス移動・Enterで選択 / Q・Escで停止</span></p>
     </section>
     <aside class="side">
-      <section class="status-panel"><p class="panel-label">いまの対局</p><h2 id="status" aria-live="polite">接続中…</h2><p id="status-detail">少し待ってください。</p><p id="matches" class="matches">先手 0勝 / 後手 0勝 / 引分 0</p></section>
+      <section class="status-panel"><p class="panel-label">対局状況</p><h2 id="status" aria-live="polite">接続中…</h2><p id="status-detail">少し待ってください。</p><p id="matches" class="matches">先手 0勝 / 後手 0勝 / 引分 0</p></section>
       <section class="cooldown-panel"><p class="panel-label">次に動かせるまで</p><div><span id="white-cd">先手：準備中</span><progress id="white-bar" max="100" value="0" aria-label="先手のクールタイム"></progress></div><div><span id="black-cd">後手：準備中</span><progress id="black-bar" max="100" value="0" aria-label="後手のクールタイム"></progress></div></section>
       <section class="piece-guide"><p class="panel-label">駒の動きガイド</p><h2 id="piece-name">駒を選んでみよう</h2><p id="piece-help">緑の印が、いま指せる場所です。王手を放置する手は指せません。</p></section>
-      <details class="history-panel" open><summary>棋譜 <span id="move-count">0手</span></summary><ol id="history" aria-label="これまでの移動"></ol></details>
-      <details class="history-panel rules-help"><summary>このゲームのルール</summary><p>相手の玉を詰ませれば勝利。王手中は、玉を逃がす・駒を取る・合駒で守ろう。</p><p>敵陣3段に入る／出ると成れます。歩・香・桂は行き所がなくなる移動で自動的に成ります。</p><p>取った駒は成る前に戻り、持ち駒として再利用できます。二歩・打ち歩詰め・行き所のない駒打ちはできません。</p><p>交互に指す制限を外した独自ルールです。同じ盤面・持ち駒・直前の着手側が4回で千日手。連続王手による繰り返しは王手側の負け。入玉宣言・持将棋の点数判定はありません。</p></details>
+      <section class="history-panel" aria-label="棋譜"><div class="history-heading">棋譜 <span id="move-count">0手</span></div><ol id="history" aria-label="これまでの移動"></ol></section>
+
     </aside>
   </div>
-  <footer>4Pro Arcade · GAME 06 · チェスと同じリアルタイム方式の将棋</footer>
+
 </main>
+<dialog id="settings-dialog" aria-labelledby="settings-title"><h2 id="settings-title">対局設定</h2>  <div class="options" aria-label="対局設定">
+    <label>遊び方<select id="mode" disabled><option value="ai">AI対戦・あなたは先手</option><option value="aivsai">AI同士を観戦</option></select></label>
+    <label>AIの強さ<select id="level" disabled><option value="weak">よわい</option><option value="normal" selected>ふつう</option><option value="strong">つよい</option></select></label>
+    <label class="cooldown-option">動かす間隔 <output id="cooldown-value">0.5秒</output><input id="cooldown" type="range" min="0" max="1500" step="100" value="500" disabled></label>
+    <label class="animation-option"><input id="animation" type="checkbox" checked disabled>駒アニメーション</label>
+  </div>
+<button id="settings-close" class="primary">閉じる</button></dialog>
+<dialog id="help-dialog" aria-labelledby="help-title"><h2 id="help-title">操作とルール</h2>      <p class="hint"><span id="play-hint">自分の駒、または持ち駒 → 緑の移動先。ターン待ちはありません。</span><br><span id="key-hint">矢印キーでマス移動・Enterで選択 / Q・Escで停止</span></p>
+      <section class="rules-help"><p>相手の玉を詰ませれば勝利。王手中は、玉を逃がす・駒を取る・合駒で守ろう。</p><p>敵陣3段に入る／出ると成れます。歩・香・桂は行き所がなくなる移動で自動的に成ります。</p><p>取った駒は成る前に戻り、持ち駒として再利用できます。二歩・打ち歩詰め・行き所のない駒打ちはできません。</p><p>交互に指す制限を外した独自ルールです。同じ盤面・持ち駒・直前の着手側が4回で千日手。連続王手による繰り返しは王手側の負け。入玉宣言・持将棋の点数判定はありません。</p></section>  <footer>4Pro Arcade · GAME 06 · チェスと同じリアルタイム方式の将棋</footer><button id="help-close" class="primary">閉じる</button></dialog>
 <dialog id="promotion"><h2>この駒を成りますか？</h2><p>成ると駒の動きが変わります。</p><div class="promotion-options"><button data-promotion="yes" class="primary">成る</button><button data-promotion="no">成らない</button></div><button id="promotion-cancel">キャンセル</button></dialog>
 <script src="game.js"></script>
 </body></html>

@@ -186,6 +186,7 @@ async function refresh() {
 
 function openPlayer(game) {
   selectedGame = game.id;
+  $("player").dataset.game = game.id;
   $("player-title").textContent = game.title;
   $("player-controls").textContent = game.controls;
   $("game-frame").title = game.title;
