@@ -73,3 +73,34 @@ dialog h2,.card h1,.overlay-card h1,.overlay-card h2{color:var(--pop-ink)}
 @keyframes castSwing{0%,100%{transform:rotate(0)}28%{transform:rotate(-12deg)}62%{transform:rotate(7deg)}}
 .angler.casting{transform-origin:25% 95%}
 @media(max-width:650px) and (orientation:portrait){.scene{background-size:auto 100%;background-position:75% center}}
+
+/* A readable timing challenge over the water, with the same arcade colors. */
+.timing-meter{position:absolute;z-index:4;left:50%;bottom:22px;transform:translateX(-50%);width:min(620px,90%);padding:14px 20px 10px;background:#fffdf5;border:3px solid #202020;border-top:6px solid #f3273c;border-radius:8px;box-shadow:4px 4px #202020}
+.timing-meter[hidden]{display:none}
+.timing-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:16px;color:#202020}.timing-heading strong{font-size:22px}.timing-heading>span{font-size:16px;font-weight:800;white-space:nowrap}
+.timing-track{position:relative;height:34px;background:repeating-linear-gradient(90deg,#30373c 0 calc(10% - 1px),#60666a calc(10% - 1px) 10%);border:2px solid #202020;border-radius:5px}
+.target-zone{position:absolute;inset-block:0;background:#ffd449;border-inline:2px solid #fff}
+.timing-needle{position:absolute;left:0;top:-9px;bottom:-9px;width:5px;background:#f3273c;transform:translateX(-50%);box-shadow:0 0 0 2px #fff}
+.timing-needle::before{content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top:9px solid #f3273c;border-bottom:0}
+.timing-caption{margin-top:12px;font-size:15px;font-weight:800;text-align:center}.timing-caption kbd,.overlay-card kbd{font:inherit;background:#fff;border:1px solid #888;border-bottom:3px solid #888;border-radius:4px;padding:0 6px;white-space:nowrap}
+.timing-meter[data-result="success"]{border-top-color:#e6b136}.timing-meter[data-result="miss"] .timing-heading{color:#c51a30}
+.overlay-card{width:min(660px,100%);max-width:660px;padding:26px 32px}.overlay-card h2{font-size:38px}.overlay-card p{font-size:22px;line-height:1.6}.overlay-card>button{font-size:22px;padding:14px 32px}.intro-lead{display:block;font-weight:900;margin-bottom:12px}.intro-step{display:block;text-align:left;margin:9px 0}.intro-step>b{display:inline-grid;place-items:center;width:28px;height:28px;margin-right:8px;background:#f3273c;color:#fff;border-radius:50%;font-size:18px}.intro-note{display:block;margin-top:16px;font-size:17px;color:#555}
+@media(max-width:650px) and (orientation:portrait){.timing-meter{bottom:16px;padding:10px 12px 8px;width:92%}.timing-heading{margin-bottom:14px}.timing-heading strong{font-size:17px}.timing-heading>span{font-size:13px}.timing-track{height:28px}.timing-caption{font-size:12px;margin-top:10px}.overlay-card{padding:20px 16px}.overlay-card h2{font-size:29px}.overlay-card p{font-size:18px}.overlay-card>button{font-size:20px}.intro-step{margin:7px 0}.intro-step>b{width:24px;height:24px;font-size:15px;margin-right:4px}.intro-note{font-size:15px;margin-top:12px}}
+@media(max-height:500px) and (orientation:landscape){.timing-meter{bottom:10px;padding:7px 14px 5px;border-top-width:4px}.timing-heading{margin-bottom:10px}.timing-heading strong{font-size:16px}.timing-heading>span{font-size:12px}.timing-track{height:22px}.timing-caption{font-size:12px;margin-top:8px}.bite{padding-top:5px}.bite span{font-size:14px;padding:4px 10px}.overlay-card{padding:10px 20px;width:min(650px,100%)}.overlay-card h2{font-size:26px}.overlay-card p{font-size:17px;line-height:1.35;margin:4px 0 10px}.intro-lead{margin-bottom:5px}.intro-step{margin:4px 0}.intro-step>b{width:21px;height:21px;font-size:14px}.intro-note{font-size:14px;margin-top:7px}.overlay-card>button{font-size:18px;padding:8px 24px}}
+@media(prefers-reduced-motion:reduce){.hook.pulse,.bobber.hit{animation:none}}
+
+@media(max-height:500px){.overlay{position:fixed;z-index:20}}
+
+.overlay-card{padding-block:22px}.intro-lead{margin-bottom:8px}.intro-step{margin-block:7px}.intro-note{margin-top:12px}
+@media(max-width:650px) and (orientation:portrait){.overlay-card{padding-block:18px}}
+@media(max-height:500px) and (orientation:landscape){.overlay-card{padding-block:10px}.intro-step{margin-block:4px}.intro-note{margin-top:7px}}
+
+.auto-mode{display:inline-block;vertical-align:top;margin-bottom:4px;padding:2px 7px;border:1px solid #e3b72a;border-radius:4px;background:#fff1b1;color:#202020;font-size:11px;font-weight:900;line-height:1.3}
+.recast-progress{height:5px;margin-top:10px;overflow:hidden;border-radius:3px;background:#e9e2d5}.recast-progress[hidden]{display:none}.recast-progress i{display:block;height:100%;background:#f3273c;transform-origin:left;animation:recastCountdown var(--recast-duration) linear forwards}
+@keyframes recastCountdown{to{transform:scaleX(0)}}
+.buttons .cast{font-size:12px;padding-inline:12px}.buttons .cast .key{display:none}
+@media(max-width:650px) and (orientation:portrait){.auto-mode{font-size:10px;margin-bottom:3px}.buttons .cast{font-size:12px}.intro-note{font-size:14px}}
+@media(max-height:500px) and (orientation:landscape){.auto-mode{font-size:9px;padding:1px 5px;margin-bottom:2px}.bottom .message{font-size:12px}.bottom .hint{font-size:10px}.buttons .cast{font-size:10px;padding-inline:8px}.recast-progress{margin-top:6px}}
+@media(prefers-reduced-motion:reduce){.recast-progress i{animation:none}}
+
+@media(max-width:650px) and (orientation:portrait){.game{grid-template-rows:104px minmax(0,1fr) 146px 78px}}

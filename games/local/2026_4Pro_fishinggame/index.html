@@ -34,14 +34,19 @@
 <span class="bobber-body"></span>
 </div>
 <div id="bite" class="bite">
-<span>HIT！ タイミングよく合わせて！</span>
+<span>HIT！ バーに注目！</span>
 </div>
+<section id="timingMeter" class="timing-meter" aria-label="釣りのタイミングバー" hidden>
+<div class="timing-heading"><strong id="timingName"></strong><span id="timingTime"></span></div>
+<div class="timing-track" aria-hidden="true"><div id="targetZone" class="target-zone"></div><div id="needle" class="timing-needle"></div></div>
+<div id="timingCaption" class="timing-caption">黄色のエリアで <kbd>Enter</kbd> ／ 合わせる</div>
+<div id="recastProgress" class="recast-progress" aria-hidden="true" hidden><i></i></div>
+</section>
 <div id="catchArt" class="catch-art" aria-live="polite"></div>
 <div id="overlay" class="overlay">
 <div class="overlay-card">
 <h2 id="overlayTitle">60秒チャレンジ</h2>
-<p id="overlayText">制限時間内に、できるだけたくさん釣ろう！<br>
-<span class="key">Space</span> で投げる　 <span class="key">Enter</span> で合わせる</p>
+<p id="overlayText"><span class="intro-lead">60秒で、何匹釣れる？</span><span class="intro-step"><b>1</b> スタートで自動で投げる</span><span class="intro-step"><b>2</b> 魚がかかったらバーに注目！</span><span class="intro-step"><b>3</b> 黄色のエリアで <kbd>Enter</kbd></span><span class="intro-note">難しい魚ほど成功エリアがせまくなるよ。<br>5秒以内に決めよう。次の投げ直しは自動！</span></p>
 <button id="start">釣りを始める</button>
 </div>
 </div>
@@ -50,11 +55,12 @@
 <!-- 状況メッセージと、投げる／合わせる操作です。 -->
 <section class="bottom">
 <div>
+<span class="auto-mode">自動で投げ直し</span>
 <div id="message" class="message">準備ができたらチャレンジ開始！</div>
-<div id="hint" class="hint">投げる：Space ／ 魚がかかったら合わせる：Enter</div>
+<div id="hint" class="hint">投げるのは自動 ／ 黄色のエリアでEnter</div>
 </div>
 <div class="buttons">
-<button id="cast" class="cast" disabled>🎣 投げる <span class="key">Space</span>
+<button id="cast" class="cast" disabled>🎣 <span id="castLabel">投げるのは自動</span> <span class="key">Space</span>
 </button>
 <button id="hook" class="hook" disabled>🐟 合わせる <span class="key">Enter</span>
 </button>

@@ -14,8 +14,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Test bundled Kosen Survivor
-        run: node --test tests/test_kosen_game.cjs
+      - name: Test bundled browser games
+        run: node --test tests/test_kosen_game.cjs tests/test_fishing_game.cjs
       - run: python -m unittest discover -s tests -v
       - name: Test bundled realtime shogi
         run: python -m unittest discover -s games/realtime-shogi/tests -v
