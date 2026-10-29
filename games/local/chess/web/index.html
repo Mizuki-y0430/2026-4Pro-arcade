@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#79d8ef">
+  <meta name="theme-color" content="#b71929">
   <title>リアルタイムチェス</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="shell">
     <header class="heading">
-      <div><p class="eyebrow">MOVE AT YOUR OWN PACE!</p><h1><span aria-hidden="true">♞</span> リアルタイムチェス</h1></div>
+      <div class="game-title"><span class="game-number" aria-hidden="true">05</span><div><p class="eyebrow">4PRO ARCADE / REALTIME CHESS</p><h1>リアルタイムチェス</h1></div></div>
       <div class="actions"><button id="start" class="primary" disabled>スタート ▶</button><button id="reset" disabled>リセット ↺</button></div>
     </header>
     <div class="options" aria-label="対局設定">
@@ -23,12 +23,13 @@
     <div class="play-layout">
       <section class="board-area" aria-label="チェス盤">
         <div class="board-wrap"><div id="board" class="board" role="group" aria-label="8×8のチェス盤"></div><div id="countdown" class="countdown" hidden aria-live="polite"></div></div>
+        <div class="board-legend" aria-label="盤面の印の見方"><span><i class="legend-selected" aria-hidden="true"></i>選択中</span><span><i class="legend-legal" aria-hidden="true"></i>移動先</span><span><i class="legend-last" aria-hidden="true"></i>直前の移動</span><span><i class="legend-check" aria-hidden="true">!</i>王手</span></div>
         <p class="hint"><span id="play-hint">白の駒 → 移動先をクリック。ターン待ちはありません。</span><br><span id="key-hint">矢印キーでマス移動・Enterで選択 / Q・Escで停止</span></p>
       </section>
       <aside class="side">
-        <section class="status-panel"><p class="panel-label">いまの対局</p><h2 id="status" aria-live="polite">接続中…</h2><p id="status-detail">少し待ってください。</p><p id="matches" class="matches">白 0勝 / 黒 0勝 / 引分 0</p></section>
-        <section class="cooldown-panel"><p class="panel-label">次に動かせるまで</p><div><span id="white-cd">白：準備中</span><progress id="white-bar" max="100" value="0" aria-label="白のクールタイム"></progress></div><div><span id="black-cd">黒：準備中</span><progress id="black-bar" max="100" value="0" aria-label="黒のクールタイム"></progress></div></section>
-        <section class="capture-panel"><p class="panel-label">取った駒</p><p>白 <span id="white-captures">—</span></p><p>黒 <span id="black-captures">—</span></p></section>
+        <section class="status-panel"><p class="panel-label">いまの対局</p><h2 id="status" aria-live="polite">接続中…</h2><p id="status-detail">少し待ってください。</p><p id="matches" class="matches">白 0勝 / 赤 0勝 / 引分 0</p></section>
+        <section class="cooldown-panel"><p class="panel-label">次に動かせるまで</p><div><span id="white-cd">白：準備中</span><progress id="white-bar" max="100" value="0" aria-label="白のクールタイム"></progress></div><div><span id="black-cd">赤：準備中</span><progress id="black-bar" max="100" value="0" aria-label="赤のクールタイム"></progress></div></section>
+        <section class="capture-panel"><p class="panel-label">取った駒</p><p>白 <span id="white-captures">—</span></p><p>赤 <span id="black-captures">—</span></p></section>
         <details class="history-panel" open><summary>棋譜 <span id="move-count">0手</span></summary><ol id="history" aria-label="これまでの移動"></ol></details>
       </aside>
     </div>

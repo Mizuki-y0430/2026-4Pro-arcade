@@ -2,6 +2,7 @@
 const $=id=>document.getElementById(id);
 const glyphs={wK:"♔",wQ:"♕",wR:"♖",wB:"♗",wN:"♘",wP:"♙",bK:"♚",bQ:"♛",bR:"♜",bB:"♝",bN:"♞",bP:"♟"};
 const names={K:"キング",Q:"クイーン",R:"ルーク",B:"ビショップ",N:"ナイト",P:"ポーン"};
+const colorName=color=>color==="w"?"白":"赤";
 const squareName=(r,c)=>`${String.fromCharCode(97+c)}${8-r}`;
 let token="",state=null,selected=null,busy=false,polling=false,timer=null,promotionResolve=null,noticeTimer,adjustingCooldown=false;
 const cells=[];
@@ -37,7 +38,7 @@ function draw(next){
     const {button,piece,cd}=cells[r*8+c],code=state.board[r][c];
     const isAt=position=>position&&position[0]===r&&position[1]===c;
     button.className=`square ${(r+c)%2?"dark":""} ${code?"occupied":""} ${isAt(selected)?"selected":""} ${targets.some(isAt)?"legal":""} ${last&&(isAt(last.from)||isAt(last.to))?"last":""} ${Object.values(state.checks).some(isAt)?"check":""}`;
-    button.setAttribute("aria-label",`${squareName(r,c)} ${code?(code[0]==="w"?"白":"黒")+"の"+names[code[1]]:"空きマス"}`);
+    button.setAttribute("aria-label",`${squareName(r,c)} ${code?colorName(code[0])+"の"+names[code[1]]:"空きマス"}`);
     button.setAttribute("aria-pressed",String(Boolean(isAt(selected))));
     button.disabled=busy||state.mode!=="ai"||state.phase!=="playing";
     piece.textContent=glyphs[code]||"";piece.className=`piece ${code?.[0]==="w"?"white":"black"}`;
@@ -57,27 +58,33 @@ function draw(next){
   $("cooldown").disabled=busy||state.mode==="aivsai";
   $("start").textContent=state.active?"停止 ■":state.game_over||state.phase==="finished"?"もう一局 ▶":state.phase==="paused"?(state.mode==="aivsai"?"新しい対局 ▶":"再開 ▶"):"スタート ▶";
   $("start").classList.toggle("running",state.active);
-  const status={ready:"白の駒で挑戦！",countdown:`開始まで ${state.countdown}…`,playing:state.mode==="ai"?"あなたは白！":"AI同士の対局中",paused:"停止中",finished:state.winner==="draw"?"引き分け！":`${state.winner==="w"?"白":"黒"}の勝ち！`};
+  const status={ready:"白の駒で挑戦！",countdown:`開始まで ${state.countdown}…`,playing:state.mode==="ai"?"あなたは白！":"AI同士の対局中",paused:"停止中",finished:state.winner==="draw"?"引き分け！":`${colorName(state.winner)}の勝ち！`};
   $("status").textContent=status[state.phase];
-  $("status-detail").textContent=state.rematch_in?`${state.rematch_in}秒後に次の対局へ。Q・Escで停止できます。`:state.phase==="finished"?"対局終了。もう一局に挑戦しよう！":state.mode==="aivsai"?"駒ごとに2秒のクールタイム。白黒交互に動きます。":"スタートして駒と移動先を選ぼう。AIは1秒ごとに動きます。";
+  $("status-detail").textContent=state.rematch_in?`${state.rematch_in}秒後に次の対局へ。Q・Escで停止できます。`:state.phase==="finished"?"対局終了。もう一局に挑戦しよう！":state.mode==="aivsai"?"駒ごとに2秒のクールタイム。白と赤が交互に動きます。":"スタートして駒と移動先を選ぼう。AIは1秒ごとに動きます。";
   $("countdown").hidden=state.phase!=="countdown";$("countdown").textContent=state.countdown;
   $("play-hint").textContent=state.mode==="aivsai"?"AIの対局を観戦。停止ボタン・Q・Escで停止できます。":"白の駒 → 移動先をクリック。ターン待ちはありません。";
   $("key-hint").textContent=state.mode==="aivsai"?"終局後3秒で次局へ。停止後は「新しい対局」で最初から。":"矢印キーでマス移動・Enterで選択 / Q・Escで停止";
-  $("matches").textContent=`白 ${state.match_score.w}勝 / 黒 ${state.match_score.b}勝 / 引分 ${state.match_score.draw}${state.match_no?` · 第${state.match_no}局`:""}`;
+  $("matches").textContent=`白 ${state.match_score.w}勝 / 赤 ${state.match_score.b}勝 / 引分 ${state.match_score.draw}${state.match_no?` · 第${state.match_no}局`:""}`;
   for(const [color,label]of[["w","white"],["b","black"]]){
     let remain=state.cooldowns[color];
     if(state.mode==="aivsai"){
       const count=Object.keys(state.piece_cooldowns).filter(key=>{const[r,c]=key.split(",").map(Number);return state.board[r][c]?.[0]===color;}).length;
-      $(label+"-cd").textContent=`${color==="w"?"白":"黒"}：${count?`${count}駒が待機中`:"動かせる"}`;$(label+"-bar").value=count/16*100;
+      $(label+"-cd").textContent=`${colorName(color)}：${count?`${count}駒が待機中`:"動かせる"}`;$(label+"-bar").value=count/16*100;
     }else{
-      $(label+"-cd").textContent=`${color==="w"?"白":"黒"}：${remain?`あと${(remain/1000).toFixed(1)}秒`:"動かせる"}`;
+      $(label+"-cd").textContent=`${colorName(color)}：${remain?`あと${(remain/1000).toFixed(1)}秒`:"動かせる"}`;
       $(label+"-bar").value=remain/Math.max(1,color==="w"?state.cooldown_ms:1000)*100;
     }
   }
   if(!previous||previous.revision!==state.revision){
-    $("history").replaceChildren(...state.history.map(move=>{const li=document.createElement("li");li.textContent=`${move.piece[0]==="w"?"白":"黒"} ${names[move.piece[1]]} ${squareName(...move.from)} → ${squareName(...move.to)}${move.captured?" × "+names[move.captured[1]]:""}`;return li;}));
+    $("history").replaceChildren(...state.history.map(move=>{const li=document.createElement("li");li.textContent=`${colorName(move.piece[0])} ${names[move.piece[1]]} ${squareName(...move.from)} → ${squareName(...move.to)}${move.captured?" × "+names[move.captured[1]]:""}`;return li;}));
     $("history").scrollTop=$("history").scrollHeight;
-    for(const[color,label]of[["w","white"],["b","black"]])$(label+"-captures").textContent=state.captures[color].map(piece=>glyphs[piece]).join(" ")||"—";
+    for(const[color,label]of[["w","white"],["b","black"]]){
+      const captured=state.captures[color].map(code=>{
+        const piece=document.createElement("span");piece.className=`captured-piece ${code[0]==="w"?"white":"black"}`;
+        piece.textContent=glyphs[code];piece.setAttribute("aria-label",`${colorName(code[0])}の${names[code[1]]}`);return piece;
+      });
+      $(label+"-captures").replaceChildren(...(captured.length?captured:[document.createTextNode("—")]));
+    }
   }
   $("move-count").textContent=`${state.move_count}手`;
 }
