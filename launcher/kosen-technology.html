@@ -31,7 +31,7 @@
               <span class="image-callout canvas-callout">Canvasで描くゲーム画面</span>
             </div>
             <figcaption>実際のプレイ画面</figcaption>
-            <div class="start-example"><img src="/showcase/assets/kosen-survivor-ready.png" width="906" height="641" alt="HTMLで用意したスタートボタンと難易度ボタンがある開始画面。"><p>スタートボタンも<br><b>HTML</b>で用意。</p></div>
+            <div class="start-example"><img src="/showcase/assets/kosen-survivor-grades.png" width="1280" height="720" alt="3年生85単位・4年生125単位・5年生167単位を大きなカードで選べる開始画面。"><p>スタートボタンも<br><b>HTML</b>で用意。</p></div>
           </figure>
           <div class="technology-cards">
             <article class="technology html-card"><span class="tech-number">1</span><div><h2>HTML <small>画面の部品</small></h2><p>ボタンや得点欄を用意する。</p></div></article>
@@ -73,9 +73,9 @@
         <h1 id="title-3" tabindex="-1">ルールは、「条件」と「数値」で。</h1>
         <p class="lead">JavaScriptが、ゲームの状態を調べて判断します。</p>
         <div class="rule-cards">
-          <article class="rule-card collect-rule"><span class="rule-label">単位を取る</span><div class="rule-visual collect-visual" role="img" aria-label="キャラクターが単位と同じマスに到着し、得点が1増える模式図。"><span class="game-piece snake-piece"></span><span class="visual-arrow" aria-hidden="true">→</span><span class="game-piece credit-piece"></span><b>+1</b></div><h2>同じマスに来たら</h2><p>得点を <strong>1</strong> 増やす。<br>2単位ごとに体も伸びます。</p><div class="condition">もし単位と位置が同じなら<br><b>得点を増やす</b></div></article>
+          <article class="rule-card collect-rule"><span class="rule-label">単位を取る</span><div class="rule-visual collect-visual" role="img" aria-label="キャラクターが単位と同じマスに到着し、取得単位が5増える模式図。"><span class="game-piece snake-piece"></span><span class="visual-arrow" aria-hidden="true">→</span><span class="game-piece credit-piece"></span><b>+5</b></div><h2>同じマスに来たら</h2><p>単位を <strong>5</strong> 増やす。<br>通常カード2枚ごとに体も伸びます。</p><div class="condition">もし単位と位置が同じなら<br><b>得点を増やす</b></div></article>
           <article class="rule-card collision-rule"><span class="rule-label">ぶつかる</span><div class="rule-visual collision-visual" role="img" aria-label="キャラクターが壁にぶつかり、ゲーム終了になる模式図。"><span class="game-piece snake-piece"></span><span class="visual-arrow" aria-hidden="true">→</span><span class="wall"></span><b>STOP</b></div><h2>頭が壁・自分の体に当たったら</h2><p>壁・体で終了。落単は6単位まで<br>続行でき、7単位目で終了します。</p><div class="condition">ぶつかった対象と落単数で<br><b>ゲーム終了を決める</b></div></article>
-          <article class="rule-card difficulty-rule"><span class="rule-label">難易度を変える</span><div class="speed-chart" role="img" aria-label="開始時の移動間隔。かんたん180ミリ秒、ふつう160ミリ秒、むずかしい138ミリ秒。間隔が短いほど速く進む。"><div><span>かんたん</span><i style="--bar:100%"></i><b>180</b></div><div><span>ふつう</span><i style="--bar:89%"></i><b>160</b></div><div><span>むずかしい</span><i style="--bar:77%"></i><b>138</b></div><small>1マス進む間隔（開始時・ミリ秒）</small></div><h2>進む間隔を短くすると</h2><p>キャラクターが速く進む。<br>落単は別の遅めの間隔で動きます。</p><div class="condition">難易度に合わせて<br><b>動きの数値を変える</b></div></article>
+          <article class="rule-card difficulty-rule"><span class="rule-label">学年で目標を変える</span><div class="speed-chart" role="img" aria-label="クリア目標。3年生85単位、4年生125単位、5年生167単位。電気情報工学科の進級・卒業までの累計。"><div><span>3年生</span><i style="--bar:51%"></i><b>85</b></div><div><span>4年生</span><i style="--bar:75%"></i><b>125</b></div><div><span>5年生</span><i style="--bar:100%"></i><b>167</b></div><small>クリアまでの累計取得単位</small></div><h2>目標の単位数に届いたら</h2><p>次の学年へ進級、5年生は卒業。<br>移動速度や落単の条件は共通です。</p><div class="condition">取得単位が目標以上なら<br><b>クリアにする</b></div></article>
         </div>
         <p class="takeaway"><span>ここがポイント</span>「どんなときに、何をするか」を書くと、ルールをつくれる。</p>
       </section>

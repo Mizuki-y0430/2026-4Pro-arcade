@@ -161,3 +161,16 @@ document.addEventListener('keydown',e=> {
   }
 
 });
+
+// The line follows the resized illustration; game timing and hit detection use the original logic.
+const fishingScene=document.querySelector('.scene'), fishingRod=document.querySelector('.angler');
+function alignFishingLine(){
+  const area=fishingScene.getBoundingClientRect(),rod=fishingRod.getBoundingClientRect();
+  const line=document.querySelector('.fishing-line line');
+  const width=fishingScene.clientWidth,height=fishingScene.clientHeight;
+  line.setAttribute('x1',rod.left-area.left-fishingScene.clientLeft+rod.width*131/180);
+  line.setAttribute('y1',rod.top-area.top-fishingScene.clientTop+rod.height*10/180);
+  line.setAttribute('x2',width*.61+47);
+  line.setAttribute('y2',height*.44);
+}
+new ResizeObserver(alignFishingLine).observe(fishingScene);

@@ -131,3 +131,10 @@ body:has(.player[data-game][open]){overflow:hidden}
 .player[data-game] .back,.player[data-game] .quiet{background:transparent;border:1px solid #777;border-radius:2px;color:#fff;font-size:12px;font-weight:800;box-shadow:none}
 .player[data-game] .back:hover,.player[data-game] .quiet:hover{background:#333}
 @media(max-width:650px){.player[data-game]{border:0;border-radius:0;box-shadow:none}}
+
+/* Bright cabinet frame. */
+.player[data-game]{border:4px solid #f3273c;border-radius:6px;box-shadow:5px 5px #202020}
+.player[data-game] .player-top{background:#f3273c;border-bottom:2px solid #fffdf5;min-height:40px;padding:2px 8px}
+.player[data-game] .back,.player[data-game] .quiet{background:#202020;color:#fff;border:1px solid #fff9ec;border-radius:4px;min-height:30px;padding:4px 10px;box-shadow:0 2px #b60e24}
+.player[data-game] .back:hover,.player[data-game] .quiet:hover{background:#39312b}
+@media(max-width:650px){.player[data-game]{border:0;border-radius:0;box-shadow:none}}

@@ -45,6 +45,7 @@ function draw(){
  $('time').textContent=Math.ceil(state.time_left);$('score').textContent=state.score;
  $('lives').textContent=`♥ ${state.lives}`;$('level-name').textContent=state.levels[state.level-1][0];
  $('question').textContent=state.question;$('feedback').textContent=state.feedback;
+ $('feedback').dataset.tone=state.feedback.startsWith('正解！')?'correct':state.feedback.startsWith('おしい！')?'miss':'normal';
  for(let hole=0;hole<state.hole_count;hole++){
   const mole=state.moles.find(m=>m.hole===hole),button=$('mole-'+hole);
   button.hidden=!mole;button.disabled=busy||!mole||mole.hit;

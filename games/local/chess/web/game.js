@@ -56,7 +56,7 @@ function draw(next){
   }
   for(const id of ["mode","level","cooldown","animation","start","reset"])$(id).disabled=busy;
   $("cooldown").disabled=busy||state.mode==="aivsai";
-  $("start").textContent=state.active?"停止 ■":state.game_over||state.phase==="finished"?"もう一局 ▶":state.phase==="paused"?(state.mode==="aivsai"?"新しい対局 ▶":"再開 ▶"):"スタート ▶";
+  $("start").textContent=state.active?"停止":state.game_over||state.phase==="finished"?"もう一局":state.phase==="paused"?(state.mode==="aivsai"?"新しい対局 ▶":"再開"):"スタート";
   $("start").classList.toggle("running",state.active);
   const status={ready:"白の駒で挑戦！",countdown:`開始まで ${state.countdown}…`,playing:state.mode==="ai"?"あなたは白！":"AI同士の対局中",paused:"停止中",finished:state.winner==="draw"?"引き分け！":`${colorName(state.winner)}の勝ち！`};
   $("status").textContent=status[state.phase];

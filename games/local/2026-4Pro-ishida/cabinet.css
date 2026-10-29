@@ -45,3 +45,76 @@ canvas{width:min(100cqw,160cqh);height:auto;max-height:100%;aspect-ratio:8/5;bor
  .overlay h1{font-size:28px}.overlay p{font-size:12px;margin:14px 0}.difficulty-control{margin:18px 0}.difficulty-picker button{min-height:38px;font-size:12px}.primary{min-height:44px;font-size:15px}
 }
 @media(max-height:500px) and (orientation:landscape){.shell{grid-template-rows:36px minmax(0,1fr);gap:6px}.festival-mark{font-size:18px}.game-column{grid-template-rows:52px minmax(0,1fr)}.mobile-controls{display:none}.overlay-card{padding:10px}.overlay h1{font-size:24px;margin:4px}.overlay p,.difficulty-control{margin:8px 0}.keys-hint{margin-top:8px}}
+
+/* Bright arcade: shared signage and controls. */
+:root{--pop-red:#f3273c;--pop-label:#d71932;--pop-gold:#ffd449;--pop-ink:#202020;--pop-paper:#fffdf5;--red:#e51c35}
+body{background:#fffdf5;color:var(--pop-ink);border-top-color:var(--pop-red)}
+.heading,.topbar,.top,body>main>header,#game>header{background:var(--pop-red);color:#fff;border:1px solid #d61930;border-radius:4px;padding-left:10px;padding-right:10px;box-shadow:0 3px #b90e26}
+.game-title,.festival-mark,.brand{gap:10px;min-width:0;font-weight:900}
+h1,.festival-mark,.brand{letter-spacing:.025em}
+.game-number,.festival-mark-icon,.brand-number{flex-shrink:0;background:#fff;color:var(--pop-ink);border:2px solid var(--pop-ink);border-radius:3px;box-shadow:2px 2px #bd0e25}
+.marquee-accent{display:flex;align-items:center;flex-shrink:0;gap:5px;margin-left:5px;height:30px;pointer-events:none}
+.marquee-accent svg{width:29px;height:29px;overflow:visible}.marquee-accent i{width:7px;height:28px;background:#fff2c5;transform:skew(-25deg)}.marquee-accent i:last-child{background:var(--pop-gold)}
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--pop-ink);outline-offset:3px}
+.primary,#start,.actions .primary,.overlay-card>button{border:2px solid var(--pop-ink);border-radius:24px;background:#fff;color:var(--pop-ink);box-shadow:0 4px #b60e24,inset 0 -3px #eee9de;font-weight:900}
+.primary:hover:not(:disabled),#start:hover:not(:disabled),.actions .primary:hover:not(:disabled),.overlay-card>button:hover:not(:disabled){background:#fff4be;color:var(--pop-ink)}
+#start::before,.overlay-card>button::before{content:"";display:inline-block;vertical-align:-2px;width:12px;height:15px;margin-right:8px;background:var(--pop-gold);clip-path:polygon(0 0,100% 50%,0 100%)}
+#start.running::before{clip-path:none;width:11px;height:11px;background:var(--pop-ink)}
+.actions .primary.running{background:var(--pop-gold);color:var(--pop-ink);border-color:var(--pop-ink);box-shadow:0 4px #b60e24}
+.actions button:not(.primary){background:#fffdf5;border-radius:5px;box-shadow:0 4px #b60e24;color:var(--pop-ink)}
+.actions button:active:not(:disabled),#start:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px #b60e24}
+dialog,.card,.overlay-card{background:#fffdf5;border-color:var(--pop-ink);border-top-color:var(--pop-red);border-radius:8px;box-shadow:5px 5px var(--pop-ink)}
+dialog h2,.card h1,.overlay-card h1,.overlay-card h2{color:var(--pop-ink)}
+.eyebrow{color:var(--pop-label)}
+@media(max-width:850px){.marquee-accent{gap:4px;margin-left:0}.marquee-accent svg{width:23px;height:23px}.marquee-accent i{width:5px;height:24px}}
+@media(max-width:650px){.heading,.topbar,.top,body>main>header,#game>header{padding-left:6px;padding-right:6px}.marquee-accent{gap:3px}.marquee-accent svg{width:20px;height:20px}.marquee-accent i{width:4px;height:21px}.game-title,.festival-mark,.brand{gap:7px}}
+@media(max-width:370px){.marquee-accent i{display:none}}
+@media(max-height:500px) and (orientation:landscape){.marquee-accent{display:none}}
+.shell{grid-template-rows:48px minmax(0,1fr)}
+.topbar{padding-top:4px;padding-bottom:4px}.festival-mark{font-size:25px}
+.best{padding:3px 10px;border:1px solid #202020;border-radius:4px;background:#fff;color:#333}.best b{color:var(--pop-label);font-size:24px}.best rt{color:#666}
+.game-column{border:2px solid var(--pop-red);border-radius:6px;overflow:hidden;background:#202020}
+.stats{background:#fff;border-bottom:3px solid var(--pop-red)}.stat-label{color:#444;font-weight:800}.stat:first-child strong{color:var(--pop-label)}.drop-stat strong{color:var(--pop-ink)}
+canvas{border-color:#fffdf5}.board-wrap{background:#202020}
+.play-guide,.bottomline,.quick-panel{border:2px solid var(--pop-red);border-radius:6px;box-shadow:0 2px #e8c9c3;background:#fff}
+.play-guide{padding-top:42px;position:relative}.play-guide::before{content:'あそびかた';position:absolute;left:0;right:0;top:0;background:var(--pop-label);color:#fff;font-size:13px;font-weight:900;padding:6px 12px}
+.quick-panel summary{color:var(--pop-label)}.difficulty-picker button[aria-pressed="true"]{background:#fff0a6;color:#202020;border-color:#202020;box-shadow:0 3px var(--pop-red)}
+.primary span{display:none}.credit-label{border-bottom-color:var(--pop-gold)}.hazard-label{background:var(--pop-red)}.keys-hint kbd{background:#fff9db}
+.mobile-controls{background:#fff;border-top:2px solid var(--pop-red)}.mobile-controls button{border-radius:50%;box-shadow:0 3px #d1ac88;background:#fff6ca}
+@media(max-width:850px){.festival-mark{font-size:20px}}
+@media(max-width:650px) and (orientation:portrait){.shell{grid-template-rows:44px minmax(0,1fr)}.festival-mark{font-size:16px}.best{padding:2px 5px}.best b{font-size:18px}.best{font-size:8px}.play-guide{padding-top:35px}.play-guide::before{padding:4px 10px;font-size:11px}.overlay{inset:56px 8px 8px}.topbar .marquee-accent{display:none}}
+@media(max-height:500px) and (orientation:landscape){.shell{grid-template-rows:36px minmax(0,1fr)}}
+
+/* Grade challenges: inline selection and visible credit goals. */
+[hidden]{display:none!important}
+.game-column{grid-template-rows:64px 36px minmax(0,1fr);background:#fffdf5}
+.board-wrap,.grade-selection{grid-column:1;grid-row:3;min-height:0}
+.goal-strip{display:flex;align-items:center;gap:10px;padding:5px 12px;background:#fff5c8;border-bottom:1px solid #e6c76e;font-size:11px;font-weight:900}
+.goal-strip span,.goal-strip strong{white-space:nowrap}.goal-strip progress{flex:1;min-width:0;height:10px;border:1px solid #b99534;border-radius:8px;overflow:hidden;background:#fff}
+.goal-strip progress::-webkit-progress-bar{background:#fff}.goal-strip progress::-webkit-progress-value{background:linear-gradient(90deg,#ffd449,#f3273c);border-radius:8px}.goal-strip progress::-moz-progress-bar{background:#f3273c}
+.credit-total{display:flex;align-items:baseline;gap:5px}.credit-total>span{font-size:12px;color:#555;white-space:nowrap}.credit-total b{color:#333;font-size:14px}
+.grade-selection{display:flex;flex-direction:column;justify-content:center;gap:16px;padding:16px;background:radial-gradient(#e9c67455 1px,transparent 1px) 0 0/14px 14px,#fffdf5;overflow:auto}
+.grade-heading{text-align:center}.grade-heading p{margin:0 0 8px;color:#d71932;font-size:20px;font-weight:900;line-height:1.4;letter-spacing:.05em}.grade-heading h1{font-size:46px;line-height:1.2;margin:0 0 8px;letter-spacing:.03em}.grade-heading>span{display:block;font-size:18px;line-height:1.5;color:#555}
+.grade-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;max-width:820px;width:100%;margin:0 auto}
+.grade-card{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:18px 8px 0;border:2px solid #d71932;border-radius:8px;background:#fff;color:#20272c;box-shadow:0 5px #e8c9c3;min-width:0;font-weight:900;overflow:hidden;cursor:pointer}
+.grade-card:hover{background:#fff8de}.grade-card[aria-pressed=true]{background:#fff0ab;border:3px solid #20272c;box-shadow:0 5px #f3273c}
+.grade-name{font-size:38px;line-height:1.1}.grade-name small{font-size:23px;margin-left:4px}.grade-caption{font-size:12px;color:#555}.grade-target{font-size:13px;white-space:nowrap}.grade-target strong{font-size:52px;line-height:1.1;color:#d71932;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.grade-choice{align-self:stretch;text-align:center;background:#f6eee3;color:#555;font-size:11px;padding:8px 2px;margin:5px -8px 0}.grade-card[aria-pressed=true] .grade-choice{background:#20272c;color:#fff}
+.grade-start{display:flex;flex-direction:column;align-items:center;gap:10px}.grade-start .primary{margin:0;min-width:250px;min-height:48px;font-size:16px}.grade-start>span{font-size:10px;color:#666}
+.game-info{gap:8px}.play-guide{gap:8px;padding:35px 10px 10px}.play-guide>span{gap:8px}.play-guide .collision-note,.play-guide .spawn-note{font-size:11px;line-height:1.6}.item-icon{display:block;width:38px;height:38px;flex-shrink:0;object-fit:contain}
+.item-panel{background:#fff;border:2px solid var(--pop-red);border-radius:6px;overflow:hidden;flex-shrink:0}.item-panel h2{background:var(--pop-label);color:#fff;font-size:13px;margin:0;padding:6px 12px;line-height:1.6}.item-list{padding:4px 8px}.item-list>div{display:flex;align-items:center;gap:9px;padding:5px 0}.item-list>div+div{border-top:1px solid #eee}.item-list p{margin:0;font-size:12px}.item-list b{display:block}.item-list p span{display:block;color:#555;font-size:10px;line-height:1.6;margin-top:1px}
+.quick-panel{flex-shrink:0}.quick-content{min-width:0}.credit-source,.control-note{font-size:11px;line-height:1.7;margin:0;overflow-wrap:anywhere}.credit-source a{display:block;color:#b9142d;font-weight:800;text-underline-offset:3px}
+.overlay h2{font-size:30px;margin:8px 0 14px;line-height:1.4}.result-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:20px}.result-actions .primary{margin:0}.result-actions>button{min-height:44px;padding:8px 18px;border:2px solid #20272c;border-radius:24px;background:#fff;font:inherit;font-size:14px;font-weight:900;cursor:pointer}.overlay .result-elite .result-phrase{color:#b9142d}.overlay .result-message{font-size:20px}.overlay .result-score{font-size:13px}
+@media(max-width:1050px){.grade-selection{padding:16px;gap:20px}.grade-picker{gap:10px}.grade-target strong{font-size:43px}.grade-name{font-size:32px}.grade-name small{font-size:20px}.grade-caption{font-size:10px}.grade-heading p{font-size:18px}.grade-heading h1{font-size:40px}.grade-heading>span{font-size:17px}}
+@media(max-width:850px){.game-column{grid-template-rows:60px 36px minmax(0,1fr) 60px}.goal-strip{padding:5px 8px;gap:6px;font-size:10px}.credit-total{gap:3px}.credit-total>span{font-size:10px}.credit-total b{font-size:12px}.grade-picker{gap:7px}.grade-card{padding-top:14px}.grade-target strong{font-size:36px}.grade-heading p{font-size:15px}.grade-heading h1{font-size:34px}.grade-heading>span{font-size:15px}.grade-selection{gap:14px;padding:12px}.grade-start .primary{min-width:220px;font-size:14px}.play-guide{padding-left:8px;padding-right:8px}.play-guide>span{font-size:12px}.item-icon{width:34px;height:34px}.item-list{padding:4px 6px}.item-list>div{gap:6px}.item-list p{font-size:11px}.item-list p span{font-size:9px}}
+@media(max-width:650px) and (orientation:portrait){
+ .game-layout{grid-template-rows:minmax(0,1fr) 146px}.game-column{grid-template-rows:60px 32px minmax(0,1fr) 54px}.game-column:has(#grade-selection:not([hidden])){grid-template-rows:60px 32px minmax(0,1fr)}.game-column:has(#grade-selection:not([hidden])) .mobile-controls{display:none}
+ .goal-strip{gap:6px;font-size:9px;padding:4px 7px}.goal-strip progress{height:8px}.stat{padding:0 5px}.credit-total{display:block}.credit-total strong{font-size:22px}.credit-total>span{font-size:9px}.credit-total b{font-size:10px}.drop-stat strong{font-size:17px}.effect-stat strong{font-size:10px}
+ .grade-selection{justify-content:center;gap:12px;padding:12px}.grade-heading p{font-size:13px;margin-bottom:5px}.grade-heading h1{font-size:32px;margin-bottom:6px}.grade-heading>span{font-size:15px}.grade-picker{grid-template-columns:1fr;gap:9px}.grade-card{display:grid;grid-template-columns:85px minmax(0,1fr);grid-template-rows:auto auto;gap:2px 8px;min-height:70px;padding:7px 10px;border-width:2px;align-items:center}.grade-name{grid-column:1;grid-row:1/3;font-size:34px;justify-self:center}.grade-name small{font-size:17px}.grade-caption{grid-column:2;grid-row:1;justify-self:start;font-size:10px}.grade-target{grid-column:2;grid-row:2;justify-self:start;font-size:12px}.grade-target strong{font-size:33px}.grade-choice{position:absolute;right:0;top:0;margin:0;padding:3px 5px;border-radius:0 4px 0 4px;font-size:8px}.grade-start{gap:5px}.grade-start .primary{min-height:42px;font-size:14px}.grade-start>span{font-size:9px}
+ .game-info{display:flex;flex-direction:column}.play-guide{display:grid;grid-template-columns:1fr 1fr;gap:5px 9px;padding-top:29px;flex-shrink:0}.play-guide::before{padding:3px 8px}.play-guide .collision-note,.play-guide .spawn-note{grid-column:1/-1;font-size:10px}.play-guide>span{font-size:10px}.play-guide .item-icon{width:30px;height:30px}.item-list{display:grid;grid-template-columns:1fr 1fr;gap:4px}.item-list>div+div{border:0}.item-panel h2{font-size:11px;padding:4px 8px}.item-list>div{gap:5px}.item-list p{font-size:10px}.item-list p span{font-size:9px}.item-list .item-icon{width:32px;height:32px}.mobile-controls{padding:6px}.mobile-controls button{height:36px;width:40px}
+ .overlay{inset:55px 8px 8px}.overlay h2{font-size:26px}.overlay .result-message{font-size:18px}.result-actions{gap:10px;margin-top:16px}
+}
+@media(max-height:620px) and (orientation:portrait){.game-layout{grid-template-rows:minmax(0,1fr) 100px}.grade-selection{gap:7px;padding:8px}.grade-heading p{font-size:12px;line-height:1.3}.grade-heading>span{display:block;font-size:13px;line-height:1.4}.grade-heading h1{font-size:28px}.grade-card{min-height:50px;padding:4px 8px}.grade-target strong{font-size:27px}.grade-name{font-size:29px}.grade-start>span{display:none}.grade-start .primary{min-height:36px}}
+@media(max-height:500px) and (orientation:landscape){.game-column{grid-template-rows:50px 28px minmax(0,1fr)}.mobile-controls{display:none}.grade-selection{gap:10px;padding:10px;justify-content:flex-start}.grade-start>span{display:none}.grade-heading p{display:block;font-size:11px;line-height:1.2;margin:0 0 3px}.grade-heading>span{display:block;font-size:12px;line-height:1.3}.grade-heading h1{font-size:28px;line-height:1.2;margin:0 0 3px}.grade-card{padding-top:9px;gap:5px}.grade-name{font-size:27px}.grade-name small{font-size:16px}.grade-target strong{font-size:32px}.grade-caption{font-size:9px}.grade-choice{padding:4px 2px;font-size:9px}.grade-start .primary{min-height:32px;padding:4px 15px;font-size:12px}}
+
+@media(max-height:500px) and (orientation:landscape){.grade-selection{gap:7px;padding:8px}.grade-card{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:2px;padding:8px 6px 4px;min-height:60px}.grade-name{font-size:25px;grid-row:1;grid-column:1}.grade-name small{font-size:14px}.grade-target{grid-row:1;grid-column:2;font-size:10px}.grade-target strong{font-size:27px}.grade-caption{grid-row:2;grid-column:1/-1;font-size:10px}.grade-choice{display:none}}

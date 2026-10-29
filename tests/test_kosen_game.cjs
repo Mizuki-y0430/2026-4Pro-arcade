@@ -115,7 +115,7 @@ test('プレーヤーが札に進んでも落単1単位で続行し、取得単�
   run('food={x:16,y:10}; hazards=[{x:16,y:10,active:true}]; tick(1160);');
   assert.equal(run('running'), true);
   assert.equal(run('droppedCredits'), 1);
-  assert.equal(run('score'), 1);
+  assert.equal(run('score'), 5);
   assert.equal(run('hazards.length'), 0);
   assert.equal(run('droppedEl.textContent'), '1 / 6');
 });
@@ -183,13 +183,13 @@ test('自分の胴体と壁への衝突は引き続きゲーム終了', () => {
   assert.equal(run('gameOver'), true);
 });
 
-test('2単位ごとに成長し、取得後の長さがすぐ画面に反映される', () => {
+test('通常カードは1枚5単位、2枚で1マス成長し、長さがすぐ画面に反映される', () => {
   const run = game();
   run('food={x:16,y:10}; tick(1160);');
-  assert.equal(run('score'), 1);
+  assert.equal(run('score'), 5);
   assert.equal(run('snake.length'), 3);
   run('food={x:17,y:10}; tick(1320);');
-  assert.equal(run('score'), 2);
+  assert.equal(run('score'), 10);
   assert.equal(run('snake.length'), 4);
   assert.equal(run('lengthEl.textContent'), '04');
 });
@@ -218,4 +218,102 @@ test('開始・描画・終了・再挑戦を通して動く', () => {
   run('reset(); loop(1161);');
   assert.equal(run('running'), true);
   assert.equal(run('gameOver'), false);
+});
+
+test('最初は説明ポップアップを出さず、学年選択を表示する', () => {
+  const run = game();
+  run('showReady();');
+  assert.equal(run('running'), false);
+  assert.equal(run('lobby.hidden'), false);
+  assert.equal(run('arena.hidden'), true);
+  assert.equal(run('goalEl.textContent'), '85');
+  assert.equal(run('startBtn.textContent'), '3年生に挑戦する');
+});
+
+test('電気情報工学科の進級・卒業累計を目標にし、動きの設定は全学年で共通', () => {
+  const run = game();
+  assert.equal(run('difficultySettings.easy.goal'), 85);
+  assert.equal(run('difficultySettings.normal.goal'), 125);
+  assert.equal(run('difficultySettings.hard.goal'), 167);
+  for (const key of ['speed','minSpeed','hazardSpeed','warning','interval','capStart']) {
+    assert.equal(run(`difficultySettings.easy.${key}`), run(`difficultySettings.hard.${key}`));
+  }
+  run("showReady(); selectDifficulty('hard');");
+  assert.equal(run('goalEl.textContent'), '167');
+  assert.equal(run('goalProgress.max'), 167);
+  assert.equal(run('remainingEl.textContent'), 'あと167単位');
+  run("selectDifficulty('unknown');");
+  assert.equal(run('difficulty'), 'hard');
+});
+
+test('すべての学年で目標の1単位前は続行し、通常の＋5単位で目標を超えてクリアする', () => {
+  for (const level of ['easy','normal','hard']) {
+    const run = game();
+    run(`difficulty='${level}'; reset(); score=difficultySettings[difficulty].goal-CREDIT_VALUE-1; food={x:16,y:10}; tick(1160);`);
+    assert.equal(run('running'), true);
+    assert.equal(run('cleared'), false);
+    assert.equal(run('remainingEl.textContent'), 'あと1単位');
+    run('food={x:17,y:10}; tick(1320);');
+    assert.equal(run('running'), false);
+    assert.equal(run('cleared'), true);
+    assert.equal(run('gameOver'), true);
+    assert.equal(run('remainingEl.textContent'), 'クリア！');
+    assert.equal(run('goalProgress.value'), run('difficultySettings[difficulty].goal'));
+    assert.match(run('titleEl.textContent'), level === 'hard' ? /卒業おめでとう/ : /年生クリア/);
+  }
+});
+
+test('単位ボーナスの＋10で目標を超えてもクリアし、進捗は100%で止まる', () => {
+  const run = game();
+  run("score=84; powerup={x:16,y:10,type:'bonus'}; food={x:25,y:15}; tick(1160);");
+  assert.equal(run('score'), 94);
+  assert.equal(run('cleared'), true);
+  assert.equal(run('goalProgress.value'), 85);
+  assert.equal(run('remainingEl.textContent'), 'クリア！');
+});
+
+test('目標単位を取得する手でも、同時に7単位の落単になった場合は失敗する', () => {
+  const run = game();
+  run('score=84; droppedCredits=6; food={x:16,y:10}; hazards=[{x:16,y:10,active:true}]; tick(1160);');
+  assert.equal(run('score'), 89);
+  assert.equal(run('droppedCredits'), 7);
+  assert.equal(run('cleared'), false);
+  assert.equal(run('gameOver'), true);
+  assert.match(run('copyEl.innerHTML'), /落単が7単位/);
+});
+
+test('クリア後は移動と重複記録を止め、再挑戦すると進捗をリセットする', () => {
+  const run = game();
+  run('score=85; checkClear();');
+  const endedSnake = run('JSON.stringify(snake)');
+  const records = run('JSON.stringify(leaderboard)');
+  run('tick(1320); endGame();');
+  assert.equal(run('JSON.stringify(snake)'), endedSnake);
+  assert.equal(run('JSON.stringify(leaderboard)'), records);
+  run('reset();');
+  assert.equal(run('running'), true);
+  assert.equal(run('cleared'), false);
+  assert.equal(run('score'), 0);
+  assert.equal(run('goalProgress.value'), 0);
+  assert.equal(run('lobby.hidden'), true);
+  assert.equal(run('arena.hidden'), false);
+  run("selectDifficulty('hard');");
+  assert.equal(run('difficulty'), 'easy');
+});
+
+
+test('ひきよせでも5単位を取り、ボーナス10単位では体が1マスだけ伸びる', () => {
+  const run = game();
+  run('magnetUntil=9000; food={x:20,y:10}; tick(1160);');
+  assert.equal(run('score'), 5);
+  assert.equal(run('snake.length'), 3);
+  run("magnetUntil=0; food={x:25,y:15}; powerup={x:17,y:10,type:'bonus'}; tick(1320);");
+  assert.equal(run('score'), 15);
+  assert.equal(run('growthPending'), 1);
+  run('tick(1480);');
+  assert.equal(run('snake.length'), 4);
+  assert.equal(run('growthPending'), 0);
+  run('food={x:19,y:10}; tick(1640);');
+  assert.equal(run('score'), 20);
+  assert.equal(run('snake.length'), 5);
 });

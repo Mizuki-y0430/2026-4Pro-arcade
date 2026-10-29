@@ -200,3 +200,44 @@ dialog h2{font-size:22px}.options{font-size:13px}
  .capture-panel{max-height:100%}
 }
 @media(prefers-reduced-motion:reduce){button{transition:none}}
+
+/* Bright arcade: shared signage and controls. */
+:root{--pop-red:#f3273c;--pop-label:#d71932;--pop-gold:#ffd449;--pop-ink:#202020;--pop-paper:#fffdf5;--red:#e51c35}
+body{background:#fffdf5;color:var(--pop-ink);border-top-color:var(--pop-red)}
+.heading,.topbar,.top,body>main>header,#game>header{background:var(--pop-red);color:#fff;border:1px solid #d61930;border-radius:4px;padding-left:10px;padding-right:10px;box-shadow:0 3px #b90e26}
+.game-title,.festival-mark,.brand{gap:10px;min-width:0;font-weight:900}
+h1,.festival-mark,.brand{letter-spacing:.025em}
+.game-number,.festival-mark-icon,.brand-number{flex-shrink:0;background:#fff;color:var(--pop-ink);border:2px solid var(--pop-ink);border-radius:3px;box-shadow:2px 2px #bd0e25}
+.marquee-accent{display:flex;align-items:center;flex-shrink:0;gap:5px;margin-left:5px;height:30px;pointer-events:none}
+.marquee-accent svg{width:29px;height:29px;overflow:visible}.marquee-accent i{width:7px;height:28px;background:#fff2c5;transform:skew(-25deg)}.marquee-accent i:last-child{background:var(--pop-gold)}
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--pop-ink);outline-offset:3px}
+.primary,#start,.actions .primary,.overlay-card>button{border:2px solid var(--pop-ink);border-radius:24px;background:#fff;color:var(--pop-ink);box-shadow:0 4px #b60e24,inset 0 -3px #eee9de;font-weight:900}
+.primary:hover:not(:disabled),#start:hover:not(:disabled),.actions .primary:hover:not(:disabled),.overlay-card>button:hover:not(:disabled){background:#fff4be;color:var(--pop-ink)}
+#start::before,.overlay-card>button::before{content:"";display:inline-block;vertical-align:-2px;width:12px;height:15px;margin-right:8px;background:var(--pop-gold);clip-path:polygon(0 0,100% 50%,0 100%)}
+#start.running::before{clip-path:none;width:11px;height:11px;background:var(--pop-ink)}
+.actions .primary.running{background:var(--pop-gold);color:var(--pop-ink);border-color:var(--pop-ink);box-shadow:0 4px #b60e24}
+.actions button:not(.primary){background:#fffdf5;border-radius:5px;box-shadow:0 4px #b60e24;color:var(--pop-ink)}
+.actions button:active:not(:disabled),#start:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px #b60e24}
+dialog,.card,.overlay-card{background:#fffdf5;border-color:var(--pop-ink);border-top-color:var(--pop-red);border-radius:8px;box-shadow:5px 5px var(--pop-ink)}
+dialog h2,.card h1,.overlay-card h1,.overlay-card h2{color:var(--pop-ink)}
+.eyebrow{color:var(--pop-label)}
+@media(max-width:850px){.marquee-accent{gap:4px;margin-left:0}.marquee-accent svg{width:23px;height:23px}.marquee-accent i{width:5px;height:24px}}
+@media(max-width:650px){.heading,.topbar,.top,body>main>header,#game>header{padding-left:6px;padding-right:6px}.marquee-accent{gap:3px}.marquee-accent svg{width:20px;height:20px}.marquee-accent i{width:4px;height:21px}.game-title,.festival-mark,.brand{gap:7px}}
+@media(max-width:370px){.marquee-accent i{display:none}}
+@media(max-height:500px) and (orientation:landscape){.marquee-accent{display:none}}
+/* White score plates leave the board as the main attraction. */
+.board-area{background:#fffdf5;border:2px solid var(--pop-red);border-radius:6px;box-shadow:0 3px #e8c9c3}
+.board-area::before,.board-area::after{background:var(--pop-gold);border-color:#d49921;width:5px;height:5px}
+.board-wrap{border-color:#fffdf5;box-shadow:0 0 0 2px var(--pop-ink)}
+.side section{background:#fff;border:2px solid var(--pop-red);border-radius:6px;box-shadow:0 2px #e8c9c3}
+.side .status-panel{background:#fff;color:var(--pop-ink);border-top:2px solid var(--pop-red)!important}
+.side .panel-label,.panel-label,.history-heading,.status-panel .panel-label{background:var(--pop-label);color:#fff;border-radius:3px 3px 0 0;letter-spacing:.035em}
+.status-panel h2{background:#fff3be;color:var(--pop-ink);padding:7px 6px;border-radius:4px;margin:8px 0;font-size:20px}
+#status-detail{color:#555}.matches{color:var(--pop-ink);border-top:2px solid var(--pop-gold)}
+.history-heading span{color:#fff}.history-panel li:last-child{background:#fff2b7;color:var(--pop-ink);border-radius:3px}
+.cooldown-panel progress,.cooldown-panel progress::-webkit-progress-bar{background:#eeece7;border-radius:2px}
+.cooldown-panel progress::-webkit-progress-value{background:var(--pop-red)}.cooldown-panel progress::-moz-progress-bar{background:var(--pop-red)}
+#black-bar::-webkit-progress-value{background:var(--pop-red)}#black-bar::-moz-progress-bar{background:var(--pop-red)}
+.hand-tray{border-color:#e5bc76;border-top-color:var(--pop-red);border-radius:4px;background:#fff9eb}
+@media(max-width:850px){h1{font-size:21px}.actions{gap:6px}.actions button{padding-left:9px;padding-right:9px}}
+@media(max-width:650px) and (orientation:portrait){h1{font-size:19px}.status-panel h2{font-size:14px;padding:4px;margin:4px 0}.matches{font-size:9px}.side section{border-width:1px}.actions .primary{padding-left:7px;padding-right:7px}}
