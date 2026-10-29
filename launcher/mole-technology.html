@@ -23,7 +23,7 @@
       <h1 id="title-1" tabindex="-1">モグラの画面と、クイズの中身を分ける。</h1>
       <p class="lead">Webで操作を受け取り、Pythonが出題と正誤を判断します。</p>
       <div class="screen-layout">
-        <figure class="game-figure"><div class="image-frame whole-game"><img src="/showcase/assets/brain-mole-play.png" alt="デス・モグラたたきのプレイ画面。計算問題と答えを持ったモグラ、得点と残り時間。"></div><figcaption>実際のゲーム画面</figcaption></figure>
+        <figure class="game-figure"><div class="image-frame whole-game"><img src="/showcase/assets/brain-mole-play.png" alt="デス・モグラたたきのプレイ画面。赤・黒・白の画面に計算問題、2×2の4匹のモグラ、大きな答えの札、得点と残り時間。"></div><figcaption>実際のゲーム画面</figcaption></figure>
         <div class="technology-cards"><article class="technology html-card"><span class="tech-number">1</span><div><h2>HTML / CSS / JS <small>操作と表示</small></h2><p>問題・モグラ・時間を画面に表示。</p></div></article><article class="technology css-card"><span class="tech-number">2</span><div><h2>Python <small>出題と判定</small></h2><p>問題と選択肢を選び、得点を計算。</p></div></article><article class="technology js-card"><span class="tech-number">3</span><div><h2>Excel <small>問題のデータ</small></h2><p>問題・正解・誤答を表で用意。</p></div></article></div>
       </div>
       <p class="takeaway"><span>ここがポイント</span>画面・ゲームの処理・問題データを分けると、それぞれ編集しやすい。</p>
@@ -32,11 +32,11 @@
     <section class="slide illustrated-slide" id="page-2" aria-labelledby="title-2">
       <div class="slide-heading"><p class="chapter">02 <span>出題から回答までのしくみ</span></p><span class="topic">Excel / ランダム / 通信</span></div>
       <h1 id="title-2" tabindex="-1">問題を読み、答えをモグラに持たせる。</h1>
-      <p class="lead">正解と誤答を、10個の穴の中から選んだ場所に出します。</p>
+      <p class="lead">正解1匹と誤答3匹を、2×2の4個の穴にランダムに出します。</p>
 <ol class="flow" aria-label="処理の順番"><li><span>1</span><b>問題を用意</b><small>Excelや計算で作成</small></li><li><span>2</span><b>モグラを出す</b><small>穴と答えを選ぶ</small></li><li><span>3</span><b>答えをタップ</b><small>穴の番号を送信</small></li><li><span>4</span><b>正誤を判定</b><small>Pythonが得点更新</small></li></ol>
       <div class="concept-layout">
         <div class="diagram-panel quiz-diagram" role="img" aria-label="説明用の例。問題3足す4の正解7と誤答6と8をモグラに割り当て、正解のモグラを押すとPythonが判定する。"><span class="diagram-label">説明用の問題</span><div class="quiz-question">3 ＋ 4 ＝ ?</div><div class="answer-moles"><div><span>● ᴥ ●</span><b>6</b></div><div class="correct-mole"><span>● ᴥ ●</span><b>7</b><small>正解</small></div><div><span>● ᴥ ●</span><b>8</b></div></div><p>配置をランダムに選ぶ → タップを判定</p></div>
-        <div class="explain"><p class="big-equation">Excelの問題表を <strong>Pythonで読み込む</strong></p><p>openpyxlというライブラリを使用。<br>基礎数学では、四則演算の問題を<br>自動でつくる処理もあります。</p><div class="canvas-note"><b>毎回、場所が変わる</b><p>2〜10匹をランダムに配置。<br>答えずに待つと2〜4秒で出し直します。</p></div></div>
+        <div class="explain"><p class="big-equation">Excelの問題表を <strong>Pythonで読み込む</strong></p><p>openpyxlというライブラリを使用。<br>基礎数学では、四則演算の問題を<br>自動でつくる処理もあります。</p><div class="canvas-note"><b>毎回、場所が変わる</b><p>4匹の答えをランダムに配置。<br>答えずに待つと2〜4秒で出し直します。</p></div></div>
       </div>
       <p class="takeaway"><span>ここがポイント</span>問題のデータと、ランダムな配置を組み合わせると、出題を変えられる。</p>
     </section>

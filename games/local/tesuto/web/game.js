@@ -2,7 +2,7 @@
 const $ = id => document.getElementById(id);
 let token='', state=null, view='menu', selectedLevel=1, busy=false, rankRequest=0;
 const fonts=['system-ui,"Meiryo",sans-serif','"Yu Mincho","MS Mincho",serif','"Meiryo","Arial Rounded MT Bold",sans-serif'];
-const defaults={bg_rgb:[20,15,25],accent_rgb:[235,130,20],custom_time:45,custom_lives:3,font_idx:0};
+const defaults={bg_rgb:[240,239,237],accent_rgb:[183,25,41],custom_time:45,custom_lives:3,font_idx:0};
 const rgbHex=rgb=>'#'+rgb.map(v=>v.toString(16).padStart(2,'0')).join('');
 const hexRgb=hex=>[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16));
 function theme(settings){
@@ -45,11 +45,11 @@ function draw(){
  $('time').textContent=Math.ceil(state.time_left);$('score').textContent=state.score;
  $('lives').textContent=`♥ ${state.lives}`;$('level-name').textContent=state.levels[state.level-1][0];
  $('question').textContent=state.question;$('feedback').textContent=state.feedback;
- for(let hole=0;hole<10;hole++){
+ for(let hole=0;hole<state.hole_count;hole++){
   const mole=state.moles.find(m=>m.hole===hole),button=$('mole-'+hole);
   button.hidden=!mole;button.disabled=busy||!mole||mole.hit;
   button.classList.toggle('hit',Boolean(mole?.hit));
-  if(mole){button.querySelector('span').textContent=mole.value;button.setAttribute('aria-label',`穴${hole+1}：${mole.value}`);button.dataset.wave=state.wave;}
+  if(mole){const answer=button.querySelector('.answer');answer.textContent=mole.value;button.classList.toggle('word-answer',!/^[−+\-]?\d+(\.\d+)?$/.test(mole.value)||mole.value.length>5);button.setAttribute('aria-label',`穴${hole+1}：${mole.value}`);button.dataset.wave=state.wave;}
  }
  $('result-stats').textContent=`${state.levels[state.level-1][0]} ／ ${state.score}点 ／ 残り${state.time_left.toFixed(1)}秒 ／ ライフ${state.lives}`;
  $('submit').disabled=busy||state.submitted;$('submit').textContent=state.submitted?'登録しました ✓':'ランキングに登録';
@@ -78,13 +78,14 @@ async function loadRankings(){
  }catch(error){$('notice').textContent=error.message;}
 }
 async function openRanking(){if(!state||busy)return;$('rank-level').value=selectedLevel;show('ranking');await loadRankings();}
-for(let i=0;i<10;i++){
+function buildHoles(count){for(let i=0;i<count;i++){
  const hole=document.createElement('div');hole.className='hole';
  const button=document.createElement('button');button.id='mole-'+i;button.className='mole';button.hidden=true;
- button.append(document.createElement('span'));
+ const face=document.createElement('span');face.className='mole-face';face.setAttribute('aria-hidden','true');
+ const answer=document.createElement('span');answer.className='answer';button.append(face,answer);
  button.addEventListener('click',()=>action('hit',{hole:i,wave:Number(button.dataset.wave)}));
  hole.append(button);$('holes').append(hole);
-}
+}}
 $('start').onclick=start;$('retry').onclick=start;
 $('menu-button').onclick=menu;$('result-menu').onclick=menu;$('rank-menu').onclick=menu;
 $('settings-button').onclick=openSettings;$('ranking-button').onclick=openRanking;
@@ -114,6 +115,7 @@ document.addEventListener('keydown',event=>{
 (async()=>{
  try{
   const session=await request('session');token=session.token;
+  buildHoles(session.state.hole_count);
   session.state.levels.forEach(([title,description],index)=>{
    const button=document.createElement('button');button.className='level';button.dataset.level=index+1;
    const strong=document.createElement('strong');strong.textContent=title;const small=document.createElement('small');small.textContent=description;button.append(strong,small);

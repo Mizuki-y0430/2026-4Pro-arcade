@@ -61,6 +61,34 @@ class ProgressTests(unittest.TestCase):
         self.hit(False)
         self.assertEqual(self.game.phase, 'result')
 
+    def test_four_targets_keep_one_correct_answer_at_random_positions(self):
+        positions = set()
+        for level in range(1, 11):
+            self.game.stop()
+            self.start(level)
+            for _ in range(20):
+                snapshot = self.game.snapshot()
+                self.assertEqual(snapshot['hole_count'], 4)
+                self.assertEqual({m['hole'] for m in snapshot['moles']}, set(range(4)))
+                correct = [m for m in self.game.moles if m['correct']]
+                self.assertEqual(len(correct), 1)
+                self.assertEqual(correct[0]['value'], str(self.game.answer))
+                self.assertTrue(all(m['value'] != str(self.game.answer) for m in self.game.moles if not m['correct']))
+                positions.add(correct[0]['hole'])
+                self.game.next_question()
+        self.assertEqual(positions, set(range(4)))
+
+    def test_old_default_palette_migrates_without_losing_other_settings(self):
+        legacy = self.folder/'legacy'
+        legacy.mkdir()
+        old = {**DEFAULTS, 'bg_rgb': [20, 15, 25], 'accent_rgb': [235, 130, 20], 'custom_time': 90, 'custom_lives': 5}
+        (legacy/'mole_settings.json').write_text(json.dumps(old), encoding='utf-8')
+        migrated = Store(self.folder/'migrated', legacy)
+        self.assertEqual(migrated.settings, {**DEFAULTS, 'custom_time': 90, 'custom_lives': 5})
+        custom = {**old, 'accent_rgb': [100, 20, 30]}
+        migrated.configure(custom)
+        self.assertEqual(Store(self.folder/'migrated', legacy).settings, custom)
+
     def test_hit_repeat_and_old_wave_cannot_change_score(self):
         self.start()
         bad = next(m for m in self.game.moles if not m['correct'])
@@ -141,7 +169,7 @@ class ProgressTests(unittest.TestCase):
         self.start()
         with self.assertRaises(ValueError):
             self.start()
-        for hole in (True,-1,10,'1'):
+        for hole in (True,-1,4,9,10,'1'):
             with self.assertRaises(ValueError):
                 self.game.hit({'hole':hole,'wave':self.game.wave})
         self.game.stop()

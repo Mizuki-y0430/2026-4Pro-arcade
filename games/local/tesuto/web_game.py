@@ -8,7 +8,8 @@ import time
 
 from quiz_database import DEFAULT_PATH, QuestionDatabase
 
-DEFAULTS = dict(bg_rgb=[20, 15, 25], accent_rgb=[235, 130, 20], custom_time=45, custom_lives=3, font_idx=0)
+DEFAULTS = dict(bg_rgb=[240, 239, 237], accent_rgb=[183, 25, 41], custom_time=45, custom_lives=3, font_idx=0)
+HOLE_COUNT = 4
 
 
 def integer(value, low, high):
@@ -37,6 +38,9 @@ class Store:
         self.folder = Path(folder)
         self.folder.mkdir(parents=True, exist_ok=True)
         self.settings = validated_settings(self.load('settings.json', Path(original)/'mole_settings.json', DEFAULTS))
+        # 旧標準配色だけを更新し、時間・ライフや独自の配色は保持する。
+        if self.settings['bg_rgb'] == [20, 15, 25] and self.settings['accent_rgb'] == [235, 130, 20]:
+            self.settings.update(bg_rgb=DEFAULTS['bg_rgb'][:], accent_rgb=DEFAULTS['accent_rgb'][:])
         self.rankings = self.load('rankings.json', Path(original)/'mole_rankings.json', {str(i): [] for i in range(1, 11)})
         if not isinstance(self.rankings, dict):
             raise ValueError("ランキングの形式が不正です。")
@@ -118,7 +122,7 @@ class WebGame:
     def spawn(self):
         self.wave += 1
         self.revision += 1
-        holes = self.rng.sample(range(10), self.rng.randint(2, 10))
+        holes = self.rng.sample(range(HOLE_COUNT), HOLE_COUNT)
         self.expires = self.clock() + self.rng.randint(60, 120) / 30
         dummies = self.dummies[:]
         self.rng.shuffle(dummies)
@@ -141,7 +145,7 @@ class WebGame:
         self.tick()
         if self.phase != 'playing':
             raise ValueError("プレイ中だけ回答できます。")
-        hole = integer(data.get('hole'), 0, 9)
+        hole = integer(data.get('hole'), 0, HOLE_COUNT-1)
         if type(data.get('wave')) is not int or data['wave'] != self.wave:
             raise ValueError("モグラが入れ替わりました。もう一度選んでください。")
         mole = next((m for m in self.moles if m['hole'] == hole and not m['hit_until']), None)
@@ -187,5 +191,5 @@ class WebGame:
         self.tick()
         return dict(phase=self.phase, level=self.level, score=self.score, lives=self.lives, time_left=round(self.time_left, 2),
                     wave=self.wave, revision=self.revision, stamp=self.clock(), question=self.question, feedback=self.feedback,
-                    submitted=self.submitted, settings=copy.deepcopy(self.settings), levels=self.database.level_infos,
+                    submitted=self.submitted, settings=copy.deepcopy(self.settings), levels=self.database.level_infos, hole_count=HOLE_COUNT,
                     moles=[dict(hole=m['hole'], value=m['value'], hit=bool(m['hit_until'])) for m in self.moles] if self.phase == 'playing' else [])
