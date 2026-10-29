@@ -65,9 +65,9 @@ footer{flex-shrink:0;border:0;color:#fff;padding:0;margin-top:6px;font-size:9px;
 @media(max-width:850px){#menu{grid-template-columns:220px minmax(0,1fr);gap:10px}.menu-banner{padding:16px 12px}.menu-banner h2{font-size:19px}.level{padding:10px}.level strong{font-size:14px}.level small{font-size:10px}#play{padding:8px 12px}}
 @media(max-width:650px) and (orientation:portrait){
  body{padding:4px 6px 8px}header{min-height:64px;margin-bottom:6px;gap:6px;flex-wrap:wrap}.game-title{gap:8px}.game-number{width:28px;height:28px;font-size:18px}h1{font-size:20px}#menu-button{min-height:30px;font-size:10px;padding:4px 8px;margin-left:auto}
- #menu{grid-template-columns:1fr;grid-template-rows:110px 94px 32px minmax(0,1fr);gap:8px}
+ #menu{grid-template-columns:1fr;grid-template-rows:110px 44px 32px minmax(0,1fr);gap:8px}
  .menu-banner{grid-row:1;grid-column:1;display:flex;padding:10px;gap:14px;text-align:left;justify-content:center}.mascot{width:58px;height:62px;font-size:16px}.menu-banner h2{font-size:18px;margin:3px 0}.menu-banner p{font-size:10px;line-height:1.5;margin:3px 0}.banner-label{font-size:10px!important}
- #menu>.actions{grid-row:2;grid-column:1;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 0 4px}.actions #start{grid-column:1/-1}.actions button{min-height:38px;padding:5px 10px;font-size:12px}
+ #menu>.actions{grid-row:2;grid-column:1;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 0 4px}.actions button{min-height:38px;padding:5px 10px;font-size:12px}
  .small-heading{grid-row:3;grid-column:1;font-size:12px;padding:5px 10px}.levels{grid-column:1;grid-row:4;margin:0;grid-template-columns:1fr 1fr;gap:8px}.level strong{font-size:13px}.level small{font-size:10px}.level{padding:10px 8px}
  #play{grid-template-rows:58px 18px auto 24px minmax(0,1fr) 28px;gap:6px;padding:8px}.dashboard>span{padding:4px 8px}.dashboard strong{font-size:24px}.dashboard small{font-size:9px}.question{font-size:24px;padding:8px 10px}.holes{gap:10px}.hole{padding:0 4px 12px}.mole{padding:8px 6px;border-radius:40px 40px 10px 10px}.mole-face{width:90px;font-size:22px}.mole .answer{font-size:42px}.mole.word-answer .answer{font-size:22px}.help{font-size:9px;line-height:1.4}
  .panel{padding:16px 12px}.settings-grid{grid-template-columns:1fr 1fr}.settings-grid label{font-size:11px;gap:6px}input,select{padding:8px}.preview{font-size:12px}.rank-filters{margin:10px 0}#result .actions{margin:12px 0}
@@ -122,3 +122,51 @@ main{background:transparent}header{min-height:48px}h1{font-size:25px}footer{colo
 @media(prefers-reduced-motion:reduce){.feedback[data-tone=correct]{animation:none}}
 
 @media(max-width:650px) and (orientation:portrait){#play{background-size:auto 100%}}
+
+/* Subject menu: quiet typography in the shared bright arcade cabinet. */
+#menu{grid-template-columns:minmax(240px,25%) minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:16px;container-type:size}
+.menu-sidebar{grid-column:1;grid-row:1;display:flex;flex-direction:column;min-height:0;gap:12px}
+#menu .menu-banner{display:flex;flex:1;min-height:0;flex-direction:column;align-items:stretch;gap:8px;padding:18px;margin:0;background:#fffdf5;border:2px solid var(--pop-red);border-top-width:5px;border-radius:6px;box-shadow:0 3px #e8c9c3;text-align:left}
+.menu-mascot{display:block;flex:1;min-height:58px;max-height:150px;width:100%;align-self:center}
+#menu .menu-banner h2{margin:0;font-size:20px;line-height:1.4;letter-spacing:-.035em}
+#menu .menu-intro{margin:0;font-size:13px;color:#555;line-height:1.5}
+.menu-rules{margin:4px 0 0}.menu-rules>div{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #d1ccc3;padding:7px 0;min-height:49px}.menu-rules>div:last-child{border-bottom:1px solid #d1ccc3}
+.menu-rules dt{font-size:13px;font-weight:800}.menu-rules dd{margin:0;font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1.1}.menu-rules dd b{font-size:32px}.menu-rules dd small{font-size:13px;margin-left:4px}.menu-hearts{font-size:24px;color:var(--pop-red)}.menu-points{color:var(--pop-label)}
+#menu .menu-penalty{margin:0;font-size:11px;color:#666;line-height:1.5}
+.menu-sidebar>.actions{display:flex;flex-direction:column;flex-shrink:0;gap:10px;margin:0;padding:0 0 4px}
+.menu-sidebar>.actions button{display:flex;align-items:center;gap:14px;min-height:46px;padding:8px 16px;background:#fffdf5;border:2px solid var(--pop-ink);border-radius:5px;box-shadow:0 4px #b60e24;font-size:17px;text-align:left}
+.menu-sidebar>.actions button:hover:not(:disabled){background:#fff4be}
+.menu-sidebar>.actions svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}.menu-chevron{margin-left:auto;font-size:27px;line-height:1}
+.subject-menu{grid-column:2;grid-row:1;display:flex;flex-direction:column;gap:14px;min-width:0;min-height:0}
+.subject-heading{display:flex;flex-wrap:wrap;align-items:baseline;gap:5px 20px;flex-shrink:0;min-height:54px;padding:8px 2px 10px;border-bottom:3px solid var(--pop-red)}
+.subject-heading h2{margin:0;font-size:clamp(22px,2.3vw,30px);line-height:1.3;letter-spacing:-.035em}.subject-heading p{margin:0;color:#555;font-size:12px;line-height:1.5}
+#menu .levels{flex:1;grid-column:auto;grid-row:auto;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(5,minmax(66px,1fr));align-content:stretch;min-height:0;margin:0;gap:10px;padding:0 3px 5px 0;overflow:auto}
+#menu .level{display:grid;grid-template-columns:42px 32px minmax(0,1fr) 14px;align-items:center;gap:10px;min-height:0;position:relative;padding:12px;background:#fff;border:2px solid #ed6573;border-radius:6px;box-shadow:0 3px #e8c9c3;text-align:left;transition:background .12s,color .12s,border-color .12s}
+.level-number{display:grid;place-items:center;width:42px;height:44px;border:1px solid var(--pop-red);border-radius:4px;background:var(--pop-red);color:#fff;font-size:25px;font-weight:900;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.level-icon{display:block;color:var(--pop-red);width:32px;height:32px}.level-icon svg{display:block;width:100%;height:100%}.level-copy{min-width:0}#menu .level strong{font-size:clamp(20px,2vw,28px);line-height:1.4;letter-spacing:-.04em;font-weight:900;overflow-wrap:anywhere}
+#menu .level-description{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;padding:0;margin:-1px;border:0}
+.level-arrow{font-size:30px;color:var(--pop-red);font-weight:500;line-height:1;justify-self:end}
+#menu .level:hover:not(:disabled),#menu .level:focus-visible{background:var(--pop-red);border-color:var(--pop-red);color:#fff;box-shadow:0 3px #b60e24}
+#menu .level:hover:not(:disabled) .level-number,#menu .level:focus-visible .level-number{background:#fff;border-color:#fff;color:var(--pop-red)}
+#menu .level:hover:not(:disabled) .level-icon,#menu .level:focus-visible .level-icon,#menu .level:hover:not(:disabled) .level-arrow,#menu .level:focus-visible .level-arrow{color:#fff}
+#menu .level:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px #b60e24}
+@media(max-width:1050px){#menu{grid-template-columns:240px minmax(0,1fr);gap:12px}#menu .menu-banner{padding:14px}#menu .menu-banner h2{font-size:18px}#menu .level{grid-template-columns:32px 26px minmax(0,1fr) 10px;gap:8px;padding:10px}.level-number{width:32px;height:38px;font-size:22px}.level-icon{width:26px;height:26px}#menu .level strong{font-size:17px}.subject-heading{gap:4px 10px}.subject-heading h2{font-size:25px}}
+@media(max-width:850px){#menu{grid-template-columns:200px minmax(0,1fr);gap:10px}#menu .menu-banner{padding:12px;gap:7px}#menu .menu-banner h2{font-size:17px}#menu .menu-intro{font-size:11px}.menu-rules dt{font-size:12px}.menu-rules dd b{font-size:27px}.menu-hearts{font-size:21px}.menu-sidebar>.actions button{font-size:15px;padding:7px 12px}.subject-heading h2{font-size:23px}.subject-heading p{font-size:11px}#menu .level{grid-template-columns:28px 22px minmax(0,1fr) 8px;gap:6px;padding:8px}.level-number{width:28px;height:34px;font-size:20px}.level-icon{width:22px;height:22px}#menu .level strong{font-size:15px}.level-arrow{font-size:24px}}
+@media(max-width:650px) and (orientation:portrait){
+ #menu{grid-template-columns:1fr;grid-template-rows:174px minmax(0,1fr);gap:10px}
+ .menu-sidebar{grid-column:1;grid-row:1;display:grid;grid-template-rows:minmax(0,1fr) 38px;gap:8px}
+ #menu .menu-banner{display:grid;grid-template-columns:76px minmax(0,1fr);grid-template-rows:auto auto auto;align-items:center;gap:2px 10px;padding:7px 10px;border-top-width:3px}
+ .menu-mascot{grid-column:1;grid-row:1/3;min-height:0;height:58px;max-height:none}
+ #menu .menu-banner h2{grid-column:2;grid-row:1;font-size:16px;line-height:1.3}#menu .menu-intro{grid-column:2;grid-row:2;font-size:11px}
+ .menu-rules{grid-column:1/-1;grid-row:3;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:2px 0 0}.menu-rules>div{display:flex;flex-direction:column;justify-content:center;gap:3px;padding:5px 3px 0;min-height:42px;border-top:1px solid #d1ccc3}.menu-rules>div+div{border-left:1px solid #d1ccc3}.menu-rules>div:last-child{border-bottom:0}.menu-rules dt{font-size:10px}.menu-rules dd b{font-size:23px}.menu-rules dd small{font-size:10px;margin-left:2px}.menu-hearts{font-size:18px}#menu .menu-penalty{display:none}
+ .menu-sidebar>.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0}.menu-sidebar>.actions button{gap:8px;padding:4px 10px;min-height:34px;font-size:12px}.menu-sidebar>.actions svg{width:19px;height:19px}.menu-chevron{font-size:21px}
+ .subject-menu{grid-column:1;grid-row:2;gap:8px}.subject-heading{padding:0 1px 6px;gap:3px;min-height:0}.subject-heading h2{font-size:20px}.subject-heading p{font-size:10px;width:100%}
+ #menu .levels{grid-template-rows:repeat(5,minmax(54px,1fr));gap:8px;padding-right:2px}#menu .level{grid-template-columns:28px minmax(0,1fr) 8px;gap:7px;padding:7px}.level-number{width:28px;height:34px;font-size:19px}.level-icon{display:none}#menu .level strong{font-size:16px;line-height:1.4}.level-arrow{font-size:23px}
+}
+@media(max-width:360px) and (orientation:portrait){#menu .level{gap:5px;padding:6px;grid-template-columns:24px minmax(0,1fr) 7px}.level-number{width:24px;font-size:17px}#menu .level strong{font-size:12px}.subject-heading h2{font-size:18px}#menu .menu-banner h2{font-size:14px}}
+@media(max-height:500px) and (orientation:landscape){
+ #menu{grid-template-columns:200px minmax(0,1fr);gap:12px}.menu-sidebar{gap:8px}#menu .menu-banner{padding:8px 12px;gap:4px}.menu-mascot{min-height:20px;max-height:65px}#menu .menu-banner h2{font-size:15px}#menu .menu-intro,#menu .menu-penalty{display:none}.menu-rules{margin-top:0}.menu-rules>div{min-height:27px;padding:3px 0}.menu-rules dt{font-size:10px}.menu-rules dd b{font-size:20px}.menu-rules dd small{font-size:10px}.menu-hearts{font-size:16px}.menu-sidebar>.actions{gap:6px}.menu-sidebar>.actions button{min-height:30px;padding:3px 9px;font-size:12px;gap:8px}.menu-sidebar>.actions svg{width:18px;height:18px}
+ .subject-menu{gap:8px}.subject-heading{min-height:0;padding:1px 0 5px;gap:3px 12px}.subject-heading h2{font-size:18px}.subject-heading p{font-size:10px}
+ #menu .levels{grid-template-rows:repeat(5,minmax(32px,1fr));gap:6px}#menu .level{grid-template-columns:24px 20px minmax(0,1fr) 8px;gap:6px;padding:4px 6px}.level-number{width:24px;height:25px;font-size:17px}.level-icon{width:20px;height:20px}#menu .level strong{font-size:12px;line-height:1.3}.level-arrow{font-size:20px}
+}
+@media(prefers-reduced-motion:reduce){#menu .level{transition:none}}

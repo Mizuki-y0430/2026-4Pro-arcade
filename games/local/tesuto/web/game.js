@@ -5,6 +5,20 @@ const fonts=['system-ui,"Meiryo",sans-serif','"Yu Mincho","MS Mincho",serif','"M
 const defaults={bg_rgb:[240,239,237],accent_rgb:[183,25,41],custom_time:45,custom_lives:3,font_idx:0};
 const rgbHex=rgb=>'#'+rgb.map(v=>v.toString(16).padStart(2,'0')).join('');
 const hexRgb=hex=>[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16));
+const levelTitle=title=>title.replace(/^Lv\.\d+:\s*/, '');
+// Small line drawings keep the subject names as the main action targets.
+const subjectIcons=[
+ '<rect x="6" y="3" width="20" height="26" rx="2"/><path d="M11 9h10M11 15h4m-2-2v4m6-2h3M11 22l4 4m0-4-4 4m8-3h3m-3 3h3"/>',
+ '<path d="M11 3h10m-8 0v17a5 5 0 0 0 10 0V3M13 15h10m-5 0v7" transform="translate(-2 0)"/>',
+ '<circle cx="9" cy="16" r="7"/><path d="m21 9 9 14m0-14-9 14"/>',
+ '<path d="M16 7C10 3 5 4 3 5v22c4-2 9-1 13 2 4-3 9-4 13-2V5c-3-1-8-2-13 2Zm0 0v22"/>',
+ '<rect x="2" y="5" width="28" height="22" rx="2"/><text x="16" y="21" text-anchor="middle" fill="currentColor" stroke="none" font-size="12" font-weight="800" font-family="sans-serif">ABC</text>',
+ '<ellipse cx="16" cy="16" rx="14" ry="5"/><ellipse cx="16" cy="16" rx="14" ry="5" transform="rotate(60 16 16)"/><ellipse cx="16" cy="16" rx="14" ry="5" transform="rotate(120 16 16)"/><circle cx="16" cy="16" r="2" fill="currentColor" stroke="none"/>',
+ '<rect x="6" y="4" width="20" height="19" rx="1"/><path d="m6 23-4 5h28l-4-5m-13-12-3 3 3 3m6-6 3 3-3 3m-2-7-2 8"/>',
+ '<rect x="7" y="7" width="18" height="18" rx="2"/><path d="M11 1v6m5-6v6m5-6v6M11 25v6m5-6v6m5-6v6M1 11h6m-6 5h6m-6 5h6m18-10h6m-6 5h6m-6 5h6"/>',
+ '<path d="m12 3-1 5-4 1-4 6 3 4-1 5 6 4 5-3 5 1 5-5-2-5 2-5-5-5-5 1Z"/><circle cx="16" cy="16" r="5"/>',
+ '<path d="M10 29V10l6-7 6 7v19M3 29V15h7m12 0h7v14M1 29h30M14 29v-8h4v8M6 19v2m0 3v2m20-7v2m0 3v2"/><circle cx="16" cy="12" r="3"/>'
+];
 function theme(settings){
  document.documentElement.style.setProperty('--bg',`rgb(${settings.bg_rgb.join(',')})`);
  document.documentElement.style.setProperty('--accent',`rgb(${settings.accent_rgb.join(',')})`);
@@ -34,12 +48,14 @@ function draw(){
  $('menu-button').hidden=view==='menu'||view==='settings';$('menu-button').disabled=busy;
  $('menu-button').textContent=state.phase==='playing'?'中断してメニュー':'メニューへ';
  if(view!=='settings')theme(state.settings);
- $('start').disabled=busy;
- $('rules').textContent=`${state.settings.custom_time}秒 ／ ライフ${state.settings.custom_lives} ／ 不正解は−50点`;
+ $('menu-time').textContent=state.settings.custom_time;
+ $('menu-lives').textContent=state.settings.custom_lives>5?`♥ ×${state.settings.custom_lives}`:Array(state.settings.custom_lives).fill('♥').join(' ');
+ $('menu-lives').setAttribute('aria-label',`ライフ${state.settings.custom_lives}`);
  for(const button of $('levels').children){
   const level=Number(button.dataset.level);
-  button.classList.toggle('selected',level===selectedLevel);button.setAttribute('aria-pressed',String(level===selectedLevel));
-  button.querySelector('strong').textContent=state.levels[level-1][0];button.querySelector('small').textContent=state.levels[level-1][1];
+  button.disabled=busy;
+  button.querySelector('strong').textContent=levelTitle(state.levels[level-1][0]);button.querySelector('small').textContent=state.levels[level-1][1];
+  button.setAttribute('aria-label',`${level}：${levelTitle(state.levels[level-1][0])}`);button.title=state.levels[level-1][1];
   $('rank-level').options[level-1].textContent=state.levels[level-1][0];
  }
  $('time').textContent=Math.ceil(state.time_left);$('score').textContent=state.score;
@@ -58,6 +74,11 @@ function draw(){
 }
 async function menu(){await action('stop',{},()=>show('menu'));}
 async function start(){await action('start',{level:selectedLevel});}
+async function chooseLevel(level){
+ if(!state||busy||view!=='menu'||!Number.isInteger(level)||level<1||level>state.levels.length)return;
+ selectedLevel=level;
+ await start();
+}
 function settingsData(){return{bg_rgb:hexRgb($('bg-color').value),accent_rgb:hexRgb($('accent-color').value),custom_time:Number($('custom-time').value),custom_lives:Number($('custom-lives').value),font_idx:Number($('font').value)};}
 function fillSettings(settings){
  $('bg-color').value=rgbHex(settings.bg_rgb);$('accent-color').value=rgbHex(settings.accent_rgb);
@@ -87,7 +108,7 @@ function buildHoles(count){for(let i=0;i<count;i++){
  button.addEventListener('click',()=>action('hit',{hole:i,wave:Number(button.dataset.wave)}));
  hole.append(button);$('holes').append(hole);
 }}
-$('start').onclick=start;$('retry').onclick=start;
+$('retry').onclick=start;
 $('menu-button').onclick=menu;$('result-menu').onclick=menu;$('rank-menu').onclick=menu;
 $('settings-button').onclick=openSettings;$('ranking-button').onclick=openRanking;
 $('name-form').onsubmit=event=>{event.preventDefault();action('submit',{name:$('name').value},async()=>{show('ranking');$('rank-level').value=state.level;await loadRankings();});};
@@ -104,8 +125,7 @@ document.addEventListener('keydown',event=>{
  if(event.key==='Escape'){event.preventDefault();event.stopPropagation();if(view==='settings')saveSettings();else menu();return;}
  if(event.target.matches('input,select,textarea')||!state||busy)return;
  if(view==='menu'){
-  if(/^\d$/.test(event.key)){selectedLevel=event.key==='0'?10:Number(event.key);draw();}
-  else if(event.code==='Space'){event.preventDefault();start();}
+  if(/^\d$/.test(event.key)){event.preventDefault();if(!event.repeat)chooseLevel(event.key==='0'?10:Number(event.key));}
   else if(event.key.toLowerCase()==='s')openSettings();
   else if(event.key.toLowerCase()==='r')openRanking();
  }else if(view==='ranking'){
@@ -119,8 +139,13 @@ document.addEventListener('keydown',event=>{
   buildHoles(session.state.hole_count);
   session.state.levels.forEach(([title,description],index)=>{
    const button=document.createElement('button');button.className='level';button.dataset.level=index+1;
-   const strong=document.createElement('strong');strong.textContent=title;const small=document.createElement('small');small.textContent=description;button.append(strong,small);
-   button.onclick=()=>{selectedLevel=index+1;draw();};$('levels').append(button);
+   const number=document.createElement('span');number.className='level-number';number.textContent=String(index+1).padStart(2,'0');number.setAttribute('aria-hidden','true');
+   const icon=document.createElement('span');icon.className='level-icon';icon.setAttribute('aria-hidden','true');icon.innerHTML=`<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${subjectIcons[index]||subjectIcons[0]}</svg>`;
+   const copy=document.createElement('span');copy.className='level-copy';
+   const strong=document.createElement('strong');strong.textContent=levelTitle(title);const small=document.createElement('small');small.className='level-description';small.id=`level-description-${index+1}`;small.textContent=description;copy.append(strong,small);
+   button.setAttribute('aria-describedby',small.id);
+   const arrow=document.createElement('span');arrow.className='level-arrow';arrow.textContent='›';arrow.setAttribute('aria-hidden','true');button.append(number,icon,copy,arrow);
+   button.onclick=()=>chooseLevel(index+1);$('levels').append(button);
    const option=document.createElement('option');option.value=index+1;option.textContent=title;$('rank-level').append(option);
   });
   accept(session.state);
