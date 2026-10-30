@@ -3,6 +3,33 @@ const $ = (id) => document.getElementById(id);
 let token = "", games = [], filter = "all", selectedGame = null, pendingGame = null;
 let signature = "", ended = false, busy = false, toastTimer;
 let requestedGame = new URLSearchParams(location.search).get("play");
+// Approved medal artwork, shared as one image. SVG viewports show only each medal,
+// leaving the game names and guide buttons as accessible HTML controls.
+const medalSheet = "/showcase/assets/arcade-medals-red-white.png";
+const medalCrops = {
+  "kosen-survivor": [64, 10, 422, 407],
+  "balloon-hunter": [552, 10, 426, 407],
+  "yuugure-fishing": [1043, 10, 424, 407],
+  "brain-mole": [61, 494, 426, 412],
+  "realtime-chess": [551, 494, 427, 412],
+  "realtime-shogi": [1041, 494, 425, 412]
+};
+function appendMedal(art, button, crop) {
+  const ns = "http://www.w3.org/2000/svg";
+  const medal = document.createElementNS(ns, "svg");
+  medal.classList.add("tile-medal");
+  medal.setAttribute("viewBox", crop.join(" "));
+  medal.setAttribute("preserveAspectRatio", "none");
+  medal.setAttribute("aria-hidden", "true");
+  const image = document.createElementNS(ns, "image");
+  image.setAttribute("width", "1536");
+  image.setAttribute("height", "1024");
+  image.addEventListener("load", () => button.classList.add("medal-loaded"));
+  image.addEventListener("error", () => { medal.remove(); button.classList.remove("medal-loaded"); });
+  medal.append(image);
+  art.append(medal);
+  image.setAttribute("href", medalSheet);
+}
 const genericCover = '<svg class="tile-fallback" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" fill="#fff2a6" stroke="#000" stroke-width="5"/><path d="M34 37h52c9 0 15 8 18 17l5 26c3 13-8 19-17 10L77 76H43L28 90c-9 9-20 3-17-10l5-26c3-9 9-17 18-17Z" fill="#fff" stroke="#000" stroke-width="5"/><path d="M27 51h10V41h10v10h10v10H47v10H37V61H27Z" fill="#24b8db" stroke="#000" stroke-width="2"/><circle cx="80" cy="51" r="8" fill="#b582ec" stroke="#000" stroke-width="2"/><circle cx="92" cy="65" r="8" fill="#ffbb60" stroke="#000" stroke-width="2"/></svg>';
 const lockedCover = '<svg class="locked-mark" viewBox="0 0 100 100" aria-hidden="true"><path d="M32 38V25a18 18 0 0 1 36 0v13" fill="none" stroke="#555" stroke-width="8" stroke-linecap="round"/><rect x="19" y="36" width="62" height="50" rx="15" fill="currentColor" stroke="#555" stroke-width="5"/><circle cx="50" cy="56" r="7" fill="#555"/><path d="M50 60v10" stroke="#555" stroke-width="7" stroke-linecap="round"/></svg>';
 
@@ -63,6 +90,8 @@ function render() {
       image.decoding = "async";
       image.addEventListener("error", () => image.remove());
       art.append(image);
+    } else if (available && !game.cover && medalCrops[game.id]) {
+      appendMedal(art, button, medalCrops[game.id]);
     }
     const title = document.createElement("span");
     title.className = "tile-title";

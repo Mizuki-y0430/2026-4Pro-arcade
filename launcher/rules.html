@@ -14,12 +14,18 @@
   <div class="rules-shell">
     <nav class="rules-nav" aria-label="ページ移動"><a class="rules-back" href="/">← ゲーム一覧</a><span>4PRO ARCADE</span></nav>
     <main id="rules-main" aria-busy="true">
-      <div class="rules-heading"><span class="rules-emblem" aria-hidden="true">ルール</span><div><p class="rules-kicker">あそぶ前にチェック！</p><h1 id="rules-title">読み込み中…</h1></div></div>
+      <div class="rules-heading"><span class="rules-emblem" aria-hidden="true">遊び方</span><div><p class="rules-kicker">ルールと操作方法</p><h1 id="rules-title">読み込み中…</h1></div></div>
       <p class="rules-summary" id="rules-summary"></p>
+      <figure class="guide-poster" id="guide-poster" hidden>
+        <a id="guide-poster-link" target="_blank" rel="noopener"><img id="guide-poster-image" alt="" decoding="async"></a>
+        <figcaption>画像を押すと別タブで拡大できます。文章での説明は「詳しいルール」から確認できます。</figcaption>
+      </figure>
       <div class="rules-sections" id="rules-sections" hidden>
-        <section class="rules-card" aria-labelledby="rule-heading"><h2 id="rule-heading"><span aria-hidden="true">01</span> ゲームのルール</h2><ol id="rules-list"></ol></section>
-        <section class="rules-card operations-card" aria-labelledby="operation-heading"><h2 id="operation-heading"><span aria-hidden="true">02</span> 操作方法</h2><ul id="operations-list"></ul></section>
+        <section class="rules-card goal-card" aria-labelledby="goal-heading"><h2 id="goal-heading"><span>01</span> めざすこと</h2><div class="goal-body"><div id="goal-diagram"></div><div><h3 id="goal-title"></h3><p id="goal-copy"></p></div></div></section>
+        <section class="rules-card operations-card" aria-labelledby="operation-heading"><h2 id="operation-heading"><span>02</span> 操作の3ステップ</h2><ol id="operation-steps" class="operation-steps"></ol><p class="diagram-note">図は操作を説明するための例です。実際の配置・問題は変わります。</p></section>
+        <section class="rules-card finish-card" aria-labelledby="finish-heading"><h2 id="finish-heading"><span>03</span> 終わりの条件</h2><ul id="finish-list" class="finish-list"></ul></section>
       </div>
+      <details id="rules-details" class="rules-details" hidden><summary>詳しいルール・その他の操作を見る</summary><div class="detail-columns"><section aria-labelledby="rule-heading"><h2 id="rule-heading">詳しいルール</h2><ol id="rules-list"></ol></section><section aria-labelledby="other-operation-heading"><h2 id="other-operation-heading">その他の操作</h2><ul id="operations-list"></ul></section></div></details>
       <p class="rules-status" id="rules-status" role="status"></p>
       <div class="rules-actions"><a id="rules-play" class="rules-play" hidden>このゲームであそぶ ▶</a><a class="rules-back" href="/">← ゲーム一覧に戻る</a></div>
       <p id="rules-error" role="alert" hidden></p>

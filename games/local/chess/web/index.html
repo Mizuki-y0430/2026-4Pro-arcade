@@ -29,10 +29,11 @@
   </main>
   <dialog id="settings-dialog" aria-labelledby="settings-title"><h2 id="settings-title">対局設定</h2>    <div class="options" aria-label="対局設定">
       <label>遊び方<select id="mode" disabled><option value="ai">AI対戦・あなたは白</option><option value="aivsai">AI同士を観戦</option></select></label>
-      <label>AIの強さ<select id="level" disabled><option value="weak">よわい</option><option value="normal" selected>ふつう</option><option value="strong">つよい</option></select></label>
-      <label class="cooldown-option">動かす間隔 <output id="cooldown-value">0.5秒</output><input id="cooldown" type="range" min="0" max="1500" step="100" value="500" disabled></label>
+      <label>難易度<select id="level" aria-describedby="difficulty-detail" disabled><option value="weak" selected>はじめて</option><option value="normal">ふつう</option><option value="strong">むずかしい</option></select></label>
+      <label class="cooldown-option">自分の待ち時間 <output id="cooldown-value">0.5秒</output><input id="cooldown" type="range" min="0" max="1500" step="100" value="500" disabled></label>
       <label class="animation-option"><input id="animation" type="checkbox" checked disabled>駒アニメーション</label>
     </div>
+<p id="difficulty-detail" class="difficulty-detail">はじめて：AIは約3秒ごとに動きます。</p>
 <button id="settings-close" class="primary">閉じる</button></dialog>
   <dialog id="help-dialog" aria-labelledby="help-title"><h2 id="help-title">操作と盤面の印</h2>        <div class="board-legend" aria-label="盤面の印の見方"><span><i class="legend-selected" aria-hidden="true"></i>選択中</span><span><i class="legend-legal" aria-hidden="true"></i>移動先</span><span><i class="legend-last" aria-hidden="true"></i>直前の移動</span><span><i class="legend-check" aria-hidden="true">!</i>王手</span></div>
         <p class="hint"><span id="play-hint">白の駒 → 移動先をクリック。ターン待ちはありません。</span><br><span id="key-hint">矢印キーでマス移動・Enterで選択 / Q・Escで停止</span></p>

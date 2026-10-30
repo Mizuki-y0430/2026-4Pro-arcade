@@ -241,3 +241,5 @@ dialog h2,.card h1,.overlay-card h1,.overlay-card h2{color:var(--pop-ink)}
 .hand-tray{border-color:#e5bc76;border-top-color:var(--pop-red);border-radius:4px;background:#fff9eb}
 @media(max-width:850px){h1{font-size:21px}.actions{gap:6px}.actions button{padding-left:9px;padding-right:9px}}
 @media(max-width:650px) and (orientation:portrait){h1{font-size:19px}.status-panel h2{font-size:14px;padding:4px;margin:4px 0}.matches{font-size:9px}.side section{border-width:1px}.actions .primary{padding-left:7px;padding-right:7px}}
+
+.difficulty-detail{margin:16px 0;padding:12px;border-left:4px solid var(--pop-red);background:#fff3be;color:#202020;font-size:13px;line-height:1.7}

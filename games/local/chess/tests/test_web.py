@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 import threading
 import unittest
+from unittest.mock import patch
 from urllib.error import HTTPError
 from urllib.request import ProxyHandler, Request, build_opener
 
@@ -67,7 +68,7 @@ class ProgressTests(unittest.TestCase):
 
     def test_ai_uses_original_engine_and_stop_freezes_board(self):
         self.play()
-        self.clock.now += 1
+        self.clock.now += 3
         self.web.tick()
         self.assertEqual(self.web.game.history[-1][2][0], 'b')
         self.web.stop()
@@ -75,6 +76,69 @@ class ProgressTests(unittest.TestCase):
         self.clock.now += 10
         self.web.tick()
         self.assertEqual(self.web.game.board, before)
+
+    def test_first_session_defaults_to_beginner(self):
+        snap = self.web.snapshot()
+        self.assertEqual((snap['level'], snap['difficulty_label'], snap['ai_interval_ms']), ('weak', 'はじめて', 3000))
+        self.assertEqual(self.web.cooldown_ms, 500)
+
+    def test_each_difficulty_waits_before_first_and_later_moves_without_catching_up(self):
+        for level, interval in [('weak', 3), ('normal', 2), ('strong', 1)]:
+            with self.subTest(level=level):
+                self.web = WebGame(self.clock)
+                self.web.configure({'level': level})
+                self.play()
+
+                def legal_move(color, **_kwargs):
+                    return (*self.web.game.get_all_moves(color)[0], 'Q')
+
+                with patch.object(self.web.game, 'choose_ai_move', side_effect=legal_move) as choose:
+                    self.assertEqual(self.web.snapshot()['cooldowns']['b'], interval * 1000)
+                    self.clock.now += interval - .01
+                    self.web.tick()
+                    self.assertEqual(self.web.game.move_count, 0)
+                    self.clock.now += .01
+                    self.web.tick()
+                    self.assertEqual(self.web.game.move_count, 1)
+                    self.assertEqual(choose.call_args.kwargs['level'], level)
+                    self.assertEqual(self.web.snapshot()['cooldowns']['b'], interval * 1000)
+                    self.clock.now += interval - .01
+                    self.web.tick()
+                    self.assertEqual(self.web.game.move_count, 1)
+                    self.clock.now += 30
+                    self.web.tick()
+                    self.assertEqual(self.web.game.move_count, 2)
+                    self.web.tick()
+                    self.assertEqual(choose.call_count, 2)
+
+    def test_changing_difficulty_gives_full_new_interval_but_other_settings_do_not_delay_ai(self):
+        self.web.configure({'level': 'strong'})
+        self.play()
+        self.clock.now += .9
+        self.web.configure({'level': 'weak'})
+        self.assertEqual(self.web.snapshot()['cooldowns']['b'], 3000)
+        deadline = self.web.next_ai
+        self.web.configure({'animation': False, 'cooldown_ms': 0})
+        self.assertEqual(self.web.next_ai, deadline)
+        self.clock.now += 1
+        self.web.tick()
+        self.assertEqual(self.web.game.move_count, 0)
+        self.clock.now += 2
+        self.web.tick()
+        self.assertEqual(self.web.game.move_count, 1)
+
+    def test_resume_keeps_beginner_pace_and_shows_no_running_timer_when_stopped(self):
+        self.play()
+        self.web.stop()
+        self.assertEqual(self.web.snapshot()['cooldowns']['b'], 0)
+        self.clock.now += 20
+        self.play()
+        self.clock.now += 1
+        self.web.tick()
+        self.assertEqual(self.web.game.move_count, 0)
+        self.clock.now += 2
+        self.web.tick()
+        self.assertEqual(self.web.game.move_count, 1)
 
     def test_settings_validate_all_fields_before_mutation(self):
         with self.assertRaises(ValueError):

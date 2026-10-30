@@ -10,15 +10,26 @@ from .game import ChessGame
 class WebGame:
     """画面から独立した対局状態。サーバーがロックを持って操作する。"""
 
+    DIFFICULTIES = {
+        "weak": ("はじめて", 3, "ランダム中心で、駒取りにこだわらない相手です。"),
+        "normal": ("ふつう", 2, "駒取り・位置・安全性を考えて動きます。"),
+        "strong": ("むずかしい", 1, "相手の返しも読んで動きます。"),
+    }
+
     def __init__(self, clock=time.monotonic):
         self.clock = clock
         self.game = ChessGame()
         self.mode = "ai"
-        self.level = "normal"
+        self.level = "weak"
         self.cooldown_ms = 500
         self.animation = True
         self.revision = 0
         self.reset()
+
+    @property
+    def ai_interval(self):
+        # 観戦は従来どおり1秒ごとに交互。対人戦は考える時間を難易度で変える。
+        return 1 if self.mode == "aivsai" else self.DIFFICULTIES[self.level][1]
 
     def reset(self):
         self.game.reset()
@@ -47,10 +58,14 @@ class WebGame:
         if type(animation) is not bool:
             raise ValueError("アニメーション設定が不正です。")
         changed_mode = mode != self.mode
+        changed_level = level != self.level
         self.mode, self.level = mode, level
         self.cooldown_ms, self.animation = cooldown, animation
         if changed_mode:
             self.reset()
+        elif changed_level and self.phase == "playing":
+            # 切り替え直後にAIが動かないよう、新しい間隔を丸ごと確保する。
+            self.next_ai = self.clock() + self.ai_interval
         self.revision += 1
 
     def _new_match(self):
@@ -84,7 +99,7 @@ class WebGame:
     def _begin_play(self, now):
         self.phase = "playing"
         self.countdown_until = 0
-        self.next_ai = now + 1
+        self.next_ai = now + self.ai_interval
         if self.mode == "aivsai":
             # 元のGUI同様、AI同士では各駒にランダムな初期クールタイム。
             self.piece_cd = {
@@ -120,8 +135,8 @@ class WebGame:
         move = self.game.choose_ai_move(color, level=self.level, exclude=exclude)
         if move:
             self._apply(*move[:4], promotion=move[4])
-        # 固まった後に何手も一気に進めない。次の手は計算終了後の1秒先。
-        self.next_ai = self.clock() + 1
+        # 固まった後に何手も一気に進めず、計算終了後から次の間隔を確保する。
+        self.next_ai = self.clock() + self.ai_interval
 
     def move(self, data):
         if self.mode != "ai" or self.phase != "playing":
@@ -154,7 +169,7 @@ class WebGame:
                 self.piece_cd.pop(rook_from, None)
                 self.piece_cd[rook_to] = now + AI_PIECE_CD_MS / 1000
         else:
-            self.cd_until[piece[0]] = now + (self.cooldown_ms / 1000 if piece[0] == "w" else 1)
+            self.cd_until[piece[0]] = now + (self.cooldown_ms / 1000 if piece[0] == "w" else self.ai_interval)
         self.revision += 1
         if self.game.game_over:
             self.phase = "finished"
@@ -167,6 +182,10 @@ class WebGame:
 
     def snapshot(self):
         now = self.clock()
+        cooldowns = {color: max(0, round((deadline-now)*1000)) for color, deadline in self.cd_until.items()}
+        if self.mode == "ai":
+            # 初手前も含め、AIの実際の次の移動予定を画面に渡す。
+            cooldowns["b"] = max(0, round((self.next_ai-now)*1000)) if self.active and self.phase == "playing" else 0
         legal = {}
         if self.phase == "playing" and self.mode == "ai":
             for sr, sc, er, ec in self.game.get_all_moves("w"):
@@ -180,9 +199,12 @@ class WebGame:
             "board": [row[:] for row in self.game.board],
             "phase": self.phase, "active": self.active,
             "mode": self.mode, "level": self.level,
+            "difficulty_label": self.DIFFICULTIES[self.level][0],
+            "difficulty_description": self.DIFFICULTIES[self.level][2],
+            "ai_interval_ms": self.ai_interval * 1000,
             "cooldown_ms": self.cooldown_ms, "animation": self.animation,
             "countdown": max(0, math.ceil(self.countdown_until - now)),
-            "cooldowns": {color: max(0, round((deadline - now) * 1000)) for color, deadline in self.cd_until.items()},
+            "cooldowns": cooldowns,
             "piece_cooldowns": {f"{r},{c}": max(0, round((deadline-now)*1000)) for (r,c), deadline in self.piece_cd.items() if deadline > now},
             "legal_moves": legal, "history": history,
             "move_count": self.game.move_count, "winner": self.game.winner, "game_over": self.game.game_over,

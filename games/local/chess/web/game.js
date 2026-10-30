@@ -60,7 +60,9 @@ function draw(next){
   $("start").classList.toggle("running",state.active);
   const status={ready:"白の駒で挑戦！",countdown:`開始まで ${state.countdown}…`,playing:state.mode==="ai"?"あなたは白！":"AI同士の対局中",paused:"停止中",finished:state.winner==="draw"?"引き分け！":`${colorName(state.winner)}の勝ち！`};
   $("status").textContent=status[state.phase];
-  $("status-detail").textContent=state.rematch_in?`${state.rematch_in}秒後に次の対局へ。Q・Escで停止できます。`:state.phase==="finished"?"対局終了。もう一局に挑戦しよう！":state.mode==="aivsai"?"駒ごとに2秒のクールタイム。白と赤が交互に動きます。":"スタートして駒と移動先を選ぼう。AIは1秒ごとに動きます。";
+  const pace=state.ai_interval_ms/1000;
+  $("status-detail").textContent=state.rematch_in?`${state.rematch_in}秒後に次の対局へ。Q・Escで停止できます。`:state.phase==="finished"?"対局終了。もう一局に挑戦しよう！":state.mode==="aivsai"?"駒ごとに2秒のクールタイム。白と赤が1秒ごとに交互に動きます。":`${state.difficulty_label}：AIは約${pace}秒ごとに動きます。白の駒と移動先を選ぼう。`;
+  $("difficulty-detail").textContent=`${state.difficulty_label}：${state.difficulty_description}${state.mode==="aivsai"?"観戦では1秒ごとに交互に動きます。":`AIは約${pace}秒ごとに動きます。自分が考える時間に制限はありません。`}`;
   $("countdown").hidden=state.phase!=="countdown";$("countdown").textContent=state.countdown;
   $("play-hint").textContent=state.mode==="aivsai"?"AIの対局を観戦。停止ボタン・Q・Escで停止できます。":"白の駒 → 移動先をクリック。ターン待ちはありません。";
   $("key-hint").textContent=state.mode==="aivsai"?"終局後3秒で次局へ。停止後は「新しい対局」で最初から。":"矢印キーでマス移動・Enterで選択 / Q・Escで停止";
@@ -72,7 +74,7 @@ function draw(next){
       $(label+"-cd").textContent=`${colorName(color)}：${count?`${count}駒が待機中`:"動かせる"}`;$(label+"-bar").value=count/16*100;
     }else{
       $(label+"-cd").textContent=`${colorName(color)}：${remain?`あと${(remain/1000).toFixed(1)}秒`:"動かせる"}`;
-      $(label+"-bar").value=remain/Math.max(1,color==="w"?state.cooldown_ms:1000)*100;
+      $(label+"-bar").value=remain/Math.max(1,color==="w"?state.cooldown_ms:state.ai_interval_ms)*100;
     }
   }
   if(!previous||previous.revision!==state.revision){
